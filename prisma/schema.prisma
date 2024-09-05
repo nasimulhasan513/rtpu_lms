@@ -1,0 +1,340 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model Settings {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Teacher {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  image             String
+  designation       String
+  short_designation String
+  biography         String?
+
+  CourseTeacher CourseTeacher[]
+}
+
+model Category {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  image     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses Course[]
+}
+
+model Course {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug              String   @unique
+  name              String
+  short_description String
+  description       String
+  categoryId        String   @db.ObjectId
+  image             String
+  promo_video       String?
+  sale_price        Int
+  regular_price     Int
+  status            String
+  duration          Int
+  enrolled          Int
+  fb_group          String?
+  tg_group          String?
+  keywords          String[]
+  order             Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  teachers     CourseTeacher[]
+  lessons      CourseLesson[]
+  exams        CourseExam[]
+  enrollments  Enrollment[]
+  couponCourse CouponCourse[]
+  exam         Exam[]
+  assignment   Assignment[]
+  category     Category        @relation(fields: [categoryId], references: [id])
+  Feedback     Feedback[]
+}
+
+model CourseTeacher {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  courseId  String @db.ObjectId
+  teacherId String @db.ObjectId
+  order     Int    @default(0)
+
+  course  Course  @relation(fields: [courseId], references: [id])
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+
+  @@unique([courseId, teacherId])
+}
+
+model Coupon {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  code          String   @unique
+  discountType  String
+  discountValue Float
+  usage         Int      @default(1)
+  used          Int      @default(1)
+  expiryDate    DateTime
+  createdAt     DateTime @default(now())
+
+  enrollments Enrollment[]
+  courses     CouponCourse[]
+}
+
+model CouponCourse {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  couponId String @db.ObjectId
+  courseId String @db.ObjectId
+
+  coupon Coupon @relation(fields: [couponId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([couponId, courseId])
+}
+
+model Enrollment {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String
+  courseId         String   @db.ObjectId
+  transactionId    String?
+  gateway_response Json?
+  status           String   @default("pending")
+  enrolledAt       DateTime @default(now())
+  couponId         String?  @db.ObjectId
+
+  user   User    @relation(fields: [userId], references: [id])
+  course Course  @relation(fields: [courseId], references: [id])
+  coupon Coupon? @relation(fields: [couponId], references: [id])
+
+  @@unique([userId, courseId])
+}
+
+model Subject {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapters  Chapter[]
+  lessons   Lesson[]
+  questions Question[]
+}
+
+model Chapter {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  subjectId String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subject Subject  @relation(fields: [subjectId], references: [id])
+  lessons Lesson[]
+}
+
+model Lesson {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  subjectId String   @db.ObjectId
+  chapterId String   @db.ObjectId
+  source    String
+  content   String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subject Subject        @relation(fields: [subjectId], references: [id])
+  chapter Chapter        @relation(fields: [chapterId], references: [id])
+  courses CourseLesson[]
+}
+
+model CourseLesson {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  courseId    String    @db.ObjectId
+  lessonId    String    @db.ObjectId
+  scheduledAt DateTime?
+  course      Course    @relation(fields: [courseId], references: [id])
+  lesson      Lesson    @relation(fields: [lessonId], references: [id])
+
+  @@unique([courseId, lessonId])
+}
+
+model Option {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  option_text String
+  correct     Boolean
+  questionId  String  @db.ObjectId
+
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@index([questionId], map: "question_id_index")
+}
+
+model Question {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  question   String
+  difficulty String?  @default("Medium")
+  subjectId  String   @db.ObjectId
+  examId     String   @db.ObjectId
+  explain    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  options Option[]
+  exam    Exam?    @relation(fields: [examId], references: [id])
+  subject Subject  @relation(fields: [subjectId], references: [id])
+
+  @@index([examId], map: "exam_id_index")
+}
+
+model Exam {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  title               String
+  subject             String
+  startTime           DateTime
+  endTime             DateTime
+  duration            Int
+  totalMarks          Int
+  resultPublishTime   DateTime
+  solutionPublishTime DateTime
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  submissions Submission[]
+  questions   Question[]
+  courseId    String?      @db.ObjectId
+
+  course      Course?      @relation(fields: [courseId], references: [id])
+  courseExams CourseExam[]
+}
+
+model CourseExam {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  courseId String @db.ObjectId
+  examId   String @db.ObjectId
+
+  course Course @relation(fields: [courseId], references: [id])
+  exam   Exam   @relation(fields: [examId], references: [id])
+
+  @@unique([courseId, examId])
+}
+
+model Submission {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String
+  examId      String    @db.ObjectId
+  answers     Json?
+  attempt     Int       @default(1)
+  marks       Float     @default(0)
+  duration    Int?
+  status      String    @default("pending")
+  submittedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  exam Exam @relation(fields: [examId], references: [id])
+
+  @@index([userId], map: "user_id_index")
+  @@index([examId], map: "exam_id_index")
+}
+
+model Assignment {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  courseId    String   @db.ObjectId
+  dueDate     DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course      Course                 @relation(fields: [courseId], references: [id])
+  submissions AssignmentSubmission[]
+}
+
+model AssignmentSubmission {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  assignmentId String   @db.ObjectId
+  userId       String
+  submittedAt  DateTime @default(now())
+  content      Json?
+  grade        Float?
+  feedback     String?
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+}
+
+model Badge {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  image       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  awards BadgeAward[]
+}
+
+model BadgeAward {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  badgeId   String   @db.ObjectId
+  awardedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  badge Badge @relation(fields: [badgeId], references: [id])
+
+  @@unique([userId, badgeId])
+}
+
+model Achievement {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  points      Int
+  userId      String
+  awardedAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, name])
+}
+
+model Notification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  type      String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Feedback {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  courseId  String   @db.ObjectId
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+}

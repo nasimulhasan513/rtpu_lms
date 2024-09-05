@@ -1,0 +1,23 @@
+Basic Settings:
+  title: String
+  description: String
+  logo: String
+  favicon: String
+  og_image: String
+
+Payment Settings:
+  bkash_active: Boolean
+  bkash_key: String
+  bkash_secret: String
+
+  sslcommerz_active: Boolean
+  sslcommerz_store_id: String
+  sslcommerz_store_password: String
+
+
+Contact Settings:
+  facebook: String
+  youtube: String
+  phone: String
+  email: String
+  address: String
