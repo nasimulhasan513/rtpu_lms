@@ -307,10 +307,14 @@ model Assignment {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
+  pdf         String?
+  total_marks Int
   courseId    String   @db.ObjectId
-  dueDate     DateTime
+  startDate   DateTime
+  endDate     DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  status      String   @default("draft")
 
   course      Course                 @relation(fields: [courseId], references: [id])
   submissions AssignmentSubmission[]

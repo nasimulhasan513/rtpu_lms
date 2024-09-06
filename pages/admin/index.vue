@@ -1,78 +1,27 @@
 <template>
-  <div class="w-full flex flex-col gap-4">
+  <div class="flex flex-col w-full gap-4">
     <div class="flex flex-wrap items-center justify-between gap-2">
       <h2 class="text-3xl font-bold tracking-tight">
         Dashboard
       </h2>
-      <div class="flex items-center space-x-2">
-        <BaseDateRangePicker />
-        <Button>Download</Button>
-      </div>
+      <!-- <div class="flex items-center space-x-2">
+        <BaseDateRangePicker v-model="dateRange" />
+        <Button @click="fetchDashboardData">Update</Button>
+      </div> -->
     </div>
-    <main class="flex flex-1 flex-col gap-4 md:gap-8">
+    <main class="flex flex-col flex-1 gap-4 md:gap-8">
       <div class="grid gap-4 lg:grid-cols-4 md:grid-cols-2 md:gap-8">
-        <Card>
+        <Card v-for="(stat, index) in stats" :key="index">
           <CardHeader class="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle class="text-sm font-medium">
-              Total Revenue
+              {{ stat.title }}
             </CardTitle>
-            <DollarSign class="h-4 w-4 text-muted-foreground" />
+            <Icon :name="stat.icon" class="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
-              $45,231.89
+              {{ stat.value }}
             </div>
-            <p class="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader class="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle class="text-sm font-medium">
-              Subscriptions
-            </CardTitle>
-            <Users class="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div class="text-2xl font-bold">
-              +2350
-            </div>
-            <p class="text-xs text-muted-foreground">
-              +180.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader class="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle class="text-sm font-medium">
-              Sales
-            </CardTitle>
-            <CreditCard class="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div class="text-2xl font-bold">
-              +12,234
-            </div>
-            <p class="text-xs text-muted-foreground">
-              +19% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader class="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle class="text-sm font-medium">
-              Active Now
-            </CardTitle>
-            <Activity class="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div class="text-2xl font-bold">
-              +573
-            </div>
-            <p class="text-xs text-muted-foreground">
-              +201 since last hour
-            </p>
           </CardContent>
         </Card>
       </div>
@@ -80,157 +29,29 @@
         <Card class="xl:col-span-2">
           <CardHeader class="flex flex-row items-center">
             <div class="grid gap-2">
-              <CardTitle>Transactions</CardTitle>
+              <CardTitle>Recent Enrollments</CardTitle>
               <CardDescription>
-                Recent transactions from your store.
+                Latest course enrollments.
               </CardDescription>
             </div>
-            <Button as-child size="sm" class="ml-auto gap-1">
-              <a href="#">
-                View All
-                <ArrowUpRight class="h-4 w-4" />
-              </a>
-            </Button>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Customer</TableHead>
-                  <TableHead class="hidden xl:table-column">
-                    Type
-                  </TableHead>
-                  <TableHead class="hidden xl:table-column">
-                    Status
-                  </TableHead>
-                  <TableHead class="hidden xl:table-column">
-                    Date
-                  </TableHead>
-                  <TableHead class="text-right">
-                    Amount
-                  </TableHead>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Course</TableHead>
+                  <TableHead>Date</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
+                <TableRow v-for="enrollment in dashboardData.recentEnrollments" :key="enrollment.id">
                   <TableCell>
-                    <div class="font-medium">
-                      Liam Johnson
-                    </div>
-                    <div class="hidden text-sm text-muted-foreground md:inline">
-                      liam@example.com
-                    </div>
+                    <div class="font-medium">{{ enrollment.student }}</div>
+                    <div class="text-sm text-muted-foreground">{{ enrollment.email }}</div>
                   </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    Sale
-                  </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    <Badge class="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell class="hidden lg:hidden md:table-cell xl:table-column">
-                    2023-06-23
-                  </TableCell>
-                  <TableCell class="text-right">
-                    $250.00
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div class="font-medium">
-                      Olivia Smith
-                    </div>
-                    <div class="hidden text-sm text-muted-foreground md:inline">
-                      olivia@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    Refund
-                  </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    <Badge class="text-xs" variant="outline">
-                      Declined
-                    </Badge>
-                  </TableCell>
-                  <TableCell class="hidden lg:hidden md:table-cell xl:table-column">
-                    2023-06-24
-                  </TableCell>
-                  <TableCell class="text-right">
-                    $150.00
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div class="font-medium">
-                      Noah Williams
-                    </div>
-                    <div class="hidden text-sm text-muted-foreground md:inline">
-                      noah@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    Subscription
-                  </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    <Badge class="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell class="hidden lg:hidden md:table-cell xl:table-column">
-                    2023-06-25
-                  </TableCell>
-                  <TableCell class="text-right">
-                    $350.00
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div class="font-medium">
-                      Emma Brown
-                    </div>
-                    <div class="hidden text-sm text-muted-foreground md:inline">
-                      emma@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    Sale
-                  </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    <Badge class="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell class="hidden lg:hidden md:table-cell xl:table-column">
-                    2023-06-26
-                  </TableCell>
-                  <TableCell class="text-right">
-                    $450.00
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div class="font-medium">
-                      Liam Johnson
-                    </div>
-                    <div class="hidden text-sm text-muted-foreground md:inline">
-                      liam@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    Sale
-                  </TableCell>
-                  <TableCell class="hidden xl:table-column">
-                    <Badge class="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell class="hidden lg:hidden md:table-cell xl:table-column">
-                    2023-06-27
-                  </TableCell>
-                  <TableCell class="text-right">
-                    $550.00
-                  </TableCell>
+                  <TableCell>{{ enrollment.course }}</TableCell>
+                  <TableCell>{{ new Date(enrollment.date).toLocaleDateString() }}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -238,88 +59,19 @@
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Recent Sales</CardTitle>
+            <CardTitle>Recent Exam Submissions</CardTitle>
           </CardHeader>
-          <CardContent class="grid gap-8">
-            <div class="flex items-center gap-4">
+          <CardContent class="grid gap-4">
+            <div v-for="submission in dashboardData.recentExamSubmissions" :key="submission.id"
+              class="flex items-center gap-4">
               <Avatar class="hidden h-9 w-9 sm:flex">
-                <AvatarFallback>OM</AvatarFallback>
+                <AvatarFallback>{{ getInitials(submission.student) }}</AvatarFallback>
               </Avatar>
               <div class="grid gap-1">
-                <p class="text-sm font-medium leading-none">
-                  Olivia Martin
-                </p>
-                <p class="text-sm text-muted-foreground">
-                  olivia.martin@email.com
-                </p>
+                <p class="text-sm font-medium leading-none">{{ submission.student }}</p>
+                <p class="text-sm text-muted-foreground">{{ submission.exam }}</p>
               </div>
-              <div class="ml-auto font-medium">
-                +$1,999.00
-              </div>
-            </div>
-            <div class="flex items-center gap-4">
-              <Avatar class="hidden h-9 w-9 sm:flex">
-                <AvatarFallback>JL</AvatarFallback>
-              </Avatar>
-              <div class="grid gap-1">
-                <p class="text-sm font-medium leading-none">
-                  Jackson Lee
-                </p>
-                <p class="text-sm text-muted-foreground">
-                  jackson.lee@email.com
-                </p>
-              </div>
-              <div class="ml-auto font-medium">
-                +$39.00
-              </div>
-            </div>
-            <div class="flex items-center gap-4">
-              <Avatar class="hidden h-9 w-9 sm:flex">
-                <AvatarFallback>IN</AvatarFallback>
-              </Avatar>
-              <div class="grid gap-1">
-                <p class="text-sm font-medium leading-none">
-                  Isabella Nguyen
-                </p>
-                <p class="text-sm text-muted-foreground">
-                  isabella.nguyen@email.com
-                </p>
-              </div>
-              <div class="ml-auto font-medium">
-                +$299.00
-              </div>
-            </div>
-            <div class="flex items-center gap-4">
-              <Avatar class="hidden h-9 w-9 sm:flex">
-                <AvatarFallback>WK</AvatarFallback>
-              </Avatar>
-              <div class="grid gap-1">
-                <p class="text-sm font-medium leading-none">
-                  William Kim
-                </p>
-                <p class="text-sm text-muted-foreground">
-                  will@email.com
-                </p>
-              </div>
-              <div class="ml-auto font-medium">
-                +$99.00
-              </div>
-            </div>
-            <div class="flex items-center gap-4">
-              <Avatar class="hidden h-9 w-9 sm:flex">
-                <AvatarFallback>SD</AvatarFallback>
-              </Avatar>
-              <div class="grid gap-1">
-                <p class="text-sm font-medium leading-none">
-                  Sofia Davis
-                </p>
-                <p class="text-sm text-muted-foreground">
-                  sofia.davis@email.com
-                </p>
-              </div>
-              <div class="ml-auto font-medium">
-                +$39.00
-              </div>
+              <div class="ml-auto font-medium">{{ submission.marks }}</div>
             </div>
           </CardContent>
         </Card>
@@ -327,11 +79,42 @@
     </main>
   </div>
 </template>
-<script lang="ts" setup>
-import { Activity, ArrowUpRight, CreditCard, DollarSign, Users } from 'lucide-vue-next'
+
+<script setup>
 
 definePageMeta({
   layout: 'admin',
 })
+const { data: dashboardData, status, error, refresh } = await useFetch('/api/admin/dashboard', {
 
+})
+const dateRange = ref({ start: '', end: '' })
+
+const stats = computed(() => [
+  { title: 'Total Users', value: dashboardData.value.totalUsers, icon: 'lucide:users' },
+  { title: 'Total Courses', value: dashboardData.value.totalCourses, icon: 'lucide:book-open' },
+  { title: 'Total Enrollments', value: dashboardData.value.totalEnrollments, icon: 'lucide:graduation-cap' },
+  { title: 'Total Assignments', value: dashboardData.value.totalAssignments, icon: 'lucide:clipboard-list' },
+  { title: 'Assignment Submissions', value: dashboardData.value.totalAssignmentSubmissions, icon: 'lucide:file-check' },
+  { title: 'Total Exams', value: dashboardData.value.totalExams, icon: 'lucide:file-question' },
+  { title: 'Exam Submissions', value: dashboardData.value.totalExamSubmissions, icon: 'lucide:pen-tool' },
+])
+
+const fetchDashboardData = async () => {
+  const { data } = await useFetch('/api/admin/dashboard', {
+    query: {
+      startDate: dateRange.value.start,
+      endDate: dateRange.value.end
+    }
+  })
+  if (data.value) {
+    dashboardData.value = data.value
+  }
+}
+
+const getInitials = (name) => {
+  return name.split(' ').map(n => n[0]).join('').toUpperCase()
+}
+
+onMounted(fetchDashboardData)
 </script>

@@ -11,9 +11,9 @@
 
 
 
-        <div v-if="status === 'success'" class="mt-5 space-y-5">
+        <div v-if="status === 'success'" class="mt-5">
 
-            <div v-if="data.body.length > 0">
+            <div v-if="data.body.length > 0" class="space-y-5 ">
                 <div>
                     <p>
                         <span class="font-semibold">{{ data.body.length }}</span> questions found

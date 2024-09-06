@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { Triangle } from 'lucide-vue-next'
-import { navMenu, navMenuBottom } from '~/constants/menus'
+
 import { cn } from '@/lib/utils'
 import type { NavGroup, NavLink, NavSectionTitle } from '~/types/nav'
+
+defineProps<{
+  navMenu: NavGroup[]
+  navMenuBottom: NavGroup[]
+}>()
+
+
 
 const store = useNavbar()
 const { toggle } = store

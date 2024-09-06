@@ -1,31 +1,26 @@
 <template>
     <div>
-        <h1 class="mb-4 text-2xl font-bold">Exams</h1>
+        <div class="flex justify-between mb-4">
 
-        <div class="flex mb-4 space-x-4">
-            <Select v-model="selectedCourse" class="w-48">
-                <SelectTrigger>
-                    <SelectValue placeholder="Filter by Course" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">All Courses</SelectItem>
-                    <SelectItem v-for="course in courses" :key="course.id" :value="course.id">
-                        {{ course.name }}
-                    </SelectItem>
-                </SelectContent>
-            </Select>
 
-            <Select v-model="selectedSubject" class="w-48">
-                <SelectTrigger>
-                    <SelectValue placeholder="Filter by Subject" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">All Subjects</SelectItem>
-                    <SelectItem v-for="subject in subjects" :key="subject.id" :value="subject.id">
-                        {{ subject.name }}
-                    </SelectItem>
-                </SelectContent>
-            </Select>
+            <h1 class="text-2xl font-bold">Exams</h1>
+
+            <div class="flex flex-col gap-4 bg-white rounded">
+                <Select v-model="selectedCourse">
+                    <SelectTrigger class="w-[180px]">
+                        <SelectValue placeholder="Filter by Course" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Select Course</SelectLabel>
+                            <SelectItem value="all">All Courses</SelectItem>
+                            <SelectItem v-for="course in courses" :key="course.id" :value="course.id">
+                                {{ course.name }}
+                            </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+            </div>
         </div>
         <div class="bg-white">
             <Table>

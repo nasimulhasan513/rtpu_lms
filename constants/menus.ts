@@ -79,7 +79,7 @@ export const navMenu: NavMenuItems = [
       },
       {
         title: "Add Assignment",
-        link: "/admin/assignments/add",
+        link: "/admin/assignments/create",
         icon: "lucide:plus-circle",
       },
       {
@@ -166,4 +166,27 @@ export const mainMenu = [
   { name: "Home", path: "/", icon: "lucide:home" },
   { name: "Courses", path: "/courses", icon: "lucide:book-open" },
   { name: "Categories", path: "/categories", icon: "lucide:layers" },
+];
+
+export const courseMenu = [
+  {
+    title: "ড্যাশবোর্ড",
+    link: "dashboard",
+    icon: "tabler:dashboard",
+  },
+  {
+    title: "ক্লাসসমূহ",
+    link: "lessons",
+    icon: "lucide:video",
+  },
+  {
+    title: "এক্সাম",
+    link: "exams",
+    icon: "lucide:clipboard-list",
+  },
+  {
+    title: "অ্যাসাইনমেন্ট",
+    link: "assignments",
+    icon: "lucide:file-text",
+  },
 ];

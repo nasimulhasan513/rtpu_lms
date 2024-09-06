@@ -11,42 +11,46 @@
         <div class="p-4 mb-6 bg-gray-100 rounded-lg">
             <h3 class="mb-2 text-lg font-semibold">Select Courses</h3>
             <div class="flex flex-wrap gap-2">
-                <div v-for="course in courses" :key="course.id" 
-                     @click="toggleCourseSelection(course.id)"
-                     class="p-2 text-sm rounded-md cursor-pointer"
-                     :class="selectedCourses.includes(course.id) ? 'bg-primary text-white border-2 border-black' : 'bg-white border border-gray-300'">
+                <div v-for="course in courses" :key="course.id" @click="toggleCourseSelection(course.id)"
+                    class="p-2 text-sm rounded-md cursor-pointer"
+                    :class="selectedCourses.includes(course.id) ? 'bg-primary text-white border-2 border-black' : 'bg-white border border-gray-300'">
                     {{ course.name }}
                 </div>
             </div>
         </div>
 
-        <div class="flex mb-4 space-x-4">
-            <Select v-model="selectedSubject" placeholder="Filter by Subject">
-                <SelectTrigger class="w-[180px]">
-                    <SelectValue placeholder="Subject" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem v-for="subject in subjects" :key="subject.id" :value="subject.id">
-                        {{ subject.name }}
-                    </SelectItem>
-                </SelectContent>
-            </Select>
+        <div class="flex justify-between mb-4 space-x-4">
+            <div class="flex gap-4">
+                <Input v-model="search" placeholder="Search by title or content" @input="debouncedFetch" />
 
-            <Select v-model="selectedChapter" placeholder="Filter by Chapter">
-                <SelectTrigger class="w-[180px]">
-                    <SelectValue placeholder="Chapter" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem v-for="chapter in chapters" :key="chapter.id" :value="chapter.id">
-                        {{ chapter.name }}
-                    </SelectItem>
-                </SelectContent>
-            </Select>
+                <Select v-model="selectedSubject" @update:modelValue="fetchLessons">
+                    <SelectTrigger class="w-[180px] bg-background">
+                        <SelectValue placeholder="Subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem v-for="subject in subjects" :key="subject.id" :value="subject.id">
+                            {{ subject.name }}
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
+
+                <Select v-model="selectedChapter" @update:modelValue="fetchLessons">
+                    <SelectTrigger class="w-[180px] bg-background">
+                        <SelectValue placeholder="Chapter" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem v-for="chapter in chapters" :key="chapter.id" :value="chapter.id">
+                            {{ chapter.name }}
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
+            <Button @click="assignLessonsToCourses" class="mt-2">Assign Selected Lessons to Courses</Button>
         </div>
 
-        <div v-if="status === 'success'" class="bg-white rounded-lg shadow">
+        <div class="bg-white rounded-lg shadow">
             <Table>
-                <TableCaption>List of Lessons</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead class="w-[50px]">
@@ -62,11 +66,10 @@
                         <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
-                <TableBody>
-                    <TableRow v-for="lesson, i in filteredLessons" :key="lesson.id">
+                <TableBody v-if="status === 'success'">
+                    <TableRow v-for="lesson, i in data" :key="lesson.id">
                         <TableCell>
-                            <Checkbox :checked="lesson.selected"
-                                @click="filteredLessons[i].selected = !filteredLessons[i].selected" />
+                            <Checkbox :checked="lesson.selected" @click="data[i].selected = !data[i].selected" />
                         </TableCell>
                         <TableCell>{{ lesson.title }}</TableCell>
                         <TableCell>{{ lesson.subject.name }}</TableCell>
@@ -90,46 +93,93 @@
                         </TableCell>
                         <TableCell>{{ new Date(lesson.createdAt).toLocaleDateString() }}</TableCell>
                         <TableCell>
-                            <Button @click="editLesson(lesson)" variant="outline">
-                                <Icon name="tabler:edit" />
-                            </Button>
-                            <Button @click="deleteLesson(lesson.id)" variant="destructive">
-                                <Icon name="tabler:trash" />
-                            </Button>
+                            <div class="flex gap-2">
+                                <Button @click="editLesson(lesson)" variant="outline">
+                                    <Icon name="tabler:edit" />
+                                </Button>
+                                <Button @click="deleteLesson(lesson.id)" variant="destructive">
+                                    <Icon name="tabler:trash" />
+                                </Button>
+                            </div>
                         </TableCell>
                     </TableRow>
                 </TableBody>
+                <div v-if="status === 'pending'" class="flex items-center justify-center p-4">
+                    <AppLoader />
+                </div>
             </Table>
 
-            <div class="p-4 mt-4">
-                <Button @click="assignLessonsToCourses" class="mt-2">Assign Selected Lessons to Courses</Button>
+            <div class="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                <div class="flex items-center">
+                    <span class="text-sm text-gray-700">
+                        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage,
+                totalCount) }} of {{ totalCount }} results
+                    </span>
+                </div>
+                <div class="flex justify-between mt-4 sm:mt-0">
+                    <Button :disabled="currentPage === 1" @click="currentPage--" class="mr-2">
+                        Previous
+                    </Button>
+                    <Button :disabled="currentPage === totalPages" @click="currentPage++">
+                        Next
+                    </Button>
+                </div>
             </div>
         </div>
+
         <LessonModal />
     </div>
 </template>
 
 <script setup>
 import { useToast } from '@/components/ui/toast/use-toast'
+import { debounce } from 'lodash-es'
 
 definePageMeta({
     layout: 'admin',
 })
 
+const search = ref('')
+const selectedSubject = ref(null)
+const selectedChapter = ref(null)
+const selectAll = ref(false)
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
+const totalCount = ref(0)
+const totalPages = ref(0)
+
 const { data, status, error, refresh } = await useFetch('/api/admin/lessons', {
     key: 'admin-lessons',
-    transform: (data) => data.body.map(l => ({ ...l, selected: false }))
+    query: computed(() => ({
+        page: currentPage.value,
+        limit: itemsPerPage.value,
+        search: search.value,
+        subjectId: selectedSubject.value,
+        chapterId: selectedChapter.value,
+    })),
+    transform: (response) => {
+        totalCount.value = response.body.totalCount
+        totalPages.value = response.body.totalPages
+        return response.body.lessons.map(l => ({ ...l, selected: false }))
+    }
 })
+watchDebounced(search, () => {
+    currentPage.value = 1
+    refresh()
+}, { debounce: 300 })
+
+
+
+const fetchLessons = () => {
+    currentPage.value = 1 // Reset to first page on filter change
+    refresh()
+}
 
 const { onOpen, onEdit } = useLesson()
-const { fetchSubjects, subjects } = useSubject()
+const { subjects, fetchSubjects } = useSubject()
 const { courses, fetchCourses } = useCourse()
 const chapters = ref([])
 
-const selectedSubject = ref(null)
-const selectedChapter = ref(null)
-const selectedLessons = ref([])
-const selectAll = ref(false)
 const selectedCourses = ref([])
 
 const { toast } = useToast()
@@ -139,28 +189,15 @@ onMounted(() => {
     fetchCourses()
 })
 
-const filteredLessons = ref([])
-
 watch(selectedSubject, (value) => {
     if (value) {
         chapters.value = subjects.value.find(s => s.id === value).chapters
     }
 }, { deep: true })
 
-watch([selectedSubject, selectedChapter], () => {
-    filteredLessons.value = data.value.filter(lesson =>
-        (!selectedSubject.value || lesson.subject.id === selectedSubject.value) &&
-        (!selectedChapter.value || lesson.chapter.id === selectedChapter.value)
-    )
-})
-
-onMounted(() => {
-    filteredLessons.value = data.value
-})
-
 const toggleSelectAll = () => {
     selectAll.value = !selectAll.value
-    filteredLessons.value = filteredLessons.value.map(l => ({ ...l, selected: selectAll.value }))
+    data.value = data.value.map(l => ({ ...l, selected: selectAll.value }))
 }
 
 const toggleCourseSelection = (courseId) => {
@@ -194,7 +231,7 @@ const editLesson = (lesson) => {
 }
 
 const assignLessonsToCourses = async () => {
-    const selectedLessonIds = filteredLessons.value.filter(l => l.selected).map(l => l.id)
+    const selectedLessonIds = data.value.filter(l => l.selected).map(l => l.id)
     if (selectedLessonIds.length === 0 || selectedCourses.value.length === 0) {
         toast({
             title: 'Please select lessons and courses',
@@ -218,7 +255,7 @@ const assignLessonsToCourses = async () => {
         refresh()
         selectedCourses.value = []
         selectAll.value = false
-        filteredLessons.value = filteredLessons.value.map(l => ({ ...l, selected: false }))
+        data.value = data.value.map(l => ({ ...l, selected: false }))
     } catch (error) {
         console.error('Error assigning lessons to courses:', error)
         toast({
@@ -228,4 +265,8 @@ const assignLessonsToCourses = async () => {
         })
     }
 }
+
+watch([currentPage, itemsPerPage], () => {
+    refresh()
+})
 </script>
