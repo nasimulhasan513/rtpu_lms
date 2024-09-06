@@ -1,12 +1,10 @@
 <template>
     <div class="flex justify-between">
         <AppHeading title="Course Categories" subtitle="Create, Update or organize categories." />
-
     </div>
 
     <div v-if="status === 'success'" class="grid gap-5 mt-5 md:grid-cols-6">
-        <Card class="cursor-pointer" @click="onOpen">
-
+        <Card class="cursor-pointer" @click="openModal">
             <CardContent class="flex flex-col items-center justify-center h-full">
                 <div>
                     <div class="text-center">
@@ -17,41 +15,29 @@
                     </p>
                 </div>
             </CardContent>
-
-
         </Card>
         <Card v-for="category in data" :key="category.id">
             <CardContent class="p-3 space-y-2">
                 <div class="flex items-center justify-center">
                     <NuxtImg :src="category.image" :alt="category.name" class="rounded-sm" />
-
-
                 </div>
                 <h3 class="text-lg font-semibold text-center">{{ category.name }}</h3>
-
             </CardContent>
             <CardFooter class="flex items-center justify-center gap-2">
-
-                <Button @click="onOpen" variant="outline" size="xs">
+                <Button @click="openModal(category)" variant="outline" size="xs">
                     <Icon name="lucide:pencil" />
                 </Button>
-                <Button @click="onOpen" variant="destructive" size="xs">
+                <Button @click="deleteCategory(category.id)" variant="destructive" size="xs">
                     <Icon name="lucide:trash" />
-
                 </Button>
-
-
             </CardFooter>
         </Card>
-
-
     </div>
 
-
-    <AppModal :isOpen="isOpen" title="Course Category" description="Create or Update Category" @onClose="onClose"
+    <AppModal :isOpen="isOpen" :title="editingCategory ? 'Update Category' : 'Create Category'"
+        :description="editingCategory ? 'Update existing category' : 'Create a new category'" @onClose="closeModal"
         v-if="isOpen">
-
-        <form>
+        <form @submit.prevent="onSubmit">
             <div class="space-y-6">
                 <div @click="chooseCover"
                     class="relative flex flex-col items-center justify-center gap-4 p-20 transition border-2 cursor-pointer hover:opacity-70 border-nuetral-300 text-nuetral-600">
@@ -67,7 +53,7 @@
                         </p>
                     </div>
                     <div v-else class="absolute inset-0 w-full h-full">
-                        <NuxtImg :src="form.values.image" class="object-cover w-full h-full" alt="teacher" />
+                        <NuxtImg :src="form.values.image" class="object-cover w-full h-full" alt="category" />
                     </div>
                 </div>
 
@@ -81,21 +67,16 @@
                     </FormItem>
                 </FormField>
 
-                <AppButton type="submit" class="w-full" :loading="isLoading" @click="onSubmit"
-                    :label="initialValues.value ? 'Update' : 'Create'"
-                    :loadingLabel="initialValues.value ? 'Updating...' : 'Creating...'">
+                <AppButton type="submit" class="w-full" :loading="isLoading"
+                    :label="editingCategory ? 'Update' : 'Create'"
+                    :loadingLabel="editingCategory ? 'Updating...' : 'Creating...'">
                 </AppButton>
             </div>
-
         </form>
-
     </AppModal>
-
-
 </template>
 
 <script setup>
-
 definePageMeta({
     layout: 'admin',
     middleware: 'admin'
@@ -105,21 +86,29 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { CategorySchema } from '~/schema/category.schema'
 
-
 const { data, status, refresh } = useFetch('/api/admin/courses/categories')
 
-
-
 const isOpen = ref(false)
-const onClose = () => {
+const editingCategory = ref(null)
+
+const closeModal = () => {
     isOpen.value = false
+    editingCategory.value = null
+    form.resetForm()
 }
-const onOpen = () => {
+
+const openModal = (category = null) => {
+    editingCategory.value = category
+    if (category) {
+        form.setValues({
+            name: category.name,
+            image: category.image,
+        })
+    }
     isOpen.value = true
 }
-const formSchema = toTypedSchema(CategorySchema)
 
-const initialValues = ref({})
+const formSchema = toTypedSchema(CategorySchema)
 
 const form = useForm({
     validationSchema: formSchema,
@@ -132,31 +121,36 @@ const form = useForm({
 const isLoading = ref(false)
 const { toast } = useToast()
 
-
-
-const onSubmit = form.handleSubmit(async () => {
-
+const onSubmit = form.handleSubmit(async (values) => {
     try {
         isLoading.value = true
 
-
-        if (initialValues.value.id) {
-            await $fetch(`/api/admin/courses/categories/${initialValues.value.id}`, {
-                method: 'put',
-                body: form.values
+        if (editingCategory.value) {
+            await $fetch(`/api/admin/courses/categories/${editingCategory.value.id}`, {
+                method: 'PUT',
+                body: values
+            })
+            toast({
+                title: 'Category updated successfully',
+                variant: 'success'
             })
         } else {
             await $fetch('/api/admin/courses/categories', {
-                method: 'post',
-                body: form.values
+                method: 'POST',
+                body: values
+            })
+            toast({
+                title: 'Category created successfully',
+                variant: 'success'
             })
         }
 
         refresh()
-        return onClose()
+        closeModal()
     } catch (error) {
-        return toast({
-            title: error.toString(),
+        toast({
+            title: 'Error',
+            description: error.toString(),
             variant: 'destructive'
         })
     } finally {
@@ -164,15 +158,13 @@ const onSubmit = form.handleSubmit(async () => {
     }
 })
 
-const {
-    uploadImage, deleteImage, } = useCloudflareImage()
-
-
+const { uploadImage, deleteImage } = useCloudflareImage()
 
 const coverUploader = ref(null)
 const chooseCover = () => {
     coverUploader.value.click()
 }
+
 const uploadCategoryCover = async (e) => {
     const file = e.target.files[0]
 
@@ -180,14 +172,30 @@ const uploadCategoryCover = async (e) => {
         await deleteImage(form.values.image)
     }
 
-    const imageUrl = await uploadImage(file, 'cover/')
-
+    const imageUrl = await uploadImage(file, 'categories/')
     form.setFieldValue('image', imageUrl)
-
 }
 
-
-
+const deleteCategory = async (categoryId) => {
+    if (confirm('Are you sure you want to delete this category?')) {
+        try {
+            await $fetch(`/api/admin/courses/categories/${categoryId}`, {
+                method: 'DELETE'
+            })
+            toast({
+                title: 'Category deleted successfully',
+                variant: 'success'
+            })
+            refresh()
+        } catch (error) {
+            toast({
+                title: 'Error deleting category',
+                description: error.toString(),
+                variant: 'destructive'
+            })
+        }
+    }
+}
 </script>
 
 <style lang="scss" scoped></style>

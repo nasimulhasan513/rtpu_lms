@@ -11,6 +11,7 @@ export function useCloudflareImage() {
 
   const uploadImage = async (file: File, folder: string = "") => {
     try {
+      
       const fileName = `${folder}${file.name.split(".")[0]}_${Math.floor(Math.random() * 1000)}_${Date.now()}`;
 
         // @ts-ignore

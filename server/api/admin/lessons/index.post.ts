@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
       chapterId: data.chapterId,
       source: data.source,
       content: data.content,
+      pdf: data.pdf,
     },
   });
 

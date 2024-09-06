@@ -1,12 +1,12 @@
-import type { Course } from "@prisma/client";
+import type { Lesson } from "@prisma/client";
 
 const state = reactive({
   isOpen: false,
-  initialValues: {} as Course,
+  initialValues: {} as Lesson,
 });
 
 export default function useLesson() {
-  const { isOpen } = toRefs(state);
+  const { isOpen, initialValues } = toRefs(state);
 
   const onOpen = () => {
     state.isOpen = true;
@@ -16,8 +16,8 @@ export default function useLesson() {
     state.isOpen = false;
   };
 
-  const onEdit = (course: Course) => {
-    state.initialValues = course;
+  const onEdit = (lesson: Lesson) => {
+    state.initialValues = lesson;
     state.isOpen = true;
   };
 
@@ -26,5 +26,6 @@ export default function useLesson() {
     onOpen,
     onClose,
     onEdit,
+    initialValues,
   };
 }

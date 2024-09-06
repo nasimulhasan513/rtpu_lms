@@ -1,10 +1,11 @@
 <template>
   <div>
     <Navbar />
-    <div class="pt-24 pb-20 ">
+    <div class="pt-14 ">
       <slot />
     </div>
   </div>
+  <AppFooter />
 </template>
 
 <script lang="ts" setup>

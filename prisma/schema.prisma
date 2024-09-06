@@ -8,6 +8,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String   @id @map("_id")
+  email     String?
+  google_id String?
+  name      String?
+  phone     String?
+  image     String?
+  institute String?
+  hsc_batch String?
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  enrollments          Enrollment[]
+  submissions          Submission[]
+  sessions             Session[]
+  AssignmentSubmission AssignmentSubmission[]
+  BadgeAward           BadgeAward[]
+  Achievement          Achievement[]
+  Notification         Notification[]
+  Feedback             Feedback[]
+  Question             Question[]
+}
+
+model Session {
+  id        String   @id @map("_id")
+  userId    String
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ResetToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  otp       String
+  expiresAt DateTime
+  email     String?
+  phone     String?
+  sentAt    DateTime @default(now())
+}
 
 model Settings {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -64,10 +104,10 @@ model Course {
   exams        CourseExam[]
   enrollments  Enrollment[]
   couponCourse CouponCourse[]
-  exam         Exam[]
-  assignment   Assignment[]
-  category     Category        @relation(fields: [categoryId], references: [id])
-  Feedback     Feedback[]
+
+  assignment Assignment[]
+  category   Category     @relation(fields: [categoryId], references: [id])
+  Feedback   Feedback[]
 }
 
 model CourseTeacher {
@@ -133,6 +173,7 @@ model Subject {
   chapters  Chapter[]
   lessons   Lesson[]
   questions Question[]
+  Exam      Exam[]
 }
 
 model Chapter {
@@ -142,8 +183,9 @@ model Chapter {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  subject Subject  @relation(fields: [subjectId], references: [id])
-  lessons Lesson[]
+  subject  Subject    @relation(fields: [subjectId], references: [id])
+  lessons  Lesson[]
+  Question Question[]
 }
 
 model Lesson {
@@ -153,6 +195,7 @@ model Lesson {
   chapterId String   @db.ObjectId
   source    String
   content   String
+  pdf       String?
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -163,12 +206,13 @@ model Lesson {
 }
 
 model CourseLesson {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  courseId    String    @db.ObjectId
-  lessonId    String    @db.ObjectId
-  scheduledAt DateTime?
-  course      Course    @relation(fields: [courseId], references: [id])
-  lesson      Lesson    @relation(fields: [lessonId], references: [id])
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  courseId String @db.ObjectId
+  lessonId String @db.ObjectId
+  order    Int    @default(0)
+
+  course Course @relation(fields: [courseId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id])
 
   @@unique([courseId, lessonId])
 }
@@ -189,14 +233,20 @@ model Question {
   question   String
   difficulty String?  @default("Medium")
   subjectId  String   @db.ObjectId
-  examId     String   @db.ObjectId
+  chapterId  String?  @db.ObjectId
+  examId     String?  @db.ObjectId
   explain    String?
+  serial     Int?
+  creatorId  String?
+  tags       String[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   options Option[]
   exam    Exam?    @relation(fields: [examId], references: [id])
   subject Subject  @relation(fields: [subjectId], references: [id])
+  chapter Chapter? @relation(fields: [chapterId], references: [id])
+  creator User?    @relation(fields: [creatorId], references: [id])
 
   @@index([examId], map: "exam_id_index")
 }
@@ -204,7 +254,6 @@ model Question {
 model Exam {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId
   title               String
-  subject             String
   startTime           DateTime
   endTime             DateTime
   duration            Int
@@ -216,9 +265,9 @@ model Exam {
 
   submissions Submission[]
   questions   Question[]
-  courseId    String?      @db.ObjectId
+  subjectId   String?      @db.ObjectId
 
-  course      Course?      @relation(fields: [courseId], references: [id])
+  subject     Subject?     @relation(fields: [subjectId], references: [id])
   courseExams CourseExam[]
 }
 

@@ -7,13 +7,13 @@
 
                 <DropdownMenu v-if="user">
                     <DropdownMenuTrigger as-clild>
-                        <Button variant="ghost" size="sm"
-                            class="  border-[1px] border-nuetral-100 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md hover:bg-transparent transition">
-                            <!-- <Icon name="ant-design:menu-outlined" /> -->
-
-                            <img v-if="user.image" class="w-6 h-6 rounded-full" :src="user.image" :alt="user.name">
-                            <Icon v-else name="radix-icons:avatar" class="w-6 h-6" />
-
+                        <Button variant="ghost"
+                            class="border-[1px] border-neutral-100 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md hover:bg-transparent transition">
+                            <img v-if="user.image" class="w-8 h-8 rounded-full " :src="user.image" :alt="user.name">
+                            <Icon v-else name="radix-icons:avatar" class="w-8 h-8 " />
+                            <span class="hidden text-sm font-medium md:block text-neutral-600">
+                                {{ user.name }}
+                            </span>
 
                         </Button>
 

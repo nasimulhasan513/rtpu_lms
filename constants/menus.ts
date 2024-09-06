@@ -58,7 +58,7 @@ export const navMenu: NavMenuItems = [
       },
       {
         title: "Add Exam",
-        link: "/admin/exams/add",
+        link: "/admin/exams/create",
         icon: "lucide:plus-circle",
       },
       {
@@ -160,4 +160,10 @@ export const navMenuBottom: NavMenuItems = [
     icon: "i-lucide-user",
     link: "/admin/account",
   },
+];
+
+export const mainMenu = [
+  { name: "Home", path: "/", icon: "lucide:home" },
+  { name: "Courses", path: "/courses", icon: "lucide:book-open" },
+  { name: "Categories", path: "/categories", icon: "lucide:layers" },
 ];

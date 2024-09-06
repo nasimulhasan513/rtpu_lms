@@ -98,14 +98,31 @@
                         <FormItem>
                             <FormLabel>Content</FormLabel>
                             <FormControl>
-                                <Input placeholder="Course's content" v-bind="componentField" />
+                                <Input placeholder="Class link" v-bind="componentField" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     </FormField>
-
-
-
+                    <div>
+                        <Label>PDF Lecture Sheet</Label>
+                        <Input type="file" accept=".pdf" placeholder="PDF Lecture Sheet" @change="uploadFile" />
+                    </div>
+                    <FormField v-slot="{ componentField }" name="courseIds">
+                        <FormItem>
+                            <FormLabel>Assign to Courses</FormLabel>
+                            <Select v-bind="componentField" multiple>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select courses" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem v-for="course in courses" :key="course.id" :value="course.id">
+                                        {{ course.name }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
                 </div>
                 <div class="flex flex-col gap-2 py-6">
                     <div class="flex flex-row items-center w-full gap-4">
@@ -125,10 +142,9 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { LessonSchema } from '~/schema/lesson.schema';
+import { useCourse } from '~/composables/useCourse';
 
-const { subjects } = defineProps({
-    subjects: Array
-})
+const { subjects } = useSubject()
 
 const chapters = ref([])
 
@@ -139,39 +155,49 @@ const formSchema = toTypedSchema(LessonSchema)
 const form = useForm({
     validationSchema: formSchema,
     initialValues: {
-        title: "",
-        subjectId: "",
-        chapterId: "",
-        source: "",
-        content: "",
+        title: initialValues.value.title || "",
+        subjectId: initialValues.value.subjectId || "",
+        chapterId: initialValues.value.chapterId || "",
+        source: initialValues.value.source || "",
+        content: initialValues.value.content || "",
+        pdf: initialValues.value.pdf || "",
+        courseIds: [],
     }
 })
-
+const pdf = ref(null)
 const isLoading = ref(false)
 const { toast } = useToast()
-const onSubmit = form.handleSubmit(async () => {
+const { uploadImage, deleteImage } = useCloudflareImage()
 
+const onSubmit = form.handleSubmit(async (values) => {
     try {
         isLoading.value = true
 
+        if (pdf.value) {
+            let pdfurl = await uploadImage(pdf.value, 'lecture_sheet')
+            values.pdf = pdfurl
+        }
 
-        if (initialValues?.value.id) {
-            await $fetch(`/api/lessons/${initialValues.value.id}`, {
-                method: 'put',
-                body: form.values
+        if (initialValues?.id) {
+            if (initialValues.pdf && values.pdf && initialValues.pdf !== values.pdf) {
+                await deleteImage(initialValues.pdf)
+            }
+            await $fetch(`/api/admin/lessons/${initialValues.id}`, {
+                method: 'PUT',
+                body: values
             })
         } else {
-            await $fetch('/api/lessons', {
-                method: 'post',
-                body: form.values
+            await $fetch('/api/admin/lessons', {
+                method: 'POST',
+                body: values
             })
         }
 
-        refreshNuxtData('lessons')
-        return onClose()
+        refreshNuxtData('admin-lessons')
+        onClose()
     } catch (error) {
-        console.log(error)
-        return toast({
+        console.error(error)
+        toast({
             title: error.toString(),
             variant: 'destructive'
         })
@@ -180,29 +206,40 @@ const onSubmit = form.handleSubmit(async () => {
     }
 })
 
+watch(() => initialValues.value, (value) => {
+    if (value) {
+        form.setValues({
+            title: value.title,
+            subjectId: value.subjectId,
+            chapterId: value.chapterId,
+            source: value.source,
+            content: value.content,
+            pdf: value.pdf,
+            courseIds: value.courses?.map(c => c.id) || [],
+        })
+    }
+}, {
+    immediate: true,
+    deep: true
+})
 
 watch(form.values, (value) => {
-    if (value.subjectId) {
-        chapters.value = subjects.find(s => s.id === value.subjectId).chapters
+    if (form.values.subjectId) {
+        chapters.value = subjects.value.find(s => s.id === form.values.subjectId).chapters
     }
 }, {
     deep: true
 })
 
+const uploadFile = (e) => {
+    pdf.value = e.target.files[0]
+}
 
+const { courses, fetchCourses } = useCourse()
 
-
-// watch(() => initialValues, (value) => {
-//     form.setValues({
-//         title: value.title,
-//         description: value.description,
-//         image: value.image
-//     })
-//     imageUrl.value = value.image
-// }, {
-//     immediate: true
-// })
-
+onMounted(() => {
+    fetchCourses()
+})
 
 </script>
 <style lang="scss" scoped></style>

@@ -1,0 +1,11 @@
+I am building an online education platform.
+use db for prisma operations like: db.user.findUnique..etc. db is in auth utils folder.
+use zod for for any validation. add validation in the schema folder and use it in the api.
+for image use useCloudflareImage composable.
+for cloudflare r2 use uploadImage and deleteImage functions.
+for toast use useToast composable.
+for design use shadcn ui vue
+make reusable components in components folder and use them in the pages and admin pages.
+if any adjustment is needed in the schema, do it in the prisma/schema.prisma file.
+if the page is not in admin routes, then wrap with AppContainer component.
+do not import any component as it is alredy imported by nuxt3.

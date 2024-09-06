@@ -11,12 +11,14 @@ export default defineEventHandler(async (event) => {
       CLOUDFLARE_ACCESS_ID,
       CLOUDFLARE_BUCKET_NAME,
       CLOUDFLARE_ACCESS_KEY,
+      CLOUDFLARE_ENDPOINT,
     } = process.env;
 
     if (
       !CLOUDFLARE_ACCESS_ID ||
       !CLOUDFLARE_BUCKET_NAME ||
-      !CLOUDFLARE_ACCESS_KEY
+      !CLOUDFLARE_ACCESS_KEY ||
+      !CLOUDFLARE_ENDPOINT
     ) {
       console.error("Missing Cloudflare credentials");
       return {
@@ -26,8 +28,7 @@ export default defineEventHandler(async (event) => {
 
     const S3 = new S3Client({
       region: "auto",
-      endpoint:
-        "https://7a066c2cd17173018126fd29309e3fe1.r2.cloudflarestorage.com",
+      endpoint: CLOUDFLARE_ENDPOINT,
       credentials: {
         accessKeyId: CLOUDFLARE_ACCESS_ID,
         secretAccessKey: CLOUDFLARE_ACCESS_KEY,
@@ -46,7 +47,7 @@ export default defineEventHandler(async (event) => {
       return { error: "File name cannot be empty" };
     }
 
-    const prefix = "test/" + fileName;
+    const prefix = fileName;
 
     const command = new PutObjectCommand({
       Bucket: CLOUDFLARE_BUCKET_NAME,
@@ -56,7 +57,7 @@ export default defineEventHandler(async (event) => {
     });
 
     const uploadUrl = await getSignedUrl(S3, command, { expiresIn: 3600 });
-    const imageUrl = `https://storage.rhombuspublications.com/${prefix}`;
+    const imageUrl = `https://pub-de86fc8fea3047248c160c647017965e.r2.dev/${prefix}`;
     return { uploadUrl, imageUrl };
   } catch (error) {
     console.error("Error generating signed URL:", error as string);

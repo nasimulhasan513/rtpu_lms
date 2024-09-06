@@ -67,7 +67,7 @@ const onSubmit = form.handleSubmit(async () => {
                 body: form.values
             })
         } else {
-            await $fetch('/api/subjects', {
+            await $fetch('/api/admin/subjects', {
                 method: 'post',
                 body: form.values
             })

@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const { email } = await readBody(event);
-  const existingUser = await db.user.findUnique({
+  const existingUser = await db.user.findFirst({
     where: { email },
   });
 

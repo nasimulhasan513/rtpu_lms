@@ -10,12 +10,14 @@ export default defineEventHandler(async (event) => {
       CLOUDFLARE_ACCESS_ID,
       CLOUDFLARE_BUCKET_NAME,
       CLOUDFLARE_ACCESS_KEY,
+      CLOUDFLARE_ENDPOINT,
     } = process.env;
 
     if (
       !CLOUDFLARE_ACCESS_ID ||
       !CLOUDFLARE_BUCKET_NAME ||
-      !CLOUDFLARE_ACCESS_KEY
+      !CLOUDFLARE_ACCESS_KEY ||
+      !CLOUDFLARE_ENDPOINT
     ) {
       console.error("Missing Cloudflare credentials");
       return {
@@ -25,8 +27,7 @@ export default defineEventHandler(async (event) => {
 
     const S3 = new S3Client({
       region: "auto",
-      endpoint:
-        "https://7a066c2cd17173018126fd29309e3fe1.r2.cloudflarestorage.com",
+      endpoint: CLOUDFLARE_ENDPOINT,
       credentials: {
         accessKeyId: CLOUDFLARE_ACCESS_ID,
         secretAccessKey: CLOUDFLARE_ACCESS_KEY,

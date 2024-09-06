@@ -63,7 +63,7 @@ const onSubmit = form.handleSubmit(async () => {
 
 
         if (initialValues?.value.id) {
-            await $fetch(`/api/subjects/chapter/${initialValues.value.id}`, {
+            await $fetch(`/api/admin/subjects/chapter/${initialValues.value.id}`, {
                 method: 'put',
                 body: form.values
             })

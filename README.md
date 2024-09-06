@@ -1,5 +1,23 @@
 Here's a concise list of features your LMS will offer based on the extended database design:
 
+For the admin:
+- Manage subjects, chapters, and lessons
+- Manage course content (videos, pdfs, etc.)
+- Manage assignments and exams
+- Manage user accounts and roles
+
+For the user:
+- Browse and enroll in courses
+- View course content
+- Submit assignments and exams
+
+Framework: Nuxt 3
+For Design: ShadcnVue
+Database: Prisma + MongoDB
+Authentication: Lucia Auth
+
+
+
 ### **Core Features:**
 
 1. **User Authentication & Management**

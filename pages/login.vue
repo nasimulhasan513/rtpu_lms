@@ -12,7 +12,7 @@
       <div class="space-y-6">
         <div class="flex flex-col gap-3" v-if="step == 'init'">
           <Button variant="outline">
-            <a :href="`/login/google?slug=${slug}`" class="flex items-center">
+            <a :href="`/login/google`" class="flex items-center">
               <Icon name="flat-color-icons:google" class="w-4 h-4 mr-2" />
               Continue with Google
             </a>
@@ -262,7 +262,7 @@ const handleLogin = async () => {
     });
     if (data) {
       await assignUser();
-      return onClose()
+      return navigateTo('/')
     }
   } catch (e) {
     toast({

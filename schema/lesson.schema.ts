@@ -7,11 +7,9 @@ export const LessonSchema = z.object({
     .max(200, "Title should not exceed 200 characters"),
   subjectId: z.string().min(1, "Subject ID is required"),
   chapterId: z.string().min(1, "Chapter ID is required"),
-  source: z.string().url("Invalid URL format for source").optional(),
-  content: z
-    .string()
-    .min(20, "Content should be at least 20 characters long")
-    .max(5000, "Content should not exceed 5000 characters"),
+  source: z.string().min(1, "Source is required"),
+  content: z.string().url("Invalid URL format for source").optional(),
+  pdf: z.string().url("Invalid URL format for PDF").optional(),
   order: z.number().int().default(0),
 });
 

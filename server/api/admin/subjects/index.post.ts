@@ -19,6 +19,6 @@ export default defineEventHandler(async (event) => {
 
   return {
     statusCode: 201,
-    statusMessage: "Course created successfully",
+    statusMessage: "Subject created successfully",
   };
 });

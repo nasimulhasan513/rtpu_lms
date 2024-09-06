@@ -3,9 +3,12 @@
 
         <div class="flex justify-between">
             <AppHeading title="Courses" />
-
+            <Button @click="navigateTo('/admin/courses/create')">
+                <Icon name="tabler:plus" class="mr-2" />
+                Add new course
+            </Button>
         </div>
-        <div v-if="status === 'success'" class="grid md:grid-cols-3">
+        <div v-if="status === 'success'" class="grid gap-5 md:grid-cols-3">
             <div v-for="c in data.body" :key="c.id">
                 <Card class="w-full max-w-md overflow-hidden rounded-lg">
                     <div class="relative h-48 md:h-56 lg:h-64">
@@ -17,12 +20,23 @@
                         {{ c.name }}
                     </h2>
                     <div class="flex justify-center gap-3 mb-3 text-center">
-                        <p class="hidden text-lg font-semibold text-red-500 line-through">
+                        <p class="text-lg font-semibold text-red-500 line-through">
                             Tk. {{ c.regular_price }}
                         </p>
-                        <p class="text-lg font-semibold">
+                        <p class="text-lg font-semibold text-green-500">
                             Tk. {{ c.sale_price }}
                         </p>
+
+                    </div>
+                    <div class="flex justify-center gap-3 pb-5">
+
+                        <Button variant="secondary" @click="navigateTo(`/admin/courses/${c.id}`)">
+                            Edit
+                        </Button>
+                        <Button variant="destructive" @click="deleteCourse(c.id)">
+                            Delete
+                        </Button>
+
 
                     </div>
                 </Card>
@@ -33,22 +47,38 @@
 </template>
 
 <script setup>
+import { useToast } from '@/components/ui/toast/use-toast'
 
 definePageMeta({
     layout: 'admin',
 })
 
-
-const { data, status, error } = await useFetch('/api/admin/courses', {
+const { data, status, error, refresh } = await useFetch('/api/admin/courses', {
     key: 'courses',
 })
 
+const { deleteCourse } = useCourse()
+const { toast } = useToast()
 
-
-
-const { onOpen } = useCourse()
-
-
+const handleDeleteCourse = async (courseId) => {
+    if (confirm('Are you sure you want to delete this course?')) {
+        try {
+            await deleteCourse(courseId)
+            toast({
+                title: 'Course deleted successfully',
+                variant: 'success'
+            })
+            refresh()
+        } catch (error) {
+            console.error('Error deleting course:', error)
+            toast({
+                title: 'Error deleting course',
+                description: error.toString(),
+                variant: 'destructive'
+            })
+        }
+    }
+}
 </script>
 
 <style lang="scss" scoped></style>
