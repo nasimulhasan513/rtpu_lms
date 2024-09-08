@@ -3,13 +3,16 @@ import type { Lesson } from "@prisma/client";
 const state = reactive({
   isOpen: false,
   initialValues: {} as Lesson,
+  courseIds: [] as string[],
 });
 
 export default function useLesson() {
-  const { isOpen, initialValues } = toRefs(state);
+  const { isOpen, initialValues, courseIds } = toRefs(state);
 
-  const onOpen = () => {
+  const onOpen = (courseIds: string) => {
     state.isOpen = true;
+    state.courseIds = [courseIds];
+    state.initialValues = {} as Lesson;
   };
 
   const onClose = () => {
@@ -19,6 +22,7 @@ export default function useLesson() {
   const onEdit = (lesson: Lesson) => {
     state.initialValues = lesson;
     state.isOpen = true;
+    state.courseIds = lesson.courses.map((c) => c.id);
   };
 
   return {
@@ -27,5 +31,6 @@ export default function useLesson() {
     onClose,
     onEdit,
     initialValues,
+    courseIds,
   };
 }

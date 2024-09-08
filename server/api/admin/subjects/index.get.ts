@@ -3,6 +3,9 @@ export default defineEventHandler(async (event) => {
     include: {
       chapters: true,
     },
+    orderBy: {
+      order: "asc",
+    },
   });
 
   return {

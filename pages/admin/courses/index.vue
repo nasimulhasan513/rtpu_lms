@@ -12,7 +12,7 @@
             <div v-for="c in data.body" :key="c.id">
                 <Card class="w-full max-w-md overflow-hidden rounded-lg">
                     <div class="relative h-48 md:h-56 lg:h-64">
-                        <NuxtImg :src="c.image" alt="Chemistry Chapter" class="object-cover w-full h-full" width="384"
+                        <NuxtImg :src="c.image" :alt="c.name" class="object-cover w-full h-full" width="384"
                             height="256" />
 
                     </div>
@@ -29,6 +29,10 @@
 
                     </div>
                     <div class="flex justify-center gap-3 pb-5">
+
+                        <Button variant="secondary" @click="navigateTo(`/admin/courses/${c.id}/lessons`)">
+                            Lessons
+                        </Button>
 
                         <Button variant="secondary" @click="navigateTo(`/admin/courses/${c.id}`)">
                             Edit

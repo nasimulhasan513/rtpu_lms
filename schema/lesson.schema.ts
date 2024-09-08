@@ -9,8 +9,9 @@ export const LessonSchema = z.object({
   chapterId: z.string().min(1, "Chapter ID is required"),
   source: z.string().min(1, "Source is required"),
   content: z.string().url("Invalid URL format for source").optional(),
-  pdf: z.string().url("Invalid URL format for PDF").optional(),
+  pdf: z.string().url("Invalid URL format for PDF").nullable().optional(),
   order: z.number().int().default(0),
+  courseIds: z.array(z.string()).optional(),
 });
 
 export const createLessonSchema = LessonSchema;

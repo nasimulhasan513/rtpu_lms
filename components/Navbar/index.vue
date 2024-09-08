@@ -5,12 +5,12 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center flex-1 space-x-4">
                         <NavbarLogo />
-                        <nav class="justify-center flex-1 hidden space-x-2 md:flex">
+                        <!-- <nav class="justify-center flex-1 hidden space-x-2 md:flex">
                             <Button v-for="item in mainMenu" :key="item.path" variant="ghost" :to="item.path">
                                 <Icon :name="item.icon" class="w-4 h-4 mr-2" />
                                 {{ item.name }}
                             </Button>
-                        </nav>
+                        </nav> -->
                     </div>
                     <div class="flex items-center space-x-4">
                         <NotificationDropdown />
@@ -23,8 +23,8 @@
             </AppContainer>
         </div>
 
-        <!-- Mobile Menu -->
-        <Transition name="slide-fade">
+
+        <!-- <Transition name="slide-fade">
             <div v-if="isMobileMenuOpen" class="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
                 <div class="fixed inset-y-0 right-0 z-50 w-full max-w-sm border-l shadow-lg bg-background">
                     <div class="flex flex-col h-full">
@@ -43,7 +43,7 @@
                     </div>
                 </div>
             </div>
-        </Transition>
+        </Transition> -->
     </div>
 </template>
 

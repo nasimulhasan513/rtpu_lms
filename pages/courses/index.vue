@@ -5,7 +5,7 @@
       <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         <Card v-for="course in courses" :key="course.id"
           class="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <img :src="course.image" :alt="course.name" class="object-cover w-full h-48" />
+          <NuxtImg :src="course.image" :alt="course.name" class="object-contain w-full h-48" />
           <CardContent class="p-4">
             <h3 class="mb-2 text-xl font-semibold">{{ course.name }}</h3>
             <p class="mb-4 text-sm text-gray-600">{{ course.short_description }}</p>

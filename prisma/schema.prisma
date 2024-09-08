@@ -30,6 +30,7 @@ model User {
   Notification         Notification[]
   Feedback             Feedback[]
   Question             Question[]
+  hostedLiveClasses    LiveClass[]
 }
 
 model Session {
@@ -69,11 +70,9 @@ model Teacher {
 }
 
 model Category {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  image     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  image String
 
   courses Course[]
 }
@@ -165,10 +164,9 @@ model Enrollment {
 }
 
 model Subject {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  order Int    @default(0)
 
   chapters  Chapter[]
   lessons   Lesson[]
@@ -177,11 +175,9 @@ model Subject {
 }
 
 model Chapter {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-  subjectId String   @db.ObjectId
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  subjectId String @db.ObjectId
 
   subject  Subject    @relation(fields: [subjectId], references: [id])
   lessons  Lesson[]
@@ -189,16 +185,18 @@ model Chapter {
 }
 
 model Lesson {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  subjectId String   @db.ObjectId
-  chapterId String   @db.ObjectId
-  source    String
-  content   String
-  pdf       String?
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  subjectId  String    @db.ObjectId
+  chapterId  String    @db.ObjectId
+  source     String
+  content    String?
+  pdf        String?
+  is_archive Boolean   @default(false)
+  order      Int       @default(0)
+  schedule   DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   subject Subject        @relation(fields: [subjectId], references: [id])
   chapter Chapter        @relation(fields: [chapterId], references: [id])
@@ -390,4 +388,26 @@ model Feedback {
 
   user   User   @relation(fields: [userId], references: [id])
   course Course @relation(fields: [courseId], references: [id])
+}
+
+model LiveClass {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  status      LiveClassStatus @default(SCHEDULED)
+  channelName String          @unique
+  hostId      String
+  host        User            @relation(fields: [hostId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([hostId])
+}
+
+enum LiveClassStatus {
+  SCHEDULED
+  LIVE
+  ENDED
 }

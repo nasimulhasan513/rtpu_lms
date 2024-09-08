@@ -39,9 +39,10 @@ export const navMenu: NavMenuItems = [
   },
   {
     title: "Live Classes",
-    icon: "i-lucide-tv",
-    link: "/admin/live-classes",
+    icon: "lucide:tv",
+    link: "/admin/live",
   },
+
   {
     title: "Notifications",
     icon: "lucide:bell",
@@ -104,6 +105,14 @@ export const navMenu: NavMenuItems = [
     icon: "i-lucide-users",
     link: "/admin/students",
   },
+];
+
+const additionalMenu = [
+  {
+    title: "Live Classes",
+    icon: "i-lucide-tv",
+    link: "/admin/live-classes",
+  },
   {
     title: "Badges & Achievements",
     icon: "lucide:award",
@@ -125,9 +134,6 @@ export const navMenu: NavMenuItems = [
       },
     ],
   },
-];
-
-export const navMenuBottom: NavMenuItems = [
   {
     title: "Settings",
     icon: "lucide:settings",
@@ -155,6 +161,9 @@ export const navMenuBottom: NavMenuItems = [
       },
     ],
   },
+];
+
+export const navMenuBottom: NavMenuItems = [
   {
     title: "Account",
     icon: "i-lucide-user",

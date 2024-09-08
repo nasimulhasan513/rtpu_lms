@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  await db.lesson.create({
+  const lesson = await db.lesson.create({
     data: {
       title: data.title,
       subjectId: data.subjectId,
@@ -19,11 +19,22 @@ export default defineEventHandler(async (event) => {
       source: data.source,
       content: data.content,
       pdf: data.pdf,
+      order: data.order,
     },
   });
 
+  if (data.courseIds && data.courseIds.length > 0) {
+    await db.courseLesson.createMany({
+      data: data.courseIds.map((courseId) => ({
+        courseId,
+        lessonId: lesson.id,
+      })),
+    });
+  }
+
   return {
     statusCode: 201,
-    statusMessage: "Course created successfully",
+    statusMessage: "Lesson created successfully",
+    data: lesson,
   };
 });

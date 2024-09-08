@@ -1,175 +1,173 @@
 <template>
-    <AppContainer>
+    <div>
+        <div class="px-4 mx-auto sm:px-6 lg:px-8">
+            <Breadcrumb :items="breadcrumbItems" class="mb-6" />
 
-        <Breadcrumb :items="breadcrumbItems" />
-        <div v-if="currentView === 'subjects'">
-            <h2 class="mb-4 text-2xl font-bold">Subjects</h2>
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <SubjectThumbnail v-for="subject in subjects" :key="subject.id" :subject="subject"
-                    @click="selectSubject(subject.id)" />
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
+                <!-- Sidebar -->
+                <div class="md:col-span-1">
+                    <LessonSidebar :title="sidebarTitle" :items="currentItems" :current-item-id="currentItemId"
+                        :show-back-button="currentView !== 'subjects'" :is-completed="isLessonCompleted"
+                        @select="handleItemSelect" @back="navigateBack" />
+                </div>
+
+                <!-- Main Content -->
+                <div class="md:col-span-3">
+                    <div v-if="currentLesson" class="border rounded-lg bg-background">
+                        <div class="p-6">
+                            <h2 class="mb-2 text-2xl font-semibold">{{ currentLesson.title }}</h2>
+                            <p class="mb-4 text-muted-foreground">
+                                {{ currentLesson.subject?.name }} > {{ currentLesson.chapter?.name }}
+                            </p>
+                            <div class="mb-4 aspect-video">
+
+                                <!-- <pre>
+                                    {{ currentLesson }}
+                                </pre> -->
+
+
+
+                                <iframe v-if="currentLesson.source === 'youtube'"
+                                    :src="getYoutubeEmbedUrl(currentLesson.content)" class="w-full h-full"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <Button v-if="currentLesson.pdf" @click="downloadPdf">
+                                    <Download class="w-4 h-4 mr-2" />
+                                    Download Lecture Sheet
+                                </Button>
+                                <Button @click="toggleLessonCompletion(currentLesson.id)"
+                                    :variant="isLessonCompleted(currentLesson.id) ? 'secondary' : 'default'">
+                                    {{ isLessonCompleted(currentLesson.id) ? 'Completed' : 'Mark as Completed' }}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div v-else-if="currentView === 'chapters'">
-            <h2 class="mb-4 text-2xl font-bold">Chapters</h2>
-            <ul class="space-y-2">
-                <li v-for="chapter in chapters" :key="chapter.id">
-                    <Button variant="outline" @click="selectChapter(chapter.id)">
-                        {{ chapter.name }}
-                    </Button>
-                </li>
-            </ul>
-        </div>
-
-        <div v-else-if="currentView === 'lessons'">
-            <h2 class="mb-4 text-2xl font-bold">Lessons</h2>
-            <ul class="space-y-2">
-                <li v-for="lesson in lessons" :key="lesson.id">
-                    <NuxtLink :to="`/courses/${route.params.slug}/lessons/${lesson.id}`">
-                        <Button variant="outline">
-                            {{ lesson.title }}
-                        </Button>
-                    </NuxtLink>
-                </li>
-            </ul>
-        </div>
-    </AppContainer>
+    </div>
 </template>
 
 <script setup lang="ts">
+import { Download } from 'lucide-vue-next'
+
 definePageMeta({
-    layout: 'course',
-});
+    layout: 'blank',
+})
 
-const route = useRoute();
-const router = useRouter();
-const { data: courseData, error } = await useFetch(`/api/courses/${route.params.slug}/lessons`);
+const route = useRoute()
+const router = useRouter()
+const { data: courseData, error } = await useFetch(`/api/courses/${route.params.slug}/lessons`)
 
-const subjects = ref<Subject[]>([]);
-const chapters = ref<Chapter[]>([]);
-const lessons = ref<Lesson[]>([]);
-const currentView = ref<'subjects' | 'chapters' | 'lessons'>('subjects');
-const currentSubject = ref<string | null>(null);
-const currentChapter = ref<string | null>(null);
+const {
+    subjects,
+    chapters,
+    lessons,
+    currentView,
+    currentSubject,
+    currentChapter,
+    currentLesson,
+    currentItems,
+    currentItemId,
+    organizeData,
+    selectSubject,
+    selectChapter,
+    selectLesson,
+    navigateBack,
+    isLessonCompleted,
+    toggleLessonCompletion,
+} = useCourseLesson()
+
+const sidebarTitle = computed(() => {
+    switch (currentView.value) {
+        case 'subjects':
+            return 'Subjects'
+        case 'chapters':
+            return currentSubject.value?.name || 'Chapters'
+        case 'lessons':
+            return currentChapter.value?.name || 'Lessons'
+        default:
+            return ''
+    }
+})
 
 const breadcrumbItems = computed(() => {
-    const items = [{ label: 'Subjects', href: '#', onClick: () => navigateTo('subjects') }];
+    const items = [{ label: 'Subjects', href: '#', onClick: () => navigateTo('subjects') }]
     if (currentView.value === 'chapters' || currentView.value === 'lessons') {
-        items.push({ label: 'Chapters', href: '#', onClick: () => navigateTo('chapters') });
+        items.push({ label: 'Chapters', href: '#', onClick: () => navigateTo('chapters') })
     }
     if (currentView.value === 'lessons') {
-        items.push({ label: 'Lessons', href: '#', onClick: () => navigateTo('lessons') });
+        items.push({ label: 'Lessons', href: '#', onClick: () => navigateTo('lessons') })
     }
-    return items;
-});
+    return items
+})
 
 onMounted(() => {
     if (courseData.value) {
-        organizeData();
-        updateViewFromQuery();
+        organizeData(courseData.value)
+        updateViewFromQuery()
     }
-});
-
-function organizeData() {
-    const subjectsMap = new Map<string, Subject>();
-    const chaptersMap = new Map<string, Chapter>();
-
-    courseData.value?.lessons.forEach((item) => {
-        const { subject, chapter } = item.lesson;
-
-        if (!subjectsMap.has(subject.id)) {
-            subjectsMap.set(subject.id, { ...subject, chapters: [] });
-        }
-
-        if (!chaptersMap.has(chapter.id)) {
-            const newChapter = { ...chapter, lessons: [] };
-            chaptersMap.set(chapter.id, newChapter);
-            subjectsMap.get(subject.id)?.chapters.push(newChapter);
-        }
-
-        chaptersMap.get(chapter.id)?.lessons.push(item.lesson);
-    });
-
-    subjects.value = Array.from(subjectsMap.values());
-}
+})
 
 function updateViewFromQuery() {
-    const { subject, chapter } = route.query;
+    const { subject, chapter } = route.query
     if (subject && chapter) {
-        currentSubject.value = subject as string;
-        currentChapter.value = chapter as string;
-        currentView.value = 'lessons';
-        updateLessons();
+        selectSubject(subject as string)
+        selectChapter(chapter as string)
     } else if (subject) {
-        currentSubject.value = subject as string;
-        currentView.value = 'chapters';
-        updateChapters();
-    } else {
-        currentView.value = 'subjects';
+        selectSubject(subject as string)
     }
 }
 
-function selectSubject(subjectId: string) {
-    currentSubject.value = subjectId;
-    currentView.value = 'chapters';
-    updateChapters();
-    updateQuery();
-}
-
-function selectChapter(chapterId: string) {
-    currentChapter.value = chapterId;
-    currentView.value = 'lessons';
-    updateLessons();
-    updateQuery();
-}
-
-function updateChapters() {
-    const selectedSubject = subjects.value.find(s => s.id === currentSubject.value);
-    chapters.value = selectedSubject?.chapters || [];
-}
-
-function updateLessons() {
-    const selectedChapter = chapters.value.find(c => c.id === currentChapter.value);
-    lessons.value = selectedChapter?.lessons || [];
+function handleItemSelect(id: string) {
+    switch (currentView.value) {
+        case 'subjects':
+            selectSubject(id)
+            break
+        case 'chapters':
+            selectChapter(id)
+            break
+        case 'lessons':
+            selectLesson(id)
+            break
+    }
+    updateQuery()
 }
 
 function updateQuery() {
-    const query: { subject?: string; chapter?: string } = {};
-    if (currentSubject.value) query.subject = currentSubject.value;
-    if (currentChapter.value) query.chapter = currentChapter.value;
-    router.push({ query });
+    const query: { subject?: string; chapter?: string } = {}
+    if (currentSubject.value) query.subject = currentSubject.value
+    if (currentChapter.value) query.chapter = currentChapter.value
+    router.push({ query })
 }
 
 function navigateTo(view: 'subjects' | 'chapters' | 'lessons') {
-    currentView.value = view;
+    currentView.value = view
     if (view === 'subjects') {
-        currentSubject.value = null;
-        currentChapter.value = null;
+        currentSubject.value = null
+        currentChapter.value = null
     } else if (view === 'chapters') {
-        currentChapter.value = null;
+        currentChapter.value = null
     }
-    updateQuery();
+    updateQuery()
 }
 
-watch(() => route.query, updateViewFromQuery);
-
-// Types
-interface Subject {
-    id: string;
-    name: string;
-    chapters: Chapter[];
+function getYoutubeEmbedUrl(url: string) {
+    const videoId = url.split('v=')[1]
+    return `https://www.youtube.com/embed/${videoId}`
 }
 
-interface Chapter {
-    id: string;
-    name: string;
-    lessons: Lesson[];
+function downloadPdf() {
+    if (currentLesson.value?.pdf) {
+        // Implement PDF download logic
+        console.log('Downloading PDF:', currentLesson.value.pdf)
+    }
 }
 
-interface Lesson {
-    id: string;
-    title: string;
-}
+watch(() => route.query, updateViewFromQuery)
 </script>
 
 <style lang="scss" scoped></style>

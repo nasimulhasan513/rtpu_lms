@@ -1,13 +1,8 @@
 import { zh } from "h3-zod";
-import { z } from "zod";
 import { LessonSchema } from "~/schema/lesson.schema";
 
-const UpdateLessonSchema = LessonSchema.extend({
-  courseIds: z.array(z.string()).optional(),
-});
-
 export default defineEventHandler(async (event) => {
-  const { data, error } = await zh.useSafeValidatedBody(event, UpdateLessonSchema);
+  const { data, error } = await zh.useSafeValidatedBody(event, LessonSchema);
 
   if (error) {
     return {
@@ -16,34 +11,50 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  const { courseIds, ...lessonData } = data;
   const lessonId = event.context.params?.id;
 
-  await db.$transaction(async (tx) => {
-    // Update lesson data
-    await tx.lesson.update({
-      where: { id: lessonId },
-      data: lessonData,
+  if (!lessonId) {
+    return {
+      status: 400,
+      statusMessage: "Lesson ID is required",
+    };
+  }
+
+  const { courseIds, ...lessonData } = data;
+
+  const updatedLesson = await db.lesson.update({
+    where: { id: lessonId },
+    data: {
+      title: lessonData.title,
+      subjectId: lessonData.subjectId,
+      chapterId: lessonData.chapterId,
+      source: lessonData.source,
+      content: lessonData.content,
+      pdf: lessonData.pdf,
+      order: lessonData.order,
+    },
+  });
+
+  if (courseIds) {
+    // Remove existing course associations
+    await db.courseLesson.deleteMany({
+      where: { lessonId },
     });
 
-    if (courseIds) {
-      // Remove existing course associations
-      await tx.courseLesson.deleteMany({
-        where: { lessonId },
-      });
-
-      // Add new course associations
-      await tx.courseLesson.createMany({
+    // Add new course associations
+    if (courseIds.length > 0) {
+      await db.courseLesson.createMany({
         data: courseIds.map((courseId) => ({
-          lessonId,
           courseId,
+          lessonId,
         })),
       });
     }
-  });
+  }
 
   return {
     statusCode: 200,
     statusMessage: "Lesson updated successfully",
+    data: updatedLesson,
   };
 });

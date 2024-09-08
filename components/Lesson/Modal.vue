@@ -1,7 +1,7 @@
 <template>
     <AppModal :isOpen="isOpen" title="Lesson" description="Add or update lesson" @onClose="onClose" v-if="isOpen">
         <AppLoader v-if="isLoading" />
-
+      
         <div class="space-y-6">
             <form @submit="onSubmit">
                 <div class="space-y-6">
@@ -107,19 +107,17 @@
                         <Label>PDF Lecture Sheet</Label>
                         <Input type="file" accept=".pdf" placeholder="PDF Lecture Sheet" @change="uploadFile" />
                     </div>
-                    <FormField v-slot="{ componentField }" name="courseIds">
-                        <FormItem>
-                            <FormLabel>Assign to Courses</FormLabel>
-                            <Select v-bind="componentField" multiple>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select courses" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem v-for="course in courses" :key="course.id" :value="course.id">
-                                        {{ course.name }}
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
+                    <FormField v-slot="{ componentField }" name="is_archive">
+                        <FormItem class="flex flex-row items-start p-4 space-x-3 space-y-0 border rounded-md">
+                            <FormControl>
+                                <Checkbox v-bind="componentField" />
+                            </FormControl>
+                            <div class="space-y-1 leading-none">
+                                <FormLabel>Archive</FormLabel>
+                                <FormDescription>
+                                    Check this box if you want to archive this lesson.
+                                </FormDescription>
+                            </div>
                             <FormMessage />
                         </FormItem>
                     </FormField>
@@ -147,7 +145,7 @@ const { subjects } = useSubject()
 
 const chapters = ref([])
 
-const { isOpen, onClose, onOpen, initialValues } = useLesson()
+const { isOpen, onClose, courseIds, initialValues } = useLesson()
 
 const formSchema = toTypedSchema(LessonSchema)
 
@@ -160,7 +158,8 @@ const form = useForm({
         source: initialValues.value.source || "",
         content: initialValues.value.content || "",
         pdf: initialValues.value.pdf || "",
-        courseIds: [],
+        courseIds: [...courseIds.value],
+        is_archive: initialValues.value.is_archive || false,
     }
 })
 const pdf = ref(null)
@@ -171,17 +170,16 @@ const { uploadImage, deleteImage } = useCloudflareImage()
 const onSubmit = form.handleSubmit(async (values) => {
     try {
         isLoading.value = true
-
         if (pdf.value) {
             let pdfurl = await uploadImage(pdf.value, 'lecture_sheet')
             values.pdf = pdfurl
         }
 
-        if (initialValues?.id) {
-            if (initialValues.pdf && values.pdf && initialValues.pdf !== values.pdf) {
-                await deleteImage(initialValues.pdf)
+        if (initialValues.value?.id) {
+            if (initialValues.value.pdf && values.pdf && initialValues.value.pdf !== values.pdf) {
+                await deleteImage(initialValues.value.pdf)
             }
-            await $fetch(`/api/admin/lessons/${initialValues.id}`, {
+            await $fetch(`/api/admin/lessons/${initialValues.value.id}`, {
                 method: 'PUT',
                 body: values
             })
@@ -214,7 +212,8 @@ watch(() => initialValues.value, (value) => {
             source: value.source,
             content: value.content,
             pdf: value.pdf,
-            courseIds: value.courses?.map(c => c.id) || [],
+            courseIds: [...courseIds.value],
+            is_archive: value.is_archive || false,
         })
     }
 }, {

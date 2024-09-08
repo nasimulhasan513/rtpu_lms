@@ -1,22 +1,21 @@
 <template>
-    <Card class="overflow-hidden transition-shadow cursor-pointer hover:shadow-md" @click="$emit('click')">
-        <div class="relative flex items-center justify-center h-40 bg-gradient-to-br from-primary to-primary-dark">
-            <CardTitle class="px-4 text-2xl font-bold text-center text-white">
-                {{ subject.name }}
-            </CardTitle>
-        </div>
-    </Card>
+
+
+    <div @click="$emit('click')" class="p-4 transition-shadow rounded-lg shadow-md bg-background hover:shadow-lg">
+        <h2 class="mb-2 text-lg font-semibold">{{ name }}</h2>
+        <p class="text-gray-600">Total Lessons: {{ totalLessons }}</p>
+    </div>
+
 </template>
 
 <script setup lang="ts">
 interface Subject {
     id: string;
-    title: string;
+    name: string;
+    totalLessons: number;
 }
 
-const props = defineProps<{
-    subject: Subject;
-}>();
+defineProps<Subject>();
 
 defineEmits<{
     (e: 'click'): void;

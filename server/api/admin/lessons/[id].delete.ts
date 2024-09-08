@@ -9,6 +9,12 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    // First, delete all related CourseLessons
+    await db.courseLesson.deleteMany({
+      where: { lessonId: id },
+    });
+
+    // Then, delete the Lesson
     await db.lesson.delete({
       where: { id },
     });

@@ -21,7 +21,11 @@ export default defineEventHandler(async (event) => {
           include: {
             lessons: {
               include: {
-                lesson: true,
+                lesson: {
+                  include: {
+                    subject: true,
+                  },
+                },
               },
               orderBy: {
                 order: "asc",
@@ -37,7 +41,6 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    
     if (!enrollment) {
       throw createError({
         statusCode: 404,
@@ -78,6 +81,26 @@ export default defineEventHandler(async (event) => {
     });
     const completedAssignments = assignmentSubmissions.length;
 
+    let subjects: {
+      id: string;
+      name: string;
+      totalLessons: number;
+    }[] = [];
+
+    enrollment.course.lessons.forEach((courseLesson) => {
+      const subject = courseLesson.lesson.subject;
+      if (!subjects.some((s) => s.id === subject.id)) {
+        subjects.push({
+          id: subject.id,
+          name: subject.name,
+          totalLessons: 1,
+        });
+      } else {
+        const subj = subjects.find((s) => s.id === subject.id);
+        subj ? subj.totalLessons++ : null;
+      }
+    });
+
     return {
       course: {
         id: enrollment.course.id,
@@ -103,11 +126,7 @@ export default defineEventHandler(async (event) => {
           ),
         },
       },
-      lessons: enrollment.course.lessons.map((courseLesson) => ({
-        id: courseLesson.lesson.id,
-        title: courseLesson.lesson.title,
-        order: courseLesson.order,
-      })),
+      subjects,
       exams: enrollment.course.exams.map((courseExam) => ({
         id: courseExam.exam.id,
         title: courseExam.exam.title,
