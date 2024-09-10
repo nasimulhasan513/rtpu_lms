@@ -26,6 +26,7 @@ export default defineNuxtConfig({
       cloudinaryCloudName: process.env.NUXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
       uploadPreset: process.env.NUXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
       recaptchaSiteKey: process.env.NUXT_PUBLIC_CAPTCHA_SITE_KEY,
+      googleClientId: process.env.GOOGLE_CLIENT_ID,
     },
   },
   imports: {

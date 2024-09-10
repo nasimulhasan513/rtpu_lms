@@ -40,7 +40,7 @@
             <div v-if="lessons.recentLessons.length > 0">
                 <h1 class="text-2xl font-bold">
 
-                    <span class="text-rose-500">সাধারণ </span>
+                    <span class="text-rose-500">লাইভ </span>
                     <span class="text-primary"> ক্লাসসমূহ</span>
 
                 </h1>

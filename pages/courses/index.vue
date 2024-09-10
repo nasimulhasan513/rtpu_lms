@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AppContainer class="py-12">
+    <AppContainer v-if="!redirectLoading" class="py-12">
       <h1 class="mb-8 text-4xl font-bold text-center">All Courses</h1>
       <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         <Card v-for="course in courses" :key="course.id"
@@ -17,6 +17,11 @@
         </Card>
       </div>
     </AppContainer>
+    <div v-else>
+      <AppContainer class="py-12">
+        <AppLoader />
+      </AppContainer>
+    </div>
   </div>
 </template>
 
@@ -36,4 +41,15 @@ if (!courses.value) {
     variant: 'destructive'
   })
 }
+
+
+let redirectLoading = ref(false)
+
+onMounted(() => {
+  let redirect = localStorage.getItem('redirect')
+  redirectLoading.value = redirect
+})
+
+
+
 </script>

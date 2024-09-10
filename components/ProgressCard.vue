@@ -2,7 +2,7 @@
   <div class="p-6 rounded-lg shadow-md bg-background">
     <h3 class="mb-2 text-xl font-semibold text-primary">{{ title }}</h3>
     <div class="flex items-center justify-between mb-2">
-      <span class="">অগ্রগতি</span>
+      <span class="">প্রগ্রেস</span>
       <span class="font-semibold">{{ progress.total > 0 ? `${formatNumber(progress.percentage)}%` : 'প্রযোজ্য নয়'
         }}</span>
     </div>

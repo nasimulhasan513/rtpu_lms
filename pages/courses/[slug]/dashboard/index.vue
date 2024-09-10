@@ -41,7 +41,7 @@ const route = useRoute()
 const router = useRouter()
 const { toast } = useToast()
 
-const { data: dashboardData, error } = await useFetch(`/api/courses/${route.params.slug}/dashboard`)
+const { data: dashboardData, error } = useFetch(`/api/courses/${route.params.slug}/dashboard`)
 
 const { fetchCourse } = useCourse()
 onMounted(async () => {

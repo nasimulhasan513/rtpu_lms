@@ -56,7 +56,7 @@
                                 <h2 class="text-lg font-semibold">
                                     লেকচার শিট
                                 </h2>
-                                <Button size="sm" @click="downloadPdf">
+                                <Button size="sm" @click="downloadPdf" v-if="lesson.is_downloadable">
                                     <Icon name="lucide:download" class="w-4 h-4 mr-2" />
                                     ডাউনলোড করো
                                 </Button>

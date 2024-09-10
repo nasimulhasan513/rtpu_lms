@@ -6,18 +6,18 @@
             <div class="flex flex-col gap-3" v-if="step == 'init'">
                 <Button variant="outline" @click="googleLogin">
                     <Icon name="flat-color-icons:google" class="w-4 h-4 mr-2" />
-                    গুগল দিয়ে চালিয়ে যান
+                    গুগল দিয়ে লগইন করুন
 
                 </Button>
             </div>
 
-            <div class="space-y-6">
+            <div class="hidden space-y-6">
                 <FormField v-slot="{ componentField }" name="cred">
                     <FormItem>
                         <FormLabel>
                             {{ credType ? '' : 'ইমেইল অথবা ফোন নম্বর' }}
                             <span v-if="credType">
-                                {{ credType == 'email' ? 'ইমেইল ঠিকানা' : 'ফোন নম্বর' }}
+                                {{ credType == 'email' ? 'ইমেইল এড্রেস' : 'ফোন নম্বর' }}
                             </span>
                         </FormLabel>
                         <FormControl>
@@ -41,7 +41,7 @@
                     <FormItem>
                         <FormLabel>{{ credType == 'email' ? 'ফোন নম্বর' : 'ইমেইল ঠিকানা' }}</FormLabel>
                         <FormControl>
-                            <Input type="text" :placeholder="credType == 'email' ? 'ফোন নম্বর' : 'ইমেইল ঠিকানা'"
+                            <Input type="text" :placeholder="credType == 'email' ? 'ফোন নম্বর' : 'ইমেইল এড্রেস'"
                                 v-bind="componentField" v-model="cred2" />
                         </FormControl>
                         <FormMessage />
@@ -108,7 +108,7 @@
 
             </div>
 
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col hidden gap-2">
                 <div class="flex flex-row items-center w-full gap-4">
 
 
@@ -116,7 +116,7 @@
                         :loading="isLoading" class="w-full" @click="onSubmit" />
 
                 </div>
-                <div class="flex flex-col gap-4 mt-3" v-if="step === 'login'">
+                <div class="flex flex-col gap-4 mt-3 " v-if="step === 'login'">
                     <hr />
                     <div class="mt-4 font-light text-center">
                         <p class="font-semibold cursor-pointer hover:text-gray-700" @click.prevent="forgetPassword">
@@ -342,10 +342,10 @@ watch(cred, () => {
 
 
 const buttonLabels = {
-    init: 'চালিয়ে যান',
+    init: 'লগইন',
     login: 'লগইন',
     signup: 'সাইন আপ',
-    otp: 'যাচাই করুন'
+    otp: 'যাচাই '
 }
 
 const buttonLoadingLabels = {
@@ -362,7 +362,7 @@ const hsc_batches = [
     'Others'
 ]
 
-const credType = ref('email')
+const credType = ref('')
 
 watch(cred, () => {
     if (cred.value && cred.value.match(/^\d{11}$/)) {

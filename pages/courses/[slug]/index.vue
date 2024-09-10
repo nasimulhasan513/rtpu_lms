@@ -1,10 +1,17 @@
 <template>
     <AppContainer class="flex items-center justify-center min-h-[76vh]">
-        <Card class="max-w-[425px] mx-auto">
+        <div class="flex flex-col gap-3" v-if="!user">
+            <Button variant="outline" @click="googleLogin">
+                <Icon name="flat-color-icons:google" class="w-4 h-4 mr-2" />
+                গুগল দিয়ে লগইন করুন
+            </Button>
+
+        </div>
+        <Card class="max-w-[425px] mx-auto" v-else>
             <CardHeader>
                 <CardTitle>কোর্স এক্সেস</CardTitle>
                 <CardDescription>
-                    আপনি ASG SHOP ইনভয়েস থেকে গ্রুপ জয়েনিং আইডি পাবে
+                    আপনি ASG SHOP এর ইনভয়েস থেকে গ্রুপ জয়েনিং আইডি পাবেন
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -19,7 +26,7 @@
             </CardContent>
             <CardFooter class="flex justify-end space-x-2">
                 <Button @click="enrollCourse" :disabled="isEnrolling">
-                    {{ isEnrolling ? 'যাচাই করা হচ্ছে...' : 'অ্যাক্সেস পান' }}
+                    {{ isEnrolling ? 'যাচাই করা হচ্ছে...' : 'সাবমিট' }}
                 </Button>
             </CardFooter>
         </Card>
@@ -27,15 +34,12 @@
 </template>
 
 <script setup>
-
-
 definePageMeta({
-    middleware: 'enrolled'
+    middleware: ['enrolled']
 })
 
-
-
 import { useToast } from '@/components/ui/toast/use-toast'
+
 const route = useRoute()
 const uniqueId = ref('')
 const { toast } = useToast()
@@ -81,8 +85,16 @@ const enrollCourse = async () => {
     }
 }
 
+const user = useUser()
 
+onMounted(() => {
+    if (user.value) {
+        localStorage.setItem('redirect', route.fullPath)
+    }
+})
 
-
+const googleLogin = () => {
+    window.location.href = '/login/google'
+}
 
 </script>
