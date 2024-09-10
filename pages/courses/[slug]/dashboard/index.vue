@@ -4,17 +4,17 @@
 
         <!-- Progress Overview -->
         <div class="grid grid-cols-1 gap-6 mb-12 md:grid-cols-3">
-            <ProgressCard title="Lessons" :progress="dashboardData.progress.lessons" />
-            <ProgressCard title="Exams" :progress="dashboardData.progress.exams" />
-            <ProgressCard title="Assignments" :progress="dashboardData.progress.assignments" />
+            <ProgressCard title="ক্লাস সমূহ" :progress="dashboardData.progress.lessons" />
+            <ProgressCard title="বহুনির্বাচনী পরীক্ষা" :progress="dashboardData.progress.exams" />
+            <ProgressCard title="লিখিত পরীক্ষা" :progress="dashboardData.progress.assignments" />
         </div>
 
         <!-- Lessons -->
         <div class="mb-12">
-            <h2 class="mb-4 text-2xl font-semibold">Subjects</h2>
+            <h2 class="mb-4 text-2xl font-semibold">বিষয়সমূহ</h2>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <SubjectThumbnail v-for="subject in dashboardData.subjects" :key="subject.id" :name="subject.name"
-                    :total-lessons="subject.totalLessons" :id="subject.id" />
+                <LessonSubjectThumbnail v-for="subject in dashboardData.subjects" :key="subject.id" :subject="subject"
+                    @click="goToSubject(subject.id)" />
             </div>
         </div>
 
@@ -32,7 +32,8 @@
 import { useToast } from '@/components/ui/toast/use-toast'
 
 definePageMeta({
-    layout: 'course'
+    layout: 'course',
+    middleware: 'enrolled'
 })
 
 
@@ -55,7 +56,11 @@ if (error.value) {
     })
 }
 
-const goToExam = (examId) => {
-    router.push(`/courses/${route.params.slug}/exams/${examId}`)
+
+
+const goToSubject = (subjectId) => {
+    router.push(`/courses/${route.params.slug}/lessons?subjectId=${subjectId}`)
 }
+
+
 </script>

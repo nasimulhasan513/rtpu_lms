@@ -48,6 +48,7 @@ import MasonryWall from '@yeger/vue-masonry-wall'
 
 definePageMeta({
     layout: 'admin',
+    middleware: 'admin'
 })
 
 const { data, status, error, refresh } = await useFetch('/api/admin/subjects', {

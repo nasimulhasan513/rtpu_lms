@@ -7,7 +7,7 @@
           class="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <NuxtImg :src="course.image" :alt="course.name" class="object-contain w-full h-48" />
           <CardContent class="p-4">
-            <h3 class="mb-2 text-xl font-semibold">{{ course.name }}</h3>
+            <h3 class="mb-2 text-xl font-semibold text-gray-900">{{ course.name }}</h3>
             <p class="mb-4 text-sm text-gray-600">{{ course.short_description }}</p>
             <div class="flex items-center justify-between">
               <span class="text-lg font-bold text-primary">৳{{ course.sale_price }}</span>

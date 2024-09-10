@@ -84,6 +84,7 @@
 
 definePageMeta({
   layout: 'admin',
+  middleware: 'admin'
 })
 const { data: dashboardData, status, error, refresh } = await useFetch('/api/admin/dashboard', {
 

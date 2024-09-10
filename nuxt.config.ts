@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     },
   },
   colorMode: {
-    preference: "light",
+    classSuffix: "",
   },
   runtimeConfig: {
     googleClientId: process.env.GOOGLE_CLIENT_ID,
@@ -31,4 +31,5 @@ export default defineNuxtConfig({
   imports: {
     dirs: ["./lib"],
   },
+  css: ["~/assets/css/tailwind.css", "vue-plyr/dist/vue-plyr.css"],
 });

@@ -1,87 +1,85 @@
 <template>
     <ClientOnly>
-
-
         <div class="relative">
             <div class="flex flex-row items-center gap-3">
-
-                <DropdownMenu v-if="user">
-                    <DropdownMenuTrigger as-clild>
-                        <Button variant="ghost"
-                            class="border-[1px] border-neutral-100 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md hover:bg-transparent transition">
-                            <img v-if="user.image" class="w-8 h-8 rounded-full " :src="user.image" :alt="user.name">
-                            <Icon v-else name="radix-icons:avatar" class="w-8 h-8 " />
-                            <span class="hidden text-sm font-medium md:block text-neutral-600">
-                                {{ user.name }}
-                            </span>
-
-                        </Button>
-
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent class="w-56" align="end">
-
-                        <template v-if="user">
-                            <DropdownMenuItem @click="navigateTo('/profile')">
-                                <span>
-                                    Profile
+                <template v-if="user">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger as-child>
+                            <Button variant="ghost"
+                                class="flex items-center gap-3 pl-1 transition border rounded-full cursor-pointer border-neutral-100 hover:shadow-md hover:bg-transparent">
+                                <Avatar class="w-7 h-7">
+                                    <AvatarImage :src="user.image" :alt="user.name" />
+                                    <AvatarFallback>{{ user.name.charAt(0) }}</AvatarFallback>
+                                </Avatar>
+                                <span class="hidden text-sm font-medium md:block text-primary">
+                                    {{ user.name }}
                                 </span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent class="w-56" align="end">
+                            <DropdownMenuItem @click="navigateTo('/profile')">
+                                প্রোফাইল
                             </DropdownMenuItem>
                             <DropdownMenuItem v-if="user.role !== 'user'" @click="navigateTo('/admin')">
-                                <span>
-                                    Admin Panel
-                                </span>
+                                Admin Panel
                             </DropdownMenuItem>
-                            <DropdownMenuItem @click="navigateTo('/orders')">
-                                <span>
-                                    Previous Orders
-                                </span>
-                            </DropdownMenuItem>
-
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger>
+                                    <span>Theme</span>
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent>
+                                        <DropdownMenuItem @click="color.preference = 'light'">
+                                            <Icon name="i-ph-sun-dim-duotone" size="16" />
+                                            <span class="ml-2">Light</span>
+                                            <Icon v-if="color.preference === 'light'" name="i-radix-icons-check"
+                                                size="16" class="ml-auto" />
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem @click="color.preference = 'dark'">
+                                            <Icon name="i-ph-moon-stars-duotone" size="16" />
+                                            <span class="ml-2">Dark</span>
+                                            <Icon v-if="color.preference === 'dark'" name="i-radix-icons-check"
+                                                size="16" class="ml-auto" />
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem @click="color.preference = 'system'">
+                                            <Icon name="i-lucide-monitor" size="16" />
+                                            <span class="ml-2">System</span>
+                                            <Icon v-if="color.preference === 'system'" name="i-radix-icons-check"
+                                                size="16" class="ml-auto" />
+                                        </DropdownMenuItem>
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
                             <DropdownMenuItem @click="logout">
                                 <Icon name="lucide:log-out" class="w-4 h-4 mr-2" />
-                                Logout
+                                লগআউট
                             </DropdownMenuItem>
-                        </template>
-
-                    </DropdownMenuContent>
-                </DropdownMenu>
-                <Button v-else @click="navigateTo('/login')">
-                    Login
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </template>
+                <Button v-else @click="onOpen">
+                    লগইন
                 </Button>
-                <!-- <Button class="border-none" variant="outline" @click="isDark = !isDark">
-                    <Icon :name="isDark ? 'lucide:moon' : 'lucide:sun'" />
-                </Button> -->
+                <ThemeToggle />
             </div>
-
         </div>
     </ClientOnly>
 </template>
 
 <script setup>
 
-const { onOpen: loginModal } = useLogin()
 
+const { onOpen } = useLogin()
 
+const color = useColorMode()
 
 const user = useUser()
 
 async function logout() {
-    await $fetch('/api/logout', {
-        method: 'POST'
-    })
+    await $fetch('/api/logout', { method: 'POST' })
     user.value = null
     navigateTo('/')
 }
-const colorMode = useColorMode()
-const isDark = computed({
-    get() {
-        return colorMode.value === 'dark'
-    },
-    set() {
-        colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-    }
-})
-
 </script>
 
 <style lang="scss" scoped></style>

@@ -49,6 +49,7 @@ import { useToast } from '@/components/ui/toast'
 
 definePageMeta({
     layout: 'admin',
+    middleware: 'admin'
 })
 
 

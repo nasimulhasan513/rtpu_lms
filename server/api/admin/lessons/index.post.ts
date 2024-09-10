@@ -16,10 +16,13 @@ export default defineEventHandler(async (event) => {
       title: data.title,
       subjectId: data.subjectId,
       chapterId: data.chapterId,
+      teacherId: data.teacherId,
       source: data.source,
       content: data.content,
       pdf: data.pdf,
       order: data.order,
+      is_archive: data.is_archive,
+      is_downloadable: data.is_downloadable,
     },
   });
 

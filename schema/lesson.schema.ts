@@ -12,6 +12,9 @@ export const LessonSchema = z.object({
   pdf: z.string().url("Invalid URL format for PDF").nullable().optional(),
   order: z.number().int().default(0),
   courseIds: z.array(z.string()).optional(),
+  teacherId: z.string().min(1, "Teacher ID is required"),
+  is_archive: z.boolean().default(false),
+  is_downloadable: z.boolean().default(false),
 });
 
 export const createLessonSchema = LessonSchema;

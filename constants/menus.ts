@@ -32,11 +32,11 @@ export const navMenu: NavMenuItems = [
       },
     ],
   },
-  {
-    title: "Classes",
-    icon: "lucide:video",
-    link: "/admin/lessons",
-  },
+  // {
+  //   title: "Classes",
+  //   icon: "lucide:video",
+  //   link: "/admin/lessons",
+  // },
   {
     title: "Live Classes",
     icon: "lucide:tv",
@@ -189,12 +189,12 @@ export const courseMenu = [
     icon: "lucide:video",
   },
   {
-    title: "এক্সাম",
+    title: "বহুনির্বাচনী পরীক্ষা",
     link: "exams",
     icon: "lucide:clipboard-list",
   },
   {
-    title: "অ্যাসাইনমেন্ট",
+    title: "লিখিত পরীক্ষা",
     link: "assignments",
     icon: "lucide:file-text",
   },

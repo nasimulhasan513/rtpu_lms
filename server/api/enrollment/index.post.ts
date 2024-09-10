@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ASG_SHOP_RESPONSE } from "~/server/utils/acs";
 
 const enrollmentSchema = z.object({
   courseId: z.string(),
@@ -17,16 +18,17 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const { courseId, uniqueId } = enrollmentSchema.parse(body);
+    const { courseId: slug, uniqueId } = enrollmentSchema.parse(body);
 
-    // Verify the unique ID with the 3rd party API
-    const verificationResponse = 200; //await ASG_SHOP(uniqueId, "", "");
-
-    if (verificationResponse !== 200) {
-      throw createError({
-        statusCode: 400,
-        message: "Invalid unique ID",
+    let courseId = null;
+    if (slug) {
+      const course = await db.course.findFirst({
+        where: {
+          slug,
+        },
       });
+
+      courseId = course?.id as string;
     }
 
     // Check if the user is already enrolled in the course
@@ -34,7 +36,7 @@ export default defineEventHandler(async (event) => {
       where: {
         userId_courseId: {
           userId,
-          courseId,
+          courseId: courseId as string,
         },
       },
     });
@@ -42,7 +44,36 @@ export default defineEventHandler(async (event) => {
     if (existingEnrollment) {
       throw createError({
         statusCode: 400,
-        message: "You are already enrolled in this course",
+        statusMessage: "You have already enrolled in this course",
+      });
+    }
+
+    // Verify the unique ID with the 3rd party API
+    const response = await ASG_SHOP(uniqueId, null, null);
+
+    if (response === "Error fetching data") {
+      throw createError({
+        statusCode: 500,
+        statusMessage: "Error verifying unique ID",
+      });
+    }
+
+    const verificationResponse: ASG_SHOP_RESPONSE = response;
+
+    if (
+      !verificationResponse ||
+      Object.keys(verificationResponse).length === 0
+    ) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Invalid unique ID",
+      });
+    }
+
+    if (verificationResponse && !verificationResponse.courses.includes(slug)) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Invalid unique ID",
       });
     }
 
@@ -50,9 +81,21 @@ export default defineEventHandler(async (event) => {
     const enrollment = await db.enrollment.create({
       data: {
         userId,
-        courseId,
+        courseId: courseId as string,
         transactionId: uniqueId,
         status: "active",
+      },
+    });
+
+    await db.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        name: verificationResponse.name,
+        phone: verificationResponse.phone,
+        institute: verificationResponse.institution,
+        hsc_batch: verificationResponse.hsc_batch,
       },
     });
 
@@ -64,7 +107,7 @@ export default defineEventHandler(async (event) => {
     if (error instanceof z.ZodError) {
       throw createError({
         statusCode: 400,
-        message: "Invalid input",
+        statusMessage: "Invalid input",
       });
     }
     throw error;

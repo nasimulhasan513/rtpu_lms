@@ -5,9 +5,7 @@
 
         <div class="space-y-6">
 
-            <pre>
-                {{ form.values }}
-            </pre>
+           
 
 
             <form @submit="onSubmit">

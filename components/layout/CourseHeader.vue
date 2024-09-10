@@ -8,10 +8,13 @@ defineProps<{
   navMenuBottom: NavLink[]
 }>()
 
+const user = useUser()
 const { course } = useCourse()
 
-function handleLogout() {
-  navigateTo('/login')
+async function handleLogout() {
+  await $fetch('/api/logout', { method: 'POST' })
+  user.value = null
+  navigateTo('/')
 }
 
 function resolveNavItemComponent(item: NavLink | NavGroup | NavSectionTitle) {
@@ -43,7 +46,7 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
             <SheetTitle class="flex items-center gap-3">
 
               <Icon name="lucide:triangle" class="size-5 fill-foreground" />
-              Academia
+              বাংলা ব্যাঞ্জন
             </SheetTitle>
           </SheetHeader>
           <ScrollArea class="w-full">
@@ -70,12 +73,21 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
       </div>
 
       <div class="flex items-center gap-4 ml-auto">
-        <ThemePopover v-if="isMediumScreen" />
-        <ThemeDrawer v-else />
+
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <Button id="radix-vue-dropdown-menu-trigger-1" variant="secondary" size="icon" class="rounded-full">
-              <CircleUser class="w-5 h-5" />
+              <Avatar v-if="user?.image">
+                <AvatarImage :src="user.image" :alt="user.name" class="w-6 h-6" />
+                <AvatarFallback>
+                  <CircleUser class="w-5 h-5" />
+                </AvatarFallback>
+              </Avatar>
+              <Avatar v-else>
+                <AvatarFallback>
+                  <CircleUser class="w-5 h-5" />
+                </AvatarFallback>
+              </Avatar>
               <span class="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
@@ -83,30 +95,22 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
             <DropdownMenuLabel class="flex font-normal">
               <div class="flex flex-col space-y-1">
                 <p class="text-sm font-medium leading-none">
-                  John Doe
+                  {{ user.name }}
                 </p>
                 <p class="text-xs leading-none text-muted-foreground">
-                  demo@gmail.com
+                  {{ user.email || user.phone }}
                 </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                Profile
-                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Billing
-                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Settings
-                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              <DropdownMenuItem @click="navigateTo('/profile')">
+                প্রোফাইল
+               
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <span>Theme</span>
+                  <span>থিম</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent>
@@ -131,8 +135,7 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem @click="handleLogout">
-              Log out
-              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+              লগ আউট
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

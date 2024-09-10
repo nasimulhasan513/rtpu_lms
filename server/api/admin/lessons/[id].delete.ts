@@ -14,6 +14,10 @@ export default defineEventHandler(async (event) => {
       where: { lessonId: id },
     });
 
+    await db.lessonProgress.deleteMany({
+      where: { lessonId: id },
+    });
+    //TODO: Delete the lesson from the cloud
     // Then, delete the Lesson
     await db.lesson.delete({
       where: { id },

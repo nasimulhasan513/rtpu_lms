@@ -49,6 +49,7 @@
 
 definePageMeta({
     layout: 'admin',
+    middleware: 'admin'
 })
 
 

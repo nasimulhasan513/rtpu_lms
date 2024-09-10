@@ -133,6 +133,7 @@ import { useToast } from '@/components/ui/toast/use-toast'
 
 definePageMeta({
     layout: 'admin',
+    middleware: 'admin'
 })
 
 const search = ref('')

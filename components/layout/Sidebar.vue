@@ -5,7 +5,7 @@ import type { NavGroup, NavLink, NavSectionTitle } from '~/types/nav'
 
 defineProps<{
   navMenu: NavGroup[]
-  navMenuBottom: NavGroup[]
+  // navMenuBottom: NavGroup[]
 }>()
 
 
@@ -33,9 +33,11 @@ function resolveNavItemComponent(item: NavLink | NavGroup | NavSectionTitle) {
       <div class="flex items-center gap-3"
         :class="cn('justify-center lg:justify-start', isOpen ? 'lg:justify-start' : 'lg:justify-center')">
         <Button variant="outline" size="icon" aria-label="Home">
-          <Icon name="lucide:triangle" class="size-5 fill-foreground" />
+          ব
         </Button>
-        <span v-if="isOpen" class="hidden text-xl font-semibold lg:inline-block">Academia</span>
+        <span v-if="isOpen" class="hidden text-xl font-semibold lg:inline-block">
+          বাংলা ব্যাঞ্জন
+        </span>
       </div>
 
       <Button variant="outline" class="absolute hidden p-0 rounded-full top-4 size-6 -right-3 lg:inline-flex"
@@ -48,9 +50,9 @@ function resolveNavItemComponent(item: NavLink | NavGroup | NavSectionTitle) {
         <component :is="resolveNavItemComponent(item)" v-for="(item, index) in navMenu" :key="index" :item="item" />
       </nav>
     </ScrollArea>
-    <nav class="grid w-full gap-1 p-2 mt-auto">
+    <!-- <nav class="grid w-full gap-1 p-2 mt-auto">
       <component :is="resolveNavItemComponent(item)" v-for="(item, index) in navMenuBottom" :key="index" :item="item" />
-    </nav>
+    </nav> -->
   </aside>
 </template>
 

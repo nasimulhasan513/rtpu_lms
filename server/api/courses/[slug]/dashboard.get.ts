@@ -23,6 +23,14 @@ export default defineEventHandler(async (event) => {
               include: {
                 lesson: {
                   include: {
+                    LessonProgress: {
+                      where: {
+                        userId,
+                      },
+                      select: {
+                        completed: true,
+                      },
+                    },
                     subject: true,
                   },
                 },
@@ -71,7 +79,9 @@ export default defineEventHandler(async (event) => {
     });
 
     const totalLessons = enrollment.course.lessons.length;
-    const completedLessons = 0; // You'll need to implement a way to track completed lessons
+    const completedLessons = enrollment.course.lessons.filter(
+      (lesson) => lesson.lesson.LessonProgress[0]?.completed
+    ).length;
 
     const totalExams = enrollment.course.exams.length;
     const completedExams = submissions.length;

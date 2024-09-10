@@ -8,7 +8,7 @@ const props = defineProps({
     },
     loadingText: {
         type: String,
-        default: 'Please wait...',
+        default: 'অনুগ্রহ করে অপেক্ষা করুন...',
     },
     label: {
         type: String,

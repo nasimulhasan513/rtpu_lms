@@ -2,7 +2,7 @@
 import { CircleUser, Menu, } from 'lucide-vue-next'
 import { navMenu, navMenuBottom } from '~/constants/menus'
 import type { NavGroup, NavLink, NavSectionTitle } from '~/types/nav'
-
+const user = useUser()
 function handleLogout() {
   navigateTo('/login')
 }
@@ -57,8 +57,7 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
       <Search />
 
       <div class="flex items-center gap-4 ml-auto">
-        <ThemePopover v-if="isMediumScreen" />
-        <ThemeDrawer v-else />
+
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <Button id="radix-vue-dropdown-menu-trigger-1" variant="secondary" size="icon" class="rounded-full">
@@ -70,26 +69,18 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
             <DropdownMenuLabel class="flex font-normal">
               <div class="flex flex-col space-y-1">
                 <p class="text-sm font-medium leading-none">
-                  John Doe
+                  {{ user.name }}
                 </p>
                 <p class="text-xs leading-none text-muted-foreground">
-                  demo@gmail.com
+                  {{ user.email || user.phone }}
                 </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem @click="navigateTo('/profile')">
                 Profile
                 <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Billing
-                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Settings
-                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>

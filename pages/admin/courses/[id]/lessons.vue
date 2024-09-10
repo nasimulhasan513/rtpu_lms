@@ -41,23 +41,21 @@
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <!-- <TableHead class="w-[50px]">
-                            <Checkbox :checked="selectAll" @click="toggleSelectAll" />
-                        </TableHead> -->
+
                         <TableHead>Title</TableHead>
                         <TableHead>Subject</TableHead>
                         <TableHead>Chapter</TableHead>
                         <TableHead>Source</TableHead>
                         <TableHead>Content</TableHead>
+                        <TableHead>Archive</TableHead>
+                        <TableHead>Downloadable</TableHead>
                         <TableHead>Created At</TableHead>
                         <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody v-if="status === 'success'">
                     <TableRow v-for="lesson, i in data" :key="lesson.id">
-                        <!-- <TableCell>
-                            <Checkbox :checked="lesson.selected" @click="data[i].selected = !data[i].selected" />
-                        </TableCell> -->
+
                         <TableCell>{{ lesson.title }}</TableCell>
                         <TableCell>{{ lesson.subject.name }}</TableCell>
                         <TableCell>{{ lesson.chapter.name }}</TableCell>
@@ -71,7 +69,16 @@
                                 <Icon name="tabler:eye" />
                             </Button>
                         </TableCell>
-
+                        <TableCell>
+                            <Badge>
+                                {{ lesson.is_archive ? 'Yes' : 'No' }}
+                            </Badge>
+                        </TableCell>
+                        <TableCell>
+                            <Badge>
+                                {{ lesson.is_downloadable ? 'Yes' : 'No' }}
+                            </Badge>
+                        </TableCell>
                         <TableCell>{{ new Date(lesson.createdAt).toLocaleDateString() }}</TableCell>
                         <TableCell>
                             <div class="flex gap-2">
@@ -117,6 +124,7 @@ import { useToast } from '@/components/ui/toast/use-toast'
 
 definePageMeta({
     layout: 'admin',
+    middleware: 'admin'
 })
 
 const search = ref('')
@@ -170,10 +178,7 @@ watch(selectedSubject, (value) => {
     }
 }, { deep: true })
 
-const toggleSelectAll = () => {
-    selectAll.value = !selectAll.value
-    data.value = data.value.map(l => ({ ...l, selected: selectAll.value }))
-}
+
 
 
 
@@ -203,4 +208,17 @@ const editLesson = (lesson) => {
 watch([currentPage, itemsPerPage], () => {
     refresh()
 })
+
+
+
+const { getTeachers } = useTeachers()
+
+onMounted(async () => {
+    await getTeachers()
+})
+
+
+
+
+
 </script>

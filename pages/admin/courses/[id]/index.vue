@@ -1,6 +1,6 @@
 <template>
     <div>
-       
+
         <AppHeading :title="isEditing ? 'Edit course' : 'Create new course'"
             :subtitle="isEditing ? 'Update course details' : 'Fill up the form to create a new course'" />
 

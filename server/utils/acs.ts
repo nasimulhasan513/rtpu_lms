@@ -1,5 +1,16 @@
 import axios from "axios";
 
+export interface ASG_SHOP_RESPONSE {
+  name: string;
+  email: string;
+  phone: string;
+  institution: string;
+  hsc_batch: string;
+  courses: string[];
+}
+
+
+
 export const ASG_SHOP = async (
   tran_id: string,
   phone: string,
@@ -16,7 +27,7 @@ export const ASG_SHOP = async (
         },
       }
     );
-    const result = {
+    const result: ASG_SHOP_RESPONSE = {
       name: data.Name,
       email: data.Email,
       phone: data.Phone,

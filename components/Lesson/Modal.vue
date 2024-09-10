@@ -1,8 +1,11 @@
 <template>
     <AppModal :isOpen="isOpen" title="Lesson" description="Add or update lesson" @onClose="onClose" v-if="isOpen">
         <AppLoader v-if="isLoading" />
-      
+
         <div class="space-y-6">
+
+
+
             <form @submit="onSubmit">
                 <div class="space-y-6">
 
@@ -93,7 +96,28 @@
                             <FormMessage />
                         </FormItem>
                     </FormField>
+                    <FormField v-slot="{ componentField }" name="teacherId">
+                        <FormItem>
+                            <FormLabel>Teacher</FormLabel>
 
+                            <Select v-bind="componentField">
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select teacher" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectGroup v-for="teacher in teachers" :key="teacher.id">
+                                        <SelectItem :value="teacher.id">
+                                            {{ teacher.name }}
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
                     <FormField v-slot="{ componentField }" name="content">
                         <FormItem>
                             <FormLabel>Content</FormLabel>
@@ -107,10 +131,27 @@
                         <Label>PDF Lecture Sheet</Label>
                         <Input type="file" accept=".pdf" placeholder="PDF Lecture Sheet" @change="uploadFile" />
                     </div>
+
+                    <FormField v-slot="{ componentField }" name="is_downloadable">
+                        <FormItem class="flex flex-row items-start p-4 space-x-3 space-y-0 border rounded-md">
+                            <FormControl>
+                                <Checkbox v-bind="componentField"
+                                    @click="form.setFieldValue('is_downloadable', !form.values.is_downloadable)" />
+                            </FormControl>
+                            <div class="space-y-1 leading-none">
+                                <FormLabel>Downloadable</FormLabel>
+                                <FormDescription>
+                                    Check this box if you want to make this Lecture Sheet downloadable.
+                                </FormDescription>
+                            </div>
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
                     <FormField v-slot="{ componentField }" name="is_archive">
                         <FormItem class="flex flex-row items-start p-4 space-x-3 space-y-0 border rounded-md">
                             <FormControl>
-                                <Checkbox v-bind="componentField" />
+                                <Checkbox v-bind="componentField"
+                                    @click="form.setFieldValue('is_archive', !form.values.is_archive)" />
                             </FormControl>
                             <div class="space-y-1 leading-none">
                                 <FormLabel>Archive</FormLabel>
@@ -140,6 +181,7 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { LessonSchema } from '~/schema/lesson.schema';
+import { useTeachers } from '@/composables/useTeachers';
 
 const { subjects } = useSubject()
 
@@ -160,11 +202,16 @@ const form = useForm({
         pdf: initialValues.value.pdf || "",
         courseIds: [...courseIds.value],
         is_archive: initialValues.value.is_archive || false,
+        is_downloadable: initialValues.value.is_downloadable || false,
+        teacherId: initialValues.value.teacherId || "",
     }
 })
 const pdf = ref(null)
 const isLoading = ref(false)
 const { toast } = useToast()
+
+const { teachers } = useTeachers()
+
 const { uploadImage, deleteImage } = useCloudflareImage()
 
 const onSubmit = form.handleSubmit(async (values) => {
@@ -214,6 +261,8 @@ watch(() => initialValues.value, (value) => {
             pdf: value.pdf,
             courseIds: [...courseIds.value],
             is_archive: value.is_archive || false,
+            is_downloadable: value.is_downloadable || false,
+            teacherId: value.teacherId,
         })
     }
 }, {
@@ -233,11 +282,8 @@ const uploadFile = (e) => {
     pdf.value = e.target.files[0]
 }
 
-const { courses, fetchCourses } = useCourse()
 
-onMounted(() => {
-    fetchCourses()
-})
+
 
 </script>
 <style lang="scss" scoped></style>

@@ -22,13 +22,13 @@ defineShortcuts({
 
 
 const route = useRoute()
-const slug = route.params.slug as string
+const slug = computed(() => route.params.slug as string)
 
 const menus = computed(() => {
     return courseMenu.map((item) => {
         return {
             ...item,
-            link: `/courses/${slug}/${item.link}`,
+            link: `/courses/${slug.value}/${item.link}`,
         }
     })
 })
@@ -42,7 +42,7 @@ const menus = computed(() => {
         :class="cn('pl-0 lg:pl-64 sm:pl-20', isOpen ? 'lg:pl-64 sm:pl-20' : 'lg:pl-20')">
         <LayoutSidebar :navMenu="menus" />
         <div flex="~ col">
-            <LayoutCourseHeader :navMenu="menus"/>
+            <LayoutCourseHeader :navMenu="menus" />
             <main class="flex-1 min-h-[calc(100vh-53px)] p-4 lg:p-6"
                 :class="isBgWhite ? 'bg-background' : 'bg-muted dark:bg-muted/20'">
                 <slot />

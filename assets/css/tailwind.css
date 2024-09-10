@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -19,7 +20,8 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
  
-    --primary: 222.2 47.4% 11.2%;
+    /* --primary: 222.2 47.4% 11.2%; */
+    --primary: 172 87% 21%;
     --primary-foreground: 210 40% 98%;
  
     --secondary: 210 40% 96.1%;
@@ -75,6 +77,16 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+@font-face {
+  font-family: 'LiAdorNoirritVR-VF';
+  src: url('../fonts/LiAdorNoirritVR-VF.ttf');
+}
+
+body {
+  font-family: 'LiAdorNoirritVR-VF', sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 /* hide scrollbar of a div */

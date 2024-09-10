@@ -15,7 +15,8 @@
         <div class="grid gap-6 md:grid-cols-2">
 
             <Card v-for="a in data" :key="a.id" class="flex ">
-                <TeacherCard class="border-none" :name="a.name" :image="a.image" :biography="a.designation" />
+                <TeacherCard class="border-none shadow-none" :name="a.name" :image="a.image"
+                    :biography="a.designation" />
                 <div class="flex items-center gap-3 pr-3">
                     <Button variant="outline" @click="onEdit(a)">
                         <Icon name="akar-icons:pencil" />

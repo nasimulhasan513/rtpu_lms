@@ -55,6 +55,7 @@ import { useToast } from '@/components/ui/toast/use-toast'
 
 definePageMeta({
     layout: 'admin',
+    middleware: 'admin'
 })
 
 const { data, status, error, refresh } = await useFetch('/api/admin/courses', {

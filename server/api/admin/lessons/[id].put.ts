@@ -28,10 +28,13 @@ export default defineEventHandler(async (event) => {
       title: lessonData.title,
       subjectId: lessonData.subjectId,
       chapterId: lessonData.chapterId,
+      teacherId: lessonData.teacherId,
       source: lessonData.source,
       content: lessonData.content,
       pdf: lessonData.pdf,
       order: lessonData.order,
+      is_archive: lessonData.is_archive,
+      is_downloadable: lessonData.is_downloadable,
     },
   });
 

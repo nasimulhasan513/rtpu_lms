@@ -31,6 +31,7 @@ model User {
   Feedback             Feedback[]
   Question             Question[]
   hostedLiveClasses    LiveClass[]
+  LessonProgress       LessonProgress[]
 }
 
 model Session {
@@ -67,6 +68,7 @@ model Teacher {
   biography         String?
 
   CourseTeacher CourseTeacher[]
+  Lesson        Lesson[]
 }
 
 model Category {
@@ -185,22 +187,47 @@ model Chapter {
 }
 
 model Lesson {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  subjectId  String    @db.ObjectId
-  chapterId  String    @db.ObjectId
-  source     String
-  content    String?
-  pdf        String?
-  is_archive Boolean   @default(false)
-  order      Int       @default(0)
-  schedule   DateTime?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  subjectId       String    @db.ObjectId
+  chapterId       String    @db.ObjectId
+  teacherId       String    @db.ObjectId
+  source          String
+  content         String?
+  pdf             String?
+  is_archive      Boolean   @default(false)
+  is_downloadable Boolean   @default(false)
+  order           Int       @default(0)
+  schedule        DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  subject Subject        @relation(fields: [subjectId], references: [id])
-  chapter Chapter        @relation(fields: [chapterId], references: [id])
-  courses CourseLesson[]
+  subject        Subject          @relation(fields: [subjectId], references: [id])
+  chapter        Chapter          @relation(fields: [chapterId], references: [id])
+  teacher        Teacher          @relation(fields: [teacherId], references: [id])
+  courses        CourseLesson[]
+  LessonProgress LessonProgress[]
+}
+
+model LessonProgress {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String
+  
+  lessonId     String   @db.ObjectId
+  completed    Boolean  @default(false)
+  bookmark     Boolean  @default(false)
+  note         String?
+  watchedTime  Float    @default(0)
+  lastPosition Float    @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
 }
 
 model CourseLesson {

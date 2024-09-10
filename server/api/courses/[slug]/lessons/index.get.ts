@@ -4,15 +4,9 @@ const paramsSchema = z.object({
   slug: z.string(),
 });
 
-const querySchema = z.object({
-  chapterId: z.string().optional(),
-});
-
 export default defineEventHandler(async (event) => {
   try {
     const { slug } = paramsSchema.parse(event.context.params);
-    const query = getQuery(event);
-    const { chapterId } = querySchema.parse(query);
 
     const course = await db.course.findUnique({
       where: { slug },
@@ -40,9 +34,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    return {
-      lessons: course.lessons,
-    };
+    return course;
   } catch (error) {
     console.error("Error in lessons.get.ts:", error);
     throw createError({

@@ -6,6 +6,7 @@
     </div>
   </div>
   <AppFooter />
+  <AuthLogin />
 </template>
 
 <script lang="ts" setup>

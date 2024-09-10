@@ -1,8 +1,6 @@
 <template>
-    <div @click="navigateTo('/')">
-        <h2 class="text-3xl font-semibold">
-            Academia
-        </h2>
+    <div @click="navigateTo('/')" class="cursor-pointer">
+        <img src="~/assets/logo.png" alt="Bangla Benjon" class="h-10" />
     </div>
 
 </template>

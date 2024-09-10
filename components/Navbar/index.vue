@@ -1,23 +1,18 @@
 <template>
-    <div class="fixed z-10 w-full bg-white shadow-sm">
+    <div class="fixed z-10 w-full shadow-sm dark:bg-background">
         <div class="py-3 border-b-[1px]">
             <AppContainer>
                 <div class="flex items-center justify-between">
                     <div class="flex items-center flex-1 space-x-4">
                         <NavbarLogo />
-                        <!-- <nav class="justify-center flex-1 hidden space-x-2 md:flex">
-                            <Button v-for="item in mainMenu" :key="item.path" variant="ghost" :to="item.path">
-                                <Icon :name="item.icon" class="w-4 h-4 mr-2" />
-                                {{ item.name }}
-                            </Button>
-                        </nav> -->
+
                     </div>
                     <div class="flex items-center space-x-4">
-                        <NotificationDropdown />
+                        <!-- <NotificationDropdown /> -->
                         <NavbarUserMenu />
-                        <Button variant="ghost" size="icon" class="md:hidden" @click="toggleMobileMenu">
+                        <!-- <Button variant="ghost" size="icon" class="md:hidden" @click="toggleMobileMenu">
                             <Icon name="lucide:menu" class="w-6 h-6" />
-                        </Button>
+                        </Button> -->
                     </div>
                 </div>
             </AppContainer>
