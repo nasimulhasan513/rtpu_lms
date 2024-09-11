@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
         "Set-Cookie",
         lucia.createSessionCookie(session.id).serialize()
       );
-      return sendRedirect(event, "/courses/benjon25_26");
+      return sendRedirect(event, "/");
     }
 
     const userId = generateIdFromEntropySize(10); // 16 characters long

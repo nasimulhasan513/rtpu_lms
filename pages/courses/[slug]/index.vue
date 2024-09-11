@@ -87,11 +87,11 @@ const enrollCourse = async () => {
 
 const user = useUser()
 
-// onMounted(() => {
-//     if (!user.value) {
-//         localStorage.setItem('redirect', route.fullPath)
-//     }
-// })
+onMounted(() => {
+    if (!user.value) {
+        localStorage.setItem('redirect', route.fullPath)
+    }
+})
 
 const googleLogin = () => {
     window.location.href = '/login/google'
