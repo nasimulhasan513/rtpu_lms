@@ -25,7 +25,7 @@
                             </DropdownMenuItem>
                             <DropdownMenuSub>
                                 <DropdownMenuSubTrigger>
-                                    <span>Theme</span>
+                                    <span>থীম</span>
                                 </DropdownMenuSubTrigger>
                                 <DropdownMenuPortal>
                                     <DropdownMenuSubContent>
@@ -60,7 +60,7 @@
                 <Button v-else @click="onOpen">
                     লগইন
                 </Button>
-                <ThemeToggle />
+
             </div>
         </div>
     </ClientOnly>
