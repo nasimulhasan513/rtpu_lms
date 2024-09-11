@@ -152,7 +152,7 @@ model Enrollment {
   id               String   @id @default(auto()) @map("_id") @db.ObjectId
   userId           String
   courseId         String   @db.ObjectId
-  transactionId    String?
+  transactionId    String   @unique
   gateway_response Json?
   status           String   @default("pending")
   enrolledAt       DateTime @default(now())
@@ -210,9 +210,9 @@ model Lesson {
 }
 
 model LessonProgress {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String
-  
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+
   lessonId     String   @db.ObjectId
   completed    Boolean  @default(false)
   bookmark     Boolean  @default(false)
