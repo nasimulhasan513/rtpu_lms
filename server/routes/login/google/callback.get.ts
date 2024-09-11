@@ -9,9 +9,7 @@ export default defineEventHandler(async (event) => {
   const storedState = getCookie(event, "google_oauth_state") ?? null;
 
   if (!code || !state || !storedState || state !== storedState) {
-    throw createError({
-      status: 400,
-    });
+    return sendRedirect(event, "/");
   }
 
   try {
@@ -49,7 +47,7 @@ export default defineEventHandler(async (event) => {
         "Set-Cookie",
         lucia.createSessionCookie(session.id).serialize()
       );
-      return sendRedirect(event, "/");
+      return sendRedirect(event, "/courses/benjon25_26");
     }
 
     const userId = generateIdFromEntropySize(10); // 16 characters long
