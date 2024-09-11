@@ -251,7 +251,6 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { CourseSchema } from '~/schema/course.schema';
-import { useCourse } from '~/composables/useCourse';
 
 definePageMeta({
     layout: 'admin',
