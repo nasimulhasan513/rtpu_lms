@@ -38,7 +38,7 @@ function getYouTubeVideoId(url) {
 const route = useRoute()
 
 const navigateLesson = (lesson) => {
-  navigateTo(`/courses/${route.params.slug}/lessons/${lesson.id}`)
+  navigateTo(`/${route.params.shop}/${route.params.slug}/lessons/${lesson.id}`)
 }
 
 

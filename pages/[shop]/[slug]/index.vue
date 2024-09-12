@@ -70,7 +70,7 @@ const enrollCourse = async () => {
             description: 'You have been enrolled in the course',
         })
 
-        navigateTo(`/courses/${route.params.slug}/dashboard`)
+        navigateTo(`/${route.params.shop}/${route.params.slug}/dashboard`)
 
 
     } catch (error) {

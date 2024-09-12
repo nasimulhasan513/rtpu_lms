@@ -5,7 +5,8 @@
         <!-- Breadcrumb -->
         <div class="flex items-center space-x-2">
 
-            <Button variant="outline" size="sm" @click="navigateTo(`/courses/${route.params.slug}/lessons`)">
+            <Button variant="outline" size="sm"
+                @click="navigateTo(`/${route.params.shop}/${route.params.slug}/lessons`)">
                 বিষয়সমূহ
             </Button>
             <div v-if="currentView !== 'subjects'" class="flex items-center">
@@ -171,7 +172,7 @@ const selectChapter = (chapter) => {
 }
 
 const navigateLesson = (lesson) => {
-    navigateTo(`/courses/${route.params.slug}/lessons/${lesson.id}`)
+    navigateTo(`/${route.params.shop}/${route.params.slug}/lessons/${lesson.id}`)
 }
 
 watch(route, () => {

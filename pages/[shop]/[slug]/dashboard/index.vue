@@ -59,7 +59,7 @@ if (error.value) {
 
 
 const goToSubject = (subjectId) => {
-    router.push(`/courses/${route.params.slug}/lessons?subjectId=${subjectId}`)
+    router.push(`/${route.params.shop}/${route.params.slug}/lessons?subjectId=${subjectId}`)
 }
 
 

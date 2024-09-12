@@ -11,7 +11,7 @@
             <p class="mb-4 text-sm text-gray-600">{{ course.short_description }}</p>
             <div class="flex items-center justify-between">
               <span class="text-lg font-bold text-primary">৳{{ course.sale_price }}</span>
-              <Button @click="navigateTo(`/courses/${course.slug}`)">View Course</Button>
+              <Button @click="navigateTo(`/${route.params.shop}/${course.slug}`)">View Course</Button>
             </div>
           </CardContent>
         </Card>
