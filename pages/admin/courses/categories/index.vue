@@ -18,8 +18,8 @@
         </Card>
         <Card v-for="category in data" :key="category.id">
             <CardContent class="p-3 space-y-2">
-                <div class="flex items-center justify-center">
-                    <NuxtImg :src="category.image" :alt="category.name" class="rounded-sm" />
+                <div class="flex items-center justify-center overflow-hidden">
+                    <NuxtImg :src="category.image" :alt="category.name" class="object-cover w-32 h-32 rounded-sm" />
                 </div>
                 <h3 class="text-lg font-semibold text-center">{{ category.name }}</h3>
             </CardContent>
@@ -66,6 +66,15 @@
                         <FormMessage />
                     </FormItem>
                 </FormField>
+                <FormField v-slot="{ componentField }" name="slug">
+                    <FormItem>
+                        <FormLabel>Shop Link</FormLabel>
+                        <FormControl>
+                            <Input type="text" placeholder="Link" v-bind="componentField" />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                </FormField>
 
                 <AppButton type="submit" class="w-full" :loading="isLoading"
                     :label="editingCategory ? 'Update' : 'Create'"
@@ -102,6 +111,7 @@ const openModal = (category = null) => {
     if (category) {
         form.setValues({
             name: category.name,
+            slug: category.slug,
             image: category.image,
         })
     }
@@ -115,6 +125,7 @@ const form = useForm({
     initialValues: {
         name: '',
         image: '',
+        slug: '',
     }
 })
 

@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
       id: category.id,
       name: category.name,
       image: category.image,
+      slug: category.slug,
       courseCount: category.courses.length,
     }));
   } catch (error) {

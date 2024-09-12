@@ -4,7 +4,7 @@
 
             <div class="border-gray-200 dark:border-gray-700">
                 <div class="flex flex-col items-center justify-center md:flex-row">
-                    <p>&copy; ২০২৪ বাংলা ব্যাঞ্জন। সর্বস্বত্ব সংরক্ষিত।</p>
+                    <p>&copy; ২০২৪ সর্বস্বত্ব সংরক্ষিত।</p>
                     <!-- <div class="flex mt-4 space-x-4 md:mt-0">
                         <NuxtLink v-for="link in legalLinks" :key="link.to" :to="link.to"
                             class="transition-colors hover:text-primary">

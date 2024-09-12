@@ -11,7 +11,12 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  await db.category.create({
+  const id = event.context.params?.id;
+
+  await db.category.update({
+    where: {
+      id,
+    },
     data: {
       name: data.name,
       slug: data.slug,
