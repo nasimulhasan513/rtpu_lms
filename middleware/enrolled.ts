@@ -6,10 +6,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return onOpen();
     }
     const enrollment = await isEnrolled(to.params.slug as string);
-    if (enrollment && to.name == "courses-slug") {
-      return navigateTo(`/courses/${to.params.slug}/dashboard`);
+    if (enrollment && to.name == "shop-slug") {
+      return navigateTo(`/${to.params.shop}/${to.params.slug}/dashboard`);
     } else if (!enrollment && to.name !== "courses-slug") {
-      return navigateTo(`/courses/${to.params.slug}`);
+      return navigateTo(`/${to.params.shop}/${to.params.slug}`);
     }
   } catch (error) {
     console.error("Error checking enrollment:", error);

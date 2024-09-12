@@ -19,9 +19,8 @@
           <p>Failed to load categories. Please try again later.</p>
         </div>
         <div v-else>
-          <div v-if="filteredCategories.length"
-            class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            <CategoryCard v-for="category in filteredCategories" :key="category.id" :category="category" />
+          <div v-if="categories.length" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <CategoryCard v-for="category in categories" :key="category.id" :category="category" />
           </div>
           <div v-else class="py-12 text-center text-muted-foreground">
             No categories found matching your search.
@@ -33,11 +32,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
 import { useToast } from '@/components/ui/toast/use-toast'
 
 const { toast } = useToast()
-const searchQuery = ref('')
 
 // Fetch categories
 const { data: categories, pending, error } = await useFetch('/api/courses/categories')
@@ -51,11 +48,5 @@ if (error.value) {
   })
 }
 
-// Filter categories based on search query
-const filteredCategories = computed(() => {
-  if (!categories.value) return []
-  return categories.value.filter(category =>
-    category.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
+
 </script>

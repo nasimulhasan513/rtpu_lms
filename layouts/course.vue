@@ -28,7 +28,7 @@ const menus = computed(() => {
     return courseMenu.map((item) => {
         return {
             ...item,
-            link: `/courses/${slug.value}/${item.link}`,
+            link: `/${route.params.shop}/${slug.value}/${item.link}`,
         }
     })
 })

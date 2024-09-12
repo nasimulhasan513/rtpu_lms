@@ -14,7 +14,7 @@
               <span class="text-lg font-bold text-primary">
                 <!-- ৳{{ course.sale_price }} -->
               </span>
-              <Button @click="navigateTo(`/courses/${course.slug}`)">কোর্সের বিস্তারিত</Button>
+              <Button @click="navigateTo(`/${category}/${course.slug}`)">কোর্সের বিস্তারিত</Button>
             </div>
           </CardContent>
         </Card>
@@ -29,6 +29,10 @@ const props = defineProps({
   title: {
     type: String,
     default: 'Featured Courses',
+  },
+  category: {
+    type: String,
+    required: true,
   },
   courses: {
     type: Array,

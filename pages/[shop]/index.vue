@@ -3,7 +3,8 @@
         <AppContainer>
             <div v-if="status === 'success'">
                 <div v-if="data.courses.length > 0">
-                    <HomeFeaturedCourses :courses="data.courses" />
+
+                    <HomeFeaturedCourses :courses="data.courses" :category="data.slug" />
                 </div>
                 <div v-else class="py-12 text-center">
                     <h2 class="mb-4 text-2xl font-semibold">কোনো কোর্স পাওয়া যায়নি</h2>
@@ -24,7 +25,7 @@
 <script setup>
 const route = useRoute()
 
-const { data, status, refresh } = useFetch(`/api/category/${route.params.slug}`)
+const { data, status, refresh } = useFetch(`/api/category/${route.params.shop}`)
 </script>
 
 <style lang="scss" scoped></style>
