@@ -1,8 +1,8 @@
-import lessons from "~/data/archieve.json";
+// import lessons from "~/data/archieve.json";
 
 export default defineEventHandler(async (event) => {
   try {
-    const lessonData = lessons;
+    const lessonData = [];
 
     await Promise.all(
       lessonData.map(async (lesson) => {
