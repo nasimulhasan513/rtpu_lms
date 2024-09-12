@@ -1,6 +1,7 @@
 <template>
     <div class="relative w-full h-full ">
         <ClientOnly>
+            <pre>{{ url }}</pre>
             <vue-plyr class="aspect-video" @statechange="videoTimeUpdated">
                 <div data-plyr-provider="youtube" :data-plyr-embed-id="videoId">
                 </div>
@@ -11,7 +12,6 @@
 
 <script setup>
 import VuePlyr from 'vue-plyr'
-import { ref } from 'vue'
 
 const props = defineProps({
     src: {
@@ -23,8 +23,9 @@ const props = defineProps({
 const videoDuration = ref(0)
 
 const videoId = computed(() => {
-    const url = new URL(props.src);
-    return url.searchParams.get('v');
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+    const match = props.src.match(regExp)
+    return (match && match[2].length === 11) ? match[2] : null
 })
 
 const onPlayerReady = (player) => {

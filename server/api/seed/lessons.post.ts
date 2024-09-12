@@ -1,62 +1,60 @@
-import { z } from "zod";
-import { faker } from "@faker-js/faker";
-
-const countSchema = z.object({
-  count: z.number().int().positive(),
-});
+import lessons from "~/data/archieve.json";
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-
   try {
-    const { count } = countSchema.parse(body);
+    const lessonData = lessons;
 
-    const subjects = await db.subject.findMany({ include: { chapters: true } });
-    if (subjects.length === 0) {
-      throw new Error("No subjects found. Please create subjects first.");
-    }
+    await Promise.all(
+      lessonData.map(async (lesson) => {
+        if (!lesson.content) {
+          lesson.content = "Error";
+        }
 
-    const lessons = [];
-    for (let i = 0; i < count; i++) {
-      const subject = faker.helpers.arrayElement(subjects);
-      if (subject.chapters.length === 0) {
-        continue; // Skip this iteration if the subject has no chapters
-      }
-      const chapter = faker.helpers.arrayElement(subject.chapters);
+        const createdLesson = await db.lesson.create({
+          data: {
+            title: lesson.topic,
+            subject: {
+              connect: {
+                id: lesson.subjectId,
+              },
+            },
+            chapter: {
+              connect: {
+                id: lesson.chapterId,
+              },
+            },
+            content: lesson.content,
+            is_archive: true,
+            is_downloadable: false,
+            source: "youtube",
+            teacher: {
+              connect: {
+                id: "66dbfe08a30ac8ceb388830b",
+              },
+            },
+            order: lesson.sl,
+          },
+        });
 
-      lessons.push({
-        title: faker.lorem.sentence(),
-        subjectId: subject.id,
-        chapterId: chapter.id,
-        source: "youtube",
-        content: faker.lorem.paragraphs(),
-        pdf: faker.helpers.maybe(() => faker.internet.url(), {
-          probability: 0.3,
-        }),
-        order: faker.number.int({ min: 1, max: 100 }),
-      });
-    }
-
-    if (lessons.length === 0) {
-      throw new Error("No lessons could be created. Please ensure subjects have chapters.");
-    }
-
-    const createdLessons = await db.lesson.createMany({
-      data: lessons,
-    });
+        await db.courseLesson.create({
+          data: {
+            courseId: "66dbfea7a30ac8ceb388830c",
+            lessonId: createdLesson.id,
+          },
+        });
+      })
+    );
 
     return {
-      statusCode: 201,
-      message: `${createdLessons.count} lessons created successfully`,
+      success: true,
+      message: `Created  lessons`,
     };
   } catch (error) {
-    console.error("Error creating lessons:", error);
-    return createError({
-      statusCode: 400,
-      message:
-        error instanceof z.ZodError
-          ? error.errors[0].message
-          : "Invalid lesson data",
-    });
+    console.error("Error seeding lessons:", error);
+    return {
+      success: false,
+      message: "Error seeding lessons",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 });

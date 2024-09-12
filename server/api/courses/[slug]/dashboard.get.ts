@@ -32,6 +32,7 @@ export default defineEventHandler(async (event) => {
                       },
                     },
                     subject: true,
+                    chapter: true,
                   },
                 },
               },

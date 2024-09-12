@@ -7,9 +7,11 @@ const paramsSchema = z.object({
 export default defineEventHandler(async (event) => {
   try {
     const { slug } = paramsSchema.parse(event.context.params);
+    console.log(slug);
 
-    const course = await db.course.findUnique({
+    const course = await db.course.findFirst({
       where: { slug },
+   
       include: {
         lessons: {
           include: {

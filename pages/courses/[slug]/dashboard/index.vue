@@ -25,7 +25,7 @@
     <div v-else class="text-center">
         <p>Loading dashboard data...</p>
     </div>
-
+   
 </template>
 
 <script setup>

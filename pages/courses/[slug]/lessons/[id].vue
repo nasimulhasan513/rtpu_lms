@@ -5,6 +5,7 @@
             <div class="w-full mx-auto overflow-hidden rounded-md aspect-video">
                 <LessonVideoPlayer :src="lesson.content" class="w-full h-full" />
             </div>
+          
 
             <div v-if="lesson.pdf">
                 <div class="lg:hidden">
