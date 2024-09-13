@@ -5,7 +5,6 @@
                 <Icon name="flat-color-icons:google" class="w-4 h-4 mr-2" />
                 গুগল দিয়ে লগইন করুন
             </Button>
-
         </div>
         <p class="text-sm text-center text-red-500" v-if="!isGoogleLoginSupported">
             [বি:দ্র: ওয়েবএ্যাপের লিংকটি ক্রোম ব্রাউজারে ওপেন করবে। সরাসরি ফেসবুক অথবা মেসেঞ্জার থেকে লগইন করা যাবে

@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const enrollment = await isEnrolled(to.params.slug as string);
     if (enrollment && to.name == "shop-slug") {
       return navigateTo(`/${to.params.shop}/${to.params.slug}/dashboard`);
-    } else if (!enrollment && to.name !== "courses-slug") {
+    } else if (!enrollment && to.name !== "shop-slug") {
       return navigateTo(`/${to.params.shop}/${to.params.slug}`);
     }
   } catch (error) {
