@@ -100,8 +100,11 @@ const googleLogin = () => {
     window.location.href = '/login/google'
 }
 const isGoogleLoginSupported = computed(() => {
-    const userAgent = navigator.userAgent.toLowerCase();
-    return !userAgent.includes('fban') && !userAgent.includes('fbav');
+    if (import.meta.client) {
+        const userAgent = navigator.userAgent.toLowerCase();
+        return !userAgent.includes('fban') && !userAgent.includes('fbav');
+    }
+    return false
 })
 
 </script>
