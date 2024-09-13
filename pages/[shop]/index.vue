@@ -1,7 +1,12 @@
 <template>
     <div class="min-h-[76vh] bg-background">
         <AppContainer>
+
             <div v-if="status === 'success'">
+                <div class="flex items-center justify-center pt-10">
+                    <AppHeading :title="data.platformName" :subtitle="data.name" :center="true" />
+
+                </div>
                 <div v-if="data.courses.length > 0">
 
                     <HomeFeaturedCourses :courses="data.courses" :category="data.slug" />

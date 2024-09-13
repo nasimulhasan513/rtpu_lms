@@ -1,26 +1,19 @@
-import { zh } from "h3-zod";
-import { CategorySchema } from "~/schema/category.schema";
+import { db } from '~/server/utils/auth'
+import { CategorySchema } from '~/schema/category.schema'
 
 export default defineEventHandler(async (event) => {
-  const { data, error } = await zh.useSafeValidatedBody(event, CategorySchema);
+    const body = await readBody(event)
+    const validatedData = CategorySchema.parse(body)
 
-  if (error) {
-    return {
-      status: 400,
-      statusMessage: error,
-    };
-  }
+    const category = await db.category.create({
+        data: {
+            name: validatedData.name,
+            slug: validatedData.slug,
+            image: validatedData.image,
+            logo: validatedData.logo,
+            platformName: validatedData.platformName,
+        },
+    })
 
-  await db.category.create({
-    data: {
-      name: data.name,
-      slug: data.slug,
-      image: data.image,
-    },
-  });
-
-  return {
-    statusCode: 201,
-    statusMessage: "Course created successfully",
-  };
-});
+    return category
+})

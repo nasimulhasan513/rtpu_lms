@@ -4,6 +4,9 @@ export default defineEventHandler(async (event) => {
       include: {
         courses: true,
       },
+      cacheStrategy: {
+        ttl: 60 * 60 * 24 * 7, // 1 week
+      },
     });
 
     return categories.map((category) => ({

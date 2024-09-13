@@ -1,18 +1,59 @@
 <template>
-    <div>
-        <div class="flex flex-col items-center justify-center min-h-[60vh]">
-            <h1 class="mb-4 text-3xl font-bold text-primary">শীঘ্রই আসছে</h1>
-            <p class="text-lg text-muted-foreground">এই পৃষ্ঠাটি বর্তমানে নির্মাণাধীন রয়েছে। অনুগ্রহ করে পরে আবার চেক
-                করুন।</p>
+    <AppContainer>
+
+        <div v-if="status === 'success'" class="space-y-6">
+
+            <div class="max-w-2xl mx-auto">
+                <ExamCard v-for="exam in data.body.ongoingExams" :key="exam.id" :exam="exam" />
+            </div>
+            <Tabs default-value="upcoming">
+                <TabsList class="grid w-full grid-cols-2">
+                    <TabsTrigger value="upcoming">
+                        Upcoming Exams
+                    </TabsTrigger>
+                    <TabsTrigger value="past">
+                        Past Exams
+                    </TabsTrigger>
+                </TabsList>
+                <TabsContent value="upcoming">
+                    <div v-if="data.body.upcomingExams.length > 0" class="grid gap-6 md:grid-cols-2">
+                        <ExamCard v-for="exam in data.body.upcomingExams" :key="exam.id" :exam="exam" />
+                    </div>
+
+                    <AppEmptyState v-else title="No exam scheduled" />
+
+
+                </TabsContent>
+                <TabsContent value="past">
+                    <div v-if="data.body.pastExams.length > 0" class="grid gap-6 md:grid-cols-2">
+                        <ExamCard v-for="exam in data.body.pastExams" :key="exam.id" :exam="exam" />
+                    </div>
+                    <AppEmptyState title="No exam found" v-else />
+
+                </TabsContent>
+            </Tabs>
+
         </div>
-    </div>
+        <div v-else class="py-8">
+            <AppLoader />
+        </div>
+
+    </AppContainer>
 </template>
 
 <script setup>
-
 definePageMeta({
-    layout: 'course'
+    layout: 'course',
+    middleware: 'enrolled'
 })
+
+const route = useRoute()
+
+const { data, status, error, refresh } = await useLazyFetch(`/api/courses/${route.params.slug}/exams`, {
+    key: 'course-exams',
+})
+
+
 
 
 </script>

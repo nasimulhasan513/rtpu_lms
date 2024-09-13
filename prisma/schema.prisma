@@ -72,12 +72,13 @@ model Teacher {
 }
 
 model Category {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  name  String
-  slug  String @unique
-  image String
-
-  courses Course[]
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  slug         String   @unique
+  image        String
+  logo         String
+  platformName String
+  courses      Course[]
 }
 
 model Course {

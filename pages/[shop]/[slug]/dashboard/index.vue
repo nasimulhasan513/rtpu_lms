@@ -23,9 +23,9 @@
         {{ error }}
     </div>
     <div v-else class="text-center">
-        <p>Loading dashboard data...</p>
+        <p>ড্যাশবোর্ড ডেটা লোড হচ্ছে...</p>
     </div>
-   
+
 </template>
 
 <script setup>

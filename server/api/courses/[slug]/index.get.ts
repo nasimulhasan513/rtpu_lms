@@ -23,8 +23,11 @@ export default defineEventHandler(async (event) => {
             lesson: true
           }
         }
-      }
-    })
+      },
+      cacheStrategy: {
+        ttl: 60 * 60, // 1 hour
+      },
+    });
 
     if (!course) {
       return {

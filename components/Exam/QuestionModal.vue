@@ -6,42 +6,36 @@
 
         <form @submit.prevent="onSubmit">
             <div class="space-y-6">
-                <div class="grid grid-cols-2 gap-6">
-                    <!-- select -->
-
-                    <Select v-model="model.subjectId">
-
+                <div class="grid grid-cols-2 gap-6 my-3">
+                    <Select v-model="model.subject">
                         <SelectTrigger>
                             <SelectValue placeholder="Select subject" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectGroup v-for="s in subjects" :key="s.id">
-                                <SelectItem :value="s.id">
-                                    {{ s.name }}
+                            <SelectGroup>
+                                <SelectLabel>Select Subject</SelectLabel>
+                                <SelectItem v-for="s in SUBJECTS" :key="s" :value="s">
+                                    {{ s }}
                                 </SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-
-
-                    <Select v-model="model.chapterId">
-
+                    <Select v-model="model.difficulty">
                         <SelectTrigger>
-                            <SelectValue placeholder="Select chapter" />
+                            <SelectValue placeholder="Select difficulty" />
                         </SelectTrigger>
-
                         <SelectContent>
-                            <SelectGroup v-for="c in chapters" :key="c.id">
-                                <SelectItem :value="c.id">
-                                    {{ c.name }}
+                            <SelectGroup>
+                                <SelectLabel>Select difficulty</SelectLabel>
+                                <SelectItem v-for="s in DIFFICULTY_LEVELS" :key="s" :value="s">
+                                    {{ s }}
                                 </SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-
                 </div>
             </div>
-            <div class="flex flex-wrap my-6 -mx-3">
+            <div class="flex flex-wrap mb-6 -mx-3">
                 <div class="w-full px-3 mb-6 md:mb-0">
                     <div class="flex items-center justify-between">
                         <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
@@ -61,15 +55,14 @@
                 </div>
             </div>
 
-            <Tabs default-value="text">
+            <Tabs default-value="easy">
                 <TabsList class="grid w-full grid-cols-2">
-                    <TabsTrigger value="text">
-                        Text Based
-                    </TabsTrigger>
                     <TabsTrigger value="easy">
                         Option Based
                     </TabsTrigger>
-
+                    <TabsTrigger value="text">
+                        Text Based
+                    </TabsTrigger>
                 </TabsList>
                 <TabsContent value="easy">
 
@@ -129,11 +122,8 @@
 
 
 
-            <div class="flex justify-center gap-3 py-2 my-3 text-center">
-
-
-                <AppButton :loading="loading" @click="onSubmit" label="Save MCQ" :loadingLabel="'Please wait...'" />
-
+            <div class="py-2 my-3 text-center">
+                <AppButton :loading="loading" type="submit" label="Save MCQ" :loadingLabel="'Please wait...'" />
             </div>
         </form>
 
@@ -142,10 +132,10 @@
 </template>
 
 <script setup>
-import { questionSchema } from '@/schema/question.schema'
+
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { useToast } from '@/components/ui/toast/use-toast'
-import { z } from 'zod'
+import { SUBJECTS, DIFFICULTY_LEVELS } from '~/constants/academic'
 
 const props = defineProps({
 
@@ -165,129 +155,25 @@ if (!import.meta.server) {
     vueApp.component('QuillEditor', QuillEditor);
 }
 
-const { onClose, isOpen, initialQuestion, examId } = useQuestion()
+const { onClose, isOpen, initialQuestion } = useQuestion()
 
 
 const optionLabels = {
-    'en': ['A', 'B', 'C', 'D',],
-    'bn': ['ক', 'খ', 'গ', 'ঘ',],
+    'en': ['A', 'B', 'C', 'D'],
+    'bn': ['ক', 'খ', 'গ', 'ঘ'],
     'mul': ['i, ii', 'ii, iii', 'i, iii', 'i, ii, iii']
 }
-const { subjects } = useSubject()
 
-const chapters = ref([])
 
 
 const model = ref(
     initialQuestion.value ? {
         question: initialQuestion.value.question,
         options: initialQuestion.value.options.map(o => ({ option_text: o.option_text, correct: o.correct })),
-        subjectId: initialQuestion.value.subjectId,
-        chapterId: initialQuestion.value.chapterId,
-        difficulty: initialQuestion.value.difficulty || 'Medium',
+        subject: initialQuestion.value.subject,
+        difficulty: initialQuestion.value.difficulty,
         explain: initialQuestion.value.explain
     } : {
-        question: '',
-        examId: examId.value,
-        options: [
-            { option_text: '', correct: false },
-            { option_text: '', correct: false },
-            { option_text: '', correct: false },
-            { option_text: '', correct: false },
-        ],
-        subjectId: '',
-        chapterId: '',
-        difficulty: 'Medium',
-        explain: ''
-    })
-const richText = ref({
-    question: true,
-    a: false,
-    b: false,
-    c: false,
-    d: false,
-    set: '',
-    explain: ''
-})
-
-const emits = defineEmits(['close'])
-const loading = ref(false)
-
-const { toast } = useToast()
-const isEdit = ref(false)
-
-
-
-const onSubmit = async () => {
-    loading.value = true
-
-    try {
-        const validatedData = questionSchema.parse(model.value)
-
-        if (isEdit.value) {
-            const data = await $fetch(`/api/admin/questions/${model.value.id}`, {
-                method: 'PUT',
-                body: validatedData
-            })
-
-            toast({
-                title: "Question updated successfully"
-            })
-        } else {
-            const data = await $fetch('/api/admin/questions', {
-                method: 'POST',
-                body: validatedData
-            })
-
-            if (data.statusCode === 201) {
-                toast({
-                    title: "Question created successfully"
-                })
-            }
-        }
-
-        refreshNuxtData('exam-questions')
-        reset()
-        onClose()
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            toast({
-                title: "Validation Error",
-                description: error.errors[0].message
-            })
-        } else {
-            console.error(error)
-            toast({
-                title: "Something went wrong",
-                description: error.response?.data?.message || "An unexpected error occurred"
-            })
-        }
-    } finally {
-        loading.value = false
-    }
-}
-
-
-watch(() => initialQuestion.value, (value) => {
-    if (value) {
-        isEdit.value = true
-        model.value = {
-            id: value.id,
-            question: value.question,
-            options: value.options.map(o => ({ ...o, option_text: o.option_text, correct: o.correct })),
-            subjectId: value.subjectId,
-            chapterId: value.chapterId,
-            difficulty: value.difficulty || 'Medium',
-            explain: value.explain
-        }
-    } else {
-        isEdit.value = false
-    }
-})
-
-
-const reset = () => {
-    model.value = {
         question: '',
         options: [
             { option_text: '', correct: false },
@@ -295,12 +181,148 @@ const reset = () => {
             { option_text: '', correct: false },
             { option_text: '', correct: false }
         ],
-        subjectId: '',
-        chapterId: '',
-        difficulty: 'Medium',
+        subject: '',
+        difficulty: '',
         explain: ''
+
+    })
+const richText = ref({
+    question: true,
+    a: true,
+    b: true,
+    c: true,
+    d: true,
+    subject: '',
+    difficulty: '',
+    explain: ''
+})
+
+
+
+const emits = defineEmits(['close'])
+const loading = ref(false)
+
+const { toast } = useToast()
+const route = useRoute()
+const onSubmit = async () => {
+    loading.value = true
+
+    if (model.value.options.filter(o => o.correct).length == 0) {
+        toast({
+            title: "Please select correct answer"
+        })
+        loading.value = false
+        return
+    }
+
+    if (!model.value.options.some(o => o.option_text)) {
+        toast({
+            title: "Please fill all the options"
+        })
+        loading.value = false
+        return
+    }
+
+    if (model.value.question.trim() == '') {
+        toast({
+            title: "Please fill the question"
+        })
+        loading.value = false
+        return
+    }
+
+
+
+    try {
+
+        if (initialQuestion.value) {
+            const data = await $fetch('/api/admin/questions/' + initialQuestion.value.id, {
+                method: 'PUT',
+                body: {
+                    examId: route.params.id,
+                    ...model.value,
+                    options: model.value.options.map(o => ({ ...o, option_text: o.option_text, correct: o.correct, type: 'update' }))
+                }
+            })
+
+            toast({
+                title: "Question updated successfully"
+            })
+
+            refreshNuxtData('exam-questions')
+
+            model.value = {
+                question: '',
+                options: [
+                    { option_text: '', correct: false },
+                    { option_text: '', correct: false },
+                    { option_text: '', correct: false },
+                    { option_text: '', correct: false }
+                ],
+                subject: '',
+                difficulty: '',
+                explain: ''
+            }
+
+            return onClose()
+        }
+
+
+        const data = await $fetch('/api/admin/questions', {
+            method: 'POST',
+            body: {
+                examId: route.params.id,
+                ...model.value
+            }
+        })
+
+        if (data.statusCode === 201) {
+            model.value = {
+                question: '',
+                options: [
+                    { option_text: '', correct: false },
+                    { option_text: '', correct: false },
+                    { option_text: '', correct: false },
+                    { option_text: '', correct: false }
+                ],
+                subject: '',
+                difficulty: '',
+                explain: ''
+            }
+            toast({
+                title: "Question created successfully"
+            })
+
+            refreshNuxtData('exam-questions')
+
+            return onClose()
+        }
+        loading.value = false
+    } catch (error) {
+        console.log(error)
+        toast({
+            title: "Something went wrong",
+            description: error.response.data.message
+        })
+
+    } finally {
+        loading.value = false
+
     }
 }
+
+
+watch(() => initialQuestion.value, (value) => {
+    if (value) {
+        model.value = {
+            question: value.question,
+            options: value.options.map(o => ({ ...o, option_text: o.option_text, correct: o.correct })),
+            subject: value.subject,
+            difficulty: value.difficulty,
+            explain: value.explain
+        }
+    }
+})
 
 
 const setOptions = (lang, val) => {
@@ -323,19 +345,11 @@ const setOptions = (lang, val) => {
 
 
 
-watch(model.value, (value) => {
-    if (value.subjectId) {
-        chapters.value = subjects.value.find(s => s.id === value.subjectId).chapters
-    }
-}, {
-    deep: true
-})
 
 
 
-watch(examId, (value) => {
-    model.value.examId = value
-})
+
+
 
 </script>
 

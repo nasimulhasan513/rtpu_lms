@@ -3,7 +3,7 @@
         <AppHeading title="Course Categories" subtitle="Create, Update or organize categories." />
     </div>
 
-    <div v-if="status === 'success'" class="grid gap-5 mt-5 md:grid-cols-6">
+    <div v-if="status === 'success'" class="grid gap-5 mt-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         <Card class="cursor-pointer" @click="openModal">
             <CardContent class="flex flex-col items-center justify-center h-full">
                 <div>
@@ -22,6 +22,8 @@
                     <NuxtImg :src="category.image" :alt="category.name" class="object-cover w-32 h-32 rounded-sm" />
                 </div>
                 <h3 class="text-lg font-semibold text-center">{{ category.name }}</h3>
+
+                <h3 class="text-lg font-semibold text-center">{{ category.platformName }}</h3>
             </CardContent>
             <CardFooter class="flex items-center justify-center gap-2">
                 <Button @click="openModal(category)" variant="outline" size="xs">
@@ -39,6 +41,7 @@
         v-if="isOpen">
         <form @submit.prevent="onSubmit">
             <div class="space-y-6">
+                <!-- Cover Image Upload -->
                 <div @click="chooseCover"
                     class="relative flex flex-col items-center justify-center gap-4 p-20 transition border-2 cursor-pointer hover:opacity-70 border-nuetral-300 text-nuetral-600">
                     <input type="file" class="hidden" accept="image/*" capture="user" ref="coverUploader"
@@ -49,11 +52,30 @@
                             Click to upload
                         </p>
                         <p class="text-sm font-thin text-secondary-foreground">
-                            Category Logo/Cover
+                            Category Cover
                         </p>
                     </div>
                     <div v-else class="absolute inset-0 w-full h-full">
-                        <NuxtImg :src="form.values.image" class="object-cover w-full h-full" alt="category" />
+                        <NuxtImg :src="form.values.image" class="object-cover w-full h-full" alt="category cover" />
+                    </div>
+                </div>
+
+                <!-- Logo Upload -->
+                <div @click="chooseLogo"
+                    class="relative flex flex-col items-center justify-center gap-4 p-10 transition border-2 cursor-pointer hover:opacity-70 border-nuetral-300 text-nuetral-600">
+                    <input type="file" class="hidden" accept="image/*" capture="user" ref="logoUploader"
+                        @change="uploadCategoryLogo" />
+                    <Icon v-if="!form.values.logo" name="lucide:image-plus" size="30" />
+                    <div v-if="!form.values.logo" class="text-base font-semibold">
+                        <p>
+                            Click to upload
+                        </p>
+                        <p class="text-sm font-thin text-secondary-foreground">
+                            Category Logo
+                        </p>
+                    </div>
+                    <div v-else class="absolute inset-0 w-full h-full">
+                        <NuxtImg :src="form.values.logo" class="object-contain w-full h-full" alt="category logo" />
                     </div>
                 </div>
 
@@ -71,6 +93,16 @@
                         <FormLabel>Shop Link</FormLabel>
                         <FormControl>
                             <Input type="text" placeholder="Link" v-bind="componentField" />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                </FormField>
+
+                <FormField v-slot="{ componentField }" name="platformName">
+                    <FormItem>
+                        <FormLabel>Platform Name</FormLabel>
+                        <FormControl>
+                            <Input type="text" placeholder="Platform Name" v-bind="componentField" />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -113,6 +145,8 @@ const openModal = (category = null) => {
             name: category.name,
             slug: category.slug,
             image: category.image,
+            logo: category.logo,
+            platformName: category.platformName,
         })
     }
     isOpen.value = true
@@ -126,6 +160,8 @@ const form = useForm({
         name: '',
         image: '',
         slug: '',
+        logo: '',
+        platformName: '',
     }
 })
 
@@ -185,6 +221,22 @@ const uploadCategoryCover = async (e) => {
 
     const imageUrl = await uploadImage(file, 'categories/')
     form.setFieldValue('image', imageUrl)
+}
+
+const logoUploader = ref(null)
+const chooseLogo = () => {
+    logoUploader.value.click()
+}
+
+const uploadCategoryLogo = async (e) => {
+    const file = e.target.files[0]
+
+    if (form.values.logo) {
+        await deleteImage(form.values.logo)
+    }
+
+    const logoUrl = await uploadImage(file, 'categories/logos/')
+    form.setFieldValue('logo', logoUrl)
 }
 
 const deleteCategory = async (categoryId) => {

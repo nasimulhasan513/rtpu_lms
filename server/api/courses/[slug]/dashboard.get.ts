@@ -48,6 +48,9 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
+      cacheStrategy: {
+        ttl: 60 * 60, // 1 hour
+      },
     });
 
     if (!enrollment) {
@@ -68,6 +71,9 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
+      cacheStrategy: {
+        ttl: 60 * 60, // 1 hour
+      },
     });
 
     const assignmentSubmissions = await db.assignmentSubmission.findMany({
@@ -76,6 +82,9 @@ export default defineEventHandler(async (event) => {
         assignment: {
           courseId: enrollment.courseId,
         },
+      },
+      cacheStrategy: {
+        ttl: 60 * 60, // 1 hour
       },
     });
 
@@ -89,6 +98,9 @@ export default defineEventHandler(async (event) => {
 
     const totalAssignments = await db.assignment.count({
       where: { courseId: enrollment.courseId },
+      cacheStrategy: {
+        ttl: 60 * 60, // 1 hour
+      },
     });
     const completedAssignments = assignmentSubmissions.length;
 

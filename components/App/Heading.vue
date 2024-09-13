@@ -1,6 +1,6 @@
 <template>
-    <div :class="[center?'text-center':'text-left']">
-        <h1 class="text-2xl font-bold">{{ title }}</h1>
+    <div :class="[center ? 'text-center' : 'text-left']">
+        <h1 class="text-2xl font-bold text-primary">{{ title }}</h1>
         <p class="mt-2 font-light text-neutral-500">{{ subtitle }}</p>
     </div>
 </template>

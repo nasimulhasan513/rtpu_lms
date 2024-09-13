@@ -4,12 +4,16 @@
 
         <div class="space-y-6">
             <div class="flex flex-col gap-3" v-if="step == 'init'">
-                <Button variant="outline" @click="googleLogin">
+                <Button v-if="isGoogleLoginSupported" variant="outline" @click="googleLogin">
                     <Icon name="flat-color-icons:google" class="w-4 h-4 mr-2" />
                     গুগল দিয়ে লগইন করুন
 
                 </Button>
             </div>
+            <p class="text-sm text-center text-red-500">
+                [বি:দ্র: ওয়েবএ্যাপের লিংকটি অবশ্যই ক্রোম ব্রাউজারে ওপেন করবে। সরাসরি ফেসবুক অথবা মেসেঞ্জার থেকে লগইন
+                করা যাবে না।]
+            </p>
 
             <div class="hidden space-y-6">
                 <FormField v-slot="{ componentField }" name="cred">
@@ -151,7 +155,6 @@ const cred = ref('')
 const cred2 = ref('')
 const otp = ref('')
 const password = ref('')
-const { executeRecaptcha } = useGoogleRecaptcha()
 
 const onSubmit = async () => {
     switch (step.value) {
@@ -375,5 +378,14 @@ watch(cred, () => {
 const googleLogin = () => {
     window.location.href = '/login/google'
 }
+
+
+
+const isGoogleLoginSupported = computed(() => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    return !userAgent.includes('fban') && !userAgent.includes('fbav');
+})
+
+
 
 </script>

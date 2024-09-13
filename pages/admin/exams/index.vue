@@ -22,7 +22,7 @@
                 </Select>
             </div>
         </div>
-        <div class="bg-white">
+        <div class="bg-white" v-if="status === 'success'">
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -63,6 +63,12 @@
                 </TableBody>
             </Table>
         </div>
+        <div v-else-if="status === 'error'">
+            <AppEmptyState title="Failed to fetch exams" />
+        </div>
+        <div v-else>
+            <AppLoader />
+        </div>
     </div>
 </template>
 
@@ -78,7 +84,7 @@ const { toast } = useToast();
 const selectedCourse = ref('');
 const selectedSubject = ref('');
 
-const { data, refresh: refreshExams } = useFetch('/api/admin/exams', {
+const { data, status, refresh: refreshExams } = useFetch('/api/admin/exams', {
     query: computed(() => ({
         courseId: selectedCourse.value,
         subjectId: selectedSubject.value,
