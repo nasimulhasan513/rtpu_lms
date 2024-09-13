@@ -10,7 +10,7 @@
             [বি:দ্র: ওয়েবএ্যাপের লিংকটি ক্রোম ব্রাউজারে ওপেন করবে। সরাসরি ফেসবুক অথবা মেসেঞ্জার থেকে লগইন করা যাবে
             না।]
         </p>
-        <Card class="max-w-[425px] mx-auto" v-else>
+        <Card class="max-w-[425px] mx-auto" v-else-if="user">
             <CardHeader>
                 <CardTitle>কোর্স এক্সেস</CardTitle>
                 <CardDescription>
