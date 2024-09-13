@@ -31,17 +31,6 @@ useHead({
 
 
 
-const user = useUser()
-
-onMounted(() => {
-  if (user.value) {
-    let redirect = localStorage.getItem('redirect')
-    if (redirect) {
-      localStorage.removeItem('redirect')
-      navigateTo(redirect)
-    }
-  }
-})
 
 
 </script>

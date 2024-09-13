@@ -3,8 +3,9 @@
 
         <DialogContent class="max-h-screen overflow-y-scroll hide-scrollbar" :class="size ? size : 'sm:max-w-[425px]'">
             <DialogHeader>
-                <DialogTitle v-if="title" class="text-xl">{{ title }}</DialogTitle>
-                <DialogDescription v-if="description">
+                <DialogTitle v-if="title" class="text-xl" :class="centerTitle ? 'text-center' : 'text-left'">{{ title }}
+                </DialogTitle>
+                <DialogDescription v-if="description" :class="centerTitle ? 'text-center' : 'text-left'">
                     {{ description }}
                 </DialogDescription>
             </DialogHeader>
@@ -21,6 +22,7 @@ interface ModalProps {
     title?: string;
     description?: string;
     size?: string;
+    centerTitle?: boolean;
 }
 
 const props = defineProps<ModalProps>();

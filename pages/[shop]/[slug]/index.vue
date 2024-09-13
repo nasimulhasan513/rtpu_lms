@@ -1,10 +1,7 @@
 <template>
     <AppContainer class="flex items-center justify-center min-h-[76vh]">
         <div class="flex flex-col gap-3" v-if="!user && isGoogleLoginSupported">
-            <Button variant="outline" @click="googleLogin">
-                <Icon name="flat-color-icons:google" class="w-4 h-4 mr-2" />
-                গুগল দিয়ে লগইন করুন
-            </Button>
+            <AuthGoogleButton @loggedin="" />
         </div>
         <p class="text-sm text-center text-red-500" v-if="!isGoogleLoginSupported">
             [বি:দ্র: ওয়েবএ্যাপের লিংকটি ক্রোম ব্রাউজারে ওপেন করবে। সরাসরি ফেসবুক অথবা মেসেঞ্জার থেকে লগইন করা যাবে
@@ -90,15 +87,8 @@ const enrollCourse = async () => {
 
 const user = useUser()
 
-onMounted(() => {
-    if (!user.value) {
-        localStorage.setItem('redirect', route.fullPath)
-    }
-})
 
-const googleLogin = () => {
-    window.location.href = '/login/google'
-}
+
 const isGoogleLoginSupported = computed(() => {
     if (import.meta.client) {
         const userAgent = navigator.userAgent.toLowerCase();

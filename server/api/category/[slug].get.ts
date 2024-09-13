@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export default defineEventHandler(async (event) => {
   const slug = getRouterParam(event, "slug");
+  console.log(slug);
 
   // Validate the slug
   const slugSchema = z.string().min(1);

@@ -1,14 +1,10 @@
 <template>
-    <AppModal :isOpen="isOpen" title="স্বাগতম" description="আপনার অ্যাকাউন্টে লগইন করুন" @onClose="onClose"
-        v-if="isOpen">
+    <AppModal :isOpen="isOpen" title="স্বাগতম!" description="আপনার অ্যাকাউন্টে লগইন করুন" :centerTitle="true"
+        @onClose="onClose" v-if="isOpen">
 
-        <div class="space-y-6">
-            <div class="flex flex-col gap-3" v-if="step == 'init'">
-                <Button v-if="isGoogleLoginSupported" variant="outline" @click="googleLogin">
-                    <Icon name="flat-color-icons:google" class="w-4 h-4 mr-2" />
-                    গুগল দিয়ে লগইন করুন
-
-                </Button>
+        <div class="space-y-6" ref="modalRef">
+            <div class="flex flex-col gap-3" v-if="step == 'init' && isGoogleLoginSupported">
+                <AuthGoogleButton @loggedin="onClose" :width="googleButtonWidth" />
             </div>
             <p class="text-sm text-center text-red-500" v-if="!isGoogleLoginSupported">
                 [বি:দ্র: ওয়েবএ্যাপের লিংকটি ক্রোম ব্রাউজারে ওপেন করবে। সরাসরি ফেসবুক অথবা মেসেঞ্জার থেকে লগইন করা যাবে
@@ -334,7 +330,8 @@ const assignUser = async () => {
     if (data) {
         user.value = data;
     }
-    await initCart();
+
+    onClose()
 }
 
 watch(cred, () => {
@@ -375,12 +372,6 @@ watch(cred, () => {
     }
 })
 
-const googleLogin = () => {
-    window.location.href = '/login/google'
-}
-
-
-
 const isGoogleLoginSupported = computed(() => {
     if (import.meta.client) {
         const userAgent = navigator.userAgent.toLowerCase();
@@ -389,6 +380,13 @@ const isGoogleLoginSupported = computed(() => {
     return false
 })
 
-
+const modalRef = ref(null)
+const googleButtonWidth = computed(() => {
+    if (modalRef.value) {
+        // Subtract padding if necessary
+        return `${modalRef.value.offsetWidth}px`
+    }
+    return '360px' // Default width
+})
 
 </script>
