@@ -21,7 +21,7 @@
                 <div class="grid gap-4">
                     <div class="space-y-2">
                         <Label for="uniqueId">
-                            অ্যাক্সেস কোড {{ route.name }}
+                            অ্যাক্সেস কোড
                         </Label>
                         <Input id="uniqueId" placeholder="গ্রুপ জয়েনিং আইডি" v-model="uniqueId" class="col-span-3" />
                     </div>
