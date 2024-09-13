@@ -10,7 +10,7 @@
 
                 </Button>
             </div>
-            <p class="text-sm text-center text-red-500">
+            <p class="text-sm text-center text-red-500" v-if="!isGoogleLoginSupported">
                 [বি:দ্র: ওয়েবএ্যাপের লিংকটি অবশ্যই ক্রোম ব্রাউজারে ওপেন করবে। সরাসরি ফেসবুক অথবা মেসেঞ্জার থেকে লগইন
                 করা যাবে না।]
             </p>
