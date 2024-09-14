@@ -19,9 +19,9 @@
             <div class="text-lg font-semibold text-gray-900 " v-html="q.question"></div>
 
             <div class="flex flex-wrap gap-3 ">
-                 <Badge> প্রশ্ন নংঃ {{ formatNumber(i + 1) }}</Badge>
-                    <Badge> {{ q.subject.name }}</Badge>
-                    <Badge> ১ নম্বর</Badge>
+                <Badge> প্রশ্ন নংঃ {{ formatNumber(i + 1) }}</Badge>
+                <Badge> {{ q.subject.name }}</Badge>
+                <Badge> ১ নম্বর</Badge>
                 <Badge v-if="notAnswered(q.id)" class="bg-red-500">উত্তর দেওয়া হয়নি</Badge>
             </div>
             <div class="mt-3 space-y-3 ">
@@ -49,6 +49,11 @@
 </template>
 
 <script setup>
+
+definePageMeta({
+    layout: 'course'
+})
+
 const route = useRoute()
 const { data, status, error, refresh } = await useFetch('/api/question/' + route.params.id + '/solution', {
     key: 'solution'

@@ -48,6 +48,7 @@ export default defineEventHandler(async (event) => {
         select: {
           name: true,
           institute: true,
+          image: true,
         },
       },
       marks: true,

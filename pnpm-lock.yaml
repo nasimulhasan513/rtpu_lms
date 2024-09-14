@@ -151,6 +151,9 @@ dependencies:
     version: 3.23.8
 
 devDependencies:
+  '@iconify-json/lucide':
+    specifier: ^1.2.4
+    version: 1.2.4
   '@nuxt/icon':
     specifier: ^1.4.5
     version: 1.5.0(vite@5.4.2)(vue@3.4.38)
@@ -2027,6 +2030,12 @@ packages:
     resolution: {integrity: sha512-TgWz02c5l2XJlEDys81UVat5+Qg9xqmYah7tQt6xlsBwFvzIFPz64aZFGd1av2sxT22NsssqLATjNsusAIJICA==}
     engines: {node: '>=18.0.0'}
     dev: false
+
+  /@iconify-json/lucide@1.2.4:
+    resolution: {integrity: sha512-ji8BuD1LFzLGzueqwmfdx721RGdeeGY4QQsZrKD29/OCO6K5YVI1dzJQzAk4yUGg3dDJBuw1CLb5F0YwirDEbg==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
 
   /@iconify/collections@1.0.454:
     resolution: {integrity: sha512-bE/6YBUNhNhTLjytCGrCD+rS0hrlkSC0J4e5svggLVnPoOgvA0yKIAxyUtyWl0666o//3CHlnAizwvA1JYm64w==}

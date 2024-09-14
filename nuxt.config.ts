@@ -3,12 +3,20 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: {
     enabled: true,
-
     timeline: {
       enabled: true,
     },
   },
-  modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@nuxtjs/color-mode", "@pinia/nuxt", "@vueuse/nuxt", "@nuxt/icon", "@nuxt/image", "nuxt-vue3-google-signin"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "shadcn-nuxt",
+    "@nuxtjs/color-mode",
+    "@pinia/nuxt",
+    "@vueuse/nuxt",
+    "@nuxt/icon",
+    "@nuxt/image",
+    "nuxt-vue3-google-signin",
+  ],
   vite: {
     optimizeDeps: {
       exclude: ["vee-validate"],

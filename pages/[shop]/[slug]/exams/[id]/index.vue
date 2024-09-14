@@ -11,7 +11,7 @@
 
                     </div>
                     <Button @click="submitAns"
-                        class="px-3 py-3 font-semibold text-white transition-all duration-300 transform rounded-xl bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        class="px-4 py-3 font-semibold text-white transition-all duration-300 transform shadow-lg rounded-xl bg-gradient-to-r from-primary to-blue-600 hover:from-blue-600 hover:to-primary hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                         Submit Exam
                     </Button>
                 </div>
@@ -19,6 +19,8 @@
         </AppContainer>
         <Progress v-model="progress" class="w-full rounded-none " />
     </header>
+
+
     <div class="max-w-2xl py-5 mx-auto space-y-4 md:py-10 md:space-y-6" v-if="status === 'success'">
         <h1 class="text-xl font-bold text-center title_grad md:hidden">{{ data.exam.title }}</h1>
         <div v-for="(q, i) in data.questions" :key="i"
@@ -27,9 +29,9 @@
             <div class="text-lg font-semibold text-gray-900 " v-html="q.question"></div>
 
             <div class="flex flex-wrap gap-3 ">
-                <Badge> Q no. {{ i + 1 }}</Badge>
-                <Badge> {{ q.subject }}</Badge>
-                <Badge> 1 Marks</Badge>
+                <Badge> প্রশ্ন নংঃ {{ formatNumber(i + 1) }}</Badge>
+                <Badge> {{ q.subject.name }}</Badge>
+                <Badge> ১ নম্বর</Badge>
             </div>
             <div class="mt-3 space-y-3 ">
 
@@ -98,7 +100,7 @@ const submitAns = async () => {
             variant: 'destructive'
         })
     }
-    navigateTo('/')
+    navigateTo(`/${route.params.shop}/${route.params.slug}/exams`)
 }
 
 const selectOption = (idx, a_id) => {

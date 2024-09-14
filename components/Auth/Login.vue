@@ -151,6 +151,7 @@ const cred = ref('')
 const cred2 = ref('')
 const otp = ref('')
 const password = ref('')
+const { executeRecaptcha } = useGoogleRecaptcha()
 
 const onSubmit = async () => {
     switch (step.value) {

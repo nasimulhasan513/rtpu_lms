@@ -92,8 +92,6 @@ export default defineEventHandler(async (event) => {
         id: userId,
       },
       data: {
-        name: verificationResponse.name,
-        phone: verificationResponse.phone,
         institute: verificationResponse.institution,
         hsc_batch: verificationResponse.hsc_batch,
       },
