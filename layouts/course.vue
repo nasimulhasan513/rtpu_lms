@@ -34,7 +34,10 @@ const menus = computed(() => {
 })
 
 const { fetchShop } = useShop()
-fetchShop()
+
+onMounted(async () => {
+    await fetchShop()
+})
 
 </script>
 
