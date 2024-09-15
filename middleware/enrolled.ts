@@ -5,10 +5,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
     if (!user.value) {
       return onOpen();
     }
-    const { fetchShop } = useShop();
-    if (to.params.shop) {
-      fetchShop();
-    }
 
     const enrollment = await isEnrolled(to.params.slug as string);
     if (enrollment && to.name == "shop-slug") {

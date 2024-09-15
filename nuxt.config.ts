@@ -54,7 +54,6 @@ export default defineNuxtConfig({
           name: "og:description",
           content: "ACS Courses",
         },
-
         {
           name: "og:image",
           content:
