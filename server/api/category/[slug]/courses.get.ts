@@ -22,9 +22,6 @@ export default defineEventHandler(async (event) => {
           slug: slug,
         },
       },
-      cacheStrategy: {
-        ttl: 60 * 60 * 24 * 7, // 1 week
-      },
     });
 
     if (!courses) {

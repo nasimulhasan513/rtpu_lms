@@ -28,7 +28,8 @@
 </template>
 
 <script setup>
-const { status, shopStatus, shop, courses, fetchCourses } = useShop()
+const { status, shopStatus, shop, courses, fetchCourses, fetchShop } = useShop()
+fetchShop()
 fetchCourses()
 </script>
 

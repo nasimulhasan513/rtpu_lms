@@ -1,11 +1,11 @@
 export default defineEventHandler(async (event) => {
-  const slug = event.context.params?.slug
+  const slug = event.context.params?.slug;
 
   if (!slug) {
     return {
       status: 400,
-      body: { message: "Course slug is required" }
-    }
+      body: { message: "Course slug is required" },
+    };
   }
 
   try {
@@ -15,47 +15,43 @@ export default defineEventHandler(async (event) => {
         category: true,
         teachers: {
           include: {
-            teacher: true
-          }
+            teacher: true,
+          },
         },
         lessons: {
           include: {
-            lesson: true
-          }
-        }
-      },
-      cacheStrategy: {
-        ttl: 60 * 60, // 1 hour
+            lesson: true,
+          },
+        },
       },
     });
 
     if (!course) {
       return {
         status: 404,
-        body: { message: "Course not found" }
-      }
+        body: { message: "Course not found" },
+      };
     }
 
     // Transform the course data to include teacher information directly
     const transformedCourse = {
       ...course,
-      teachers: course.teachers.map(t => t.teacher),
+      teachers: course.teachers.map((t) => t.teacher),
       // You may want to organize lessons into sections here
       content: [
         {
           title: "Course Content",
-          lessons: course.lessons.map(l => l.lesson)
-        }
+          lessons: course.lessons.map((l) => l.lesson),
+        },
       ],
-      
-    }
+    };
 
-    return transformedCourse
+    return transformedCourse;
   } catch (error) {
-    console.error("Error fetching course:", error)
+    console.error("Error fetching course:", error);
     return {
       status: 500,
-      body: { message: "An error occurred while fetching the course" }
-    }
+      body: { message: "An error occurred while fetching the course" },
+    };
   }
-})
+});

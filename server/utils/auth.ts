@@ -3,10 +3,9 @@ import { Google } from "arctic";
 import type { H3Event } from "h3";
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 import { PrismaClient } from "@prisma/client";
-import { withAccelerate } from "@prisma/extension-accelerate";
 
 // For Vercel deployment need to use edge handlers
-export const db = new PrismaClient().$extends(withAccelerate());
+export const db = new PrismaClient();
 
 const adapter = new PrismaAdapter(db.session, db.user);
 export const lucia = new Lucia(adapter, {

@@ -16,9 +16,7 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  const courses = await db.course.findMany({
-    cacheStrategy: { ttl: 60 },
-  });
+  const courses = await db.course.findMany({});
 
   return {
     statusCode: 200,
