@@ -5,12 +5,10 @@ import type { NavGroup, NavLink, NavSectionTitle } from '~/types/nav'
 
 defineProps<{
   navMenu: NavLink[]
-  navMenuBottom: NavLink[]
+  // navMenuBottom: NavLink[]
 }>()
 
 const user = useUser()
-const { course } = useCourse()
-
 async function handleLogout() {
   await $fetch('/api/logout', { method: 'POST' })
   user.value = null
@@ -29,6 +27,8 @@ function resolveNavItemComponent(item: NavLink | NavGroup | NavSectionTitle) {
 const color = useColorMode()
 
 const isMediumScreen = useMediaQuery('(min-width: 768px)')
+
+const { shop } = useShop()
 </script>
 
 <template>
@@ -45,8 +45,12 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
           <SheetHeader>
             <SheetTitle class="flex items-center gap-3">
 
-              <Icon name="lucide:triangle" class="size-5 fill-foreground" />
-              বাংলা ব্যাঞ্জন
+              <Button variant="outline" size="icon" aria-label="Home">
+                <img src="~/assets/logo.png" alt="Admin" />
+              </Button>
+              <span>
+                {{ shop?.platformName }}
+              </span>
             </SheetTitle>
           </SheetHeader>
           <ScrollArea class="w-full">
@@ -55,19 +59,19 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
                 :item="item" />
             </nav>
           </ScrollArea>
-          <div class="mt-auto">
+          <!-- <div class="mt-auto">
             <nav class="grid gap-2">
               <component :is="resolveNavItemComponent(item)" v-for="(item, index) in navMenuBottom" :key="index"
                 :item="item" />
             </nav>
-          </div>
+          </div> -->
         </SheetContent>
       </Sheet>
 
       <div>
 
-        <h2 class="text-2xl font-bold">
-          {{ course.name }}
+        <h2 class="text-xl font-bold lg:hidden">
+          {{ shop?.platformName }}
         </h2>
 
       </div>
@@ -106,7 +110,7 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
             <DropdownMenuGroup>
               <DropdownMenuItem @click="navigateTo('/profile')">
                 প্রোফাইল
-               
+
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>

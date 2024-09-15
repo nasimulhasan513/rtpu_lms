@@ -41,9 +41,11 @@ const route = useRoute()
         <Button variant="outline" size="icon" aria-label="Home">
           <img src="~/assets/logo.png" alt="Admin" />
         </Button>
-        <span v-if="isOpen" class="hidden text-xl font-semibold lg:inline-block text-primary">
-          {{ route.params.shop ? shop?.platformName : "কোর্স অ্যাডমিন" }}
-        </span>
+        <div>
+          <span v-if="isOpen" class="hidden text-xl font-semibold lg:inline-block text-primary">
+            {{ route.params.shop ? shop?.platformName : "কোর্স অ্যাডমিন" }}
+          </span>
+        </div>
       </div>
 
       <Button variant="outline" class="absolute hidden p-0 rounded-full top-4 size-6 -right-3 lg:inline-flex"

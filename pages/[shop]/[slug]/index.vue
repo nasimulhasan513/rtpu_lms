@@ -97,4 +97,7 @@ const isGoogleLoginSupported = computed(() => {
     return false
 })
 
+const { fetchShop } = useShop()
+fetchShop()
+
 </script>

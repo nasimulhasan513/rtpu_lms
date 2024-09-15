@@ -35,8 +35,11 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
           <SheetHeader>
             <SheetTitle class="flex items-center gap-3">
 
-              <Icon name="lucide:triangle" class="size-5 fill-foreground" />
-              Academia
+              <Button variant="outline" size="icon" aria-label="Home">
+                <img src="~/assets/logo.png" alt="Admin" />
+              </Button>
+              কোর্স অ্যাডমিন
+
             </SheetTitle>
           </SheetHeader>
           <ScrollArea class="w-full">

@@ -33,7 +33,8 @@ const menus = computed(() => {
     })
 })
 
-
+const { fetchShop } = useShop()
+fetchShop()
 
 </script>
 
