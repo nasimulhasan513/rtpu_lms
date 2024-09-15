@@ -1,48 +1,64 @@
-export default defineEventHandler(async (event) => {
-  const slug = event.context.params?.slug;
-  const userId = event.context.user?.id;
+import { z } from 'zod';
 
-  if (!slug || !userId) {
-    return createError({
-      statusCode: 400,
-      message: "Invalid request",
+const paramSchema = z.object({
+  slug: z.string().nonempty(),
+});
+
+export default defineEventHandler(async (event) => {
+  const userId = event.context.user?.id;
+  if (!userId) {
+    throw createError({
+      statusCode: 401,
+      message: "Unauthorized",
     });
   }
+
+  const { slug } = paramSchema.parse(event.context.params);
 
   try {
     const enrollment = await db.enrollment.findFirst({
       where: {
-        user: { id: userId },
+        userId,
         course: { slug },
         status: "active",
       },
-      include: {
+      select: {
+        courseId: true,
         course: {
-          include: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
             lessons: {
-              include: {
+              select: {
                 lesson: {
-                  include: {
-                    LessonProgress: {
-                      where: {
-                        userId,
-                      },
+                  select: {
+                    id: true,
+                    subject: {
                       select: {
-                        completed: true,
+                        id: true,
+                        name: true,
                       },
                     },
-                    subject: true,
-                    chapter: true,
+                    LessonProgress: {
+                      where: { userId },
+                      select: { completed: true },
+                    },
                   },
                 },
               },
-              orderBy: {
-                order: "asc",
-              },
+              orderBy: { order: 'asc' },
             },
             exams: {
-              include: {
-                exam: true,
+              select: {
+                exam: {
+                  select: {
+                    id: true,
+                    title: true,
+                    startTime: true,
+                    endTime: true,
+                  },
+                },
               },
             },
           },
@@ -53,64 +69,44 @@ export default defineEventHandler(async (event) => {
     if (!enrollment) {
       throw createError({
         statusCode: 404,
-        message: "Enrollment not found or not completed",
+        message: "Enrollment not found or not active",
       });
     }
 
-    const submissions = await db.submission.findMany({
-      where: {
-        userId,
-        exam: {
-          courseExams: {
-            some: {
-              courseId: enrollment.courseId,
-            },
-          },
+    const [submissionCount, assignmentSubmissionCount, totalAssignments] = await Promise.all([
+      db.submission.count({
+        where: {
+          userId,
+          exam: { courseExams: { some: { courseId: enrollment.courseId } } },
         },
-      },
-    });
-
-    const assignmentSubmissions = await db.assignmentSubmission.findMany({
-      where: {
-        userId,
-        assignment: {
-          courseId: enrollment.courseId,
+      }),
+      db.assignmentSubmission.count({
+        where: {
+          userId,
+          assignment: { courseId: enrollment.courseId },
         },
-      },
-    });
+      }),
+      db.assignment.count({
+        where: { courseId: enrollment.courseId },
+      }),
+    ]);
 
-    const totalLessons = enrollment.course.lessons.length;
-    const completedLessons = enrollment.course.lessons.filter(
-      (lesson) => lesson.lesson.LessonProgress[0]?.completed
-    ).length;
+    const lessons = enrollment.course.lessons;
+    const totalLessons = lessons.length;
+    const completedLessons = lessons.filter(l => l.lesson.LessonProgress[0]?.completed).length;
 
-    const totalExams = enrollment.course.exams.length;
-    const completedExams = submissions.length;
-
-    const totalAssignments = await db.assignment.count({
-      where: { courseId: enrollment.courseId },
-    });
-    const completedAssignments = assignmentSubmissions.length;
-
-    let subjects: {
-      id: string;
-      name: string;
-      totalLessons: number;
-    }[] = [];
-
-    enrollment.course.lessons.forEach((courseLesson) => {
-      const subject = courseLesson.lesson.subject;
-      if (!subjects.some((s) => s.id === subject.id)) {
-        subjects.push({
-          id: subject.id,
-          name: subject.name,
-          totalLessons: 1,
-        });
+    const subjects = lessons.reduce((acc, { lesson }) => {
+      const { id, name } = lesson.subject;
+      if (!acc[id]) {
+        acc[id] = { id, name, totalLessons: 1 };
       } else {
-        const subj = subjects.find((s) => s.id === subject.id);
-        subj ? subj.totalLessons++ : null;
+        acc[id].totalLessons++;
       }
-    });
+      return acc;
+    }, {} as Record<string, { id: string; name: string; totalLessons: number }>);
+
+    const exams = enrollment.course.exams;
+    const totalExams = exams.length;
 
     return {
       course: {
@@ -126,23 +122,21 @@ export default defineEventHandler(async (event) => {
         },
         exams: {
           total: totalExams,
-          completed: completedExams,
-          percentage: Math.round((completedExams / totalExams) * 100),
+          completed: submissionCount,
+          percentage: Math.round((submissionCount / totalExams) * 100),
         },
         assignments: {
           total: totalAssignments,
-          completed: completedAssignments,
-          percentage: Math.round(
-            (completedAssignments / totalAssignments) * 100
-          ),
+          completed: assignmentSubmissionCount,
+          percentage: Math.round((assignmentSubmissionCount / totalAssignments) * 100),
         },
       },
-      subjects,
-      exams: enrollment.course.exams.map((courseExam) => ({
-        id: courseExam.exam.id,
-        title: courseExam.exam.title,
-        startTime: courseExam.exam.startTime,
-        endTime: courseExam.exam.endTime,
+      subjects: Object.values(subjects),
+      exams: exams.map(({ exam }) => ({
+        id: exam.id,
+        title: exam.title,
+        startTime: exam.startTime,
+        endTime: exam.endTime,
       })),
     };
   } catch (error) {

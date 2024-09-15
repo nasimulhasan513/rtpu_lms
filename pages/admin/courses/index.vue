@@ -24,14 +24,17 @@
                     </div>
                     <div class="flex justify-center gap-3 pb-5">
 
-                        <Button variant="secondary" @click="navigateTo(`/admin/courses/${c.id}/lessons`)">
+                        <Button variant="outline" @click="navigateTo(`/admin/courses/${c.id}/lessons`)">
                             Lessons
                         </Button>
-
-                        <Button variant="secondary" @click="navigateTo(`/admin/courses/${c.id}`)">
+                        <Button variant="outline" @click="navigateTo(`/admin/courses/${c.id}/students`)">
+                            Students
+                        </Button>
+                        <Button v-if="hasRole('admin')" variant="secondary"
+                            @click="navigateTo(`/admin/courses/${c.id}`)">
                             Edit
                         </Button>
-                        <Button variant="destructive" @click="handleDeleteCourse(c.id)">
+                        <Button v-if="hasRole('admin')" variant="destructive" @click="handleDeleteCourse(c.id)">
                             Delete
                         </Button>
 

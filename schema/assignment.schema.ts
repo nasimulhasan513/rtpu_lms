@@ -7,6 +7,6 @@ export const assignmentSchema = z.object({
   total_marks: z.number().int().positive(),
   startDate: z.string(),
   endDate: z.string(),
-  pdf: z.string().url().nullable(),
+  pdf: z.string().url().optional().nullable(),
   status: z.enum(["draft", "published"]).default("draft"),
 });

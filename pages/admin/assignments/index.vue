@@ -31,6 +31,7 @@
                         <TableCell>{{ assignment.status }}</TableCell>
                         <TableCell>
                             <div class="flex gap-2">
+                                <Button variant="outline" size="sm" @click="viewSubmissions(assignment.id)">Submissions</Button>
                                 <Button variant="outline" size="sm" @click="editAssignment(assignment.id)">Edit</Button>
                                 <Button variant="destructive" size="sm"
                                     @click="deleteAssignment(assignment.id)">Delete</Button>
@@ -74,6 +75,10 @@ const filteredAssignments = computed(() => {
     if (!selectedCourse.value) return assignments.value
     return assignments.value?.filter(assignment => assignment.courseId === selectedCourse.value)
 })
+
+const viewSubmissions = (assignmentId) => {
+    navigateTo(`/admin/assignments/${assignmentId}/submissions`)
+}
 
 const navigateToCreate = () => {
     navigateTo('/admin/assignments/create')

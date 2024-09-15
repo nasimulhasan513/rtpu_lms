@@ -58,23 +58,22 @@ export const google = new Google(
 );
 
 // role enum type
-export type Role = "admin" | "user" | "sales";
+export type Role = "admin" | "user" | "contributor";
 
 export const validateRequest = (
   event: H3Event,
-  roles: Role[] = ["user", "admin", "sales"]
+  roles: Role[] = ["user", "admin", "contributor"]
 ) => {
-  // if (!event.context.user) {
-  //   throw createError({
-  //     statusMessage: "Unauthorized",
-  //     statusCode: 401,
-  //   });
-  // }
-  // // Check if the user's role is included in the allowed roles
-  // if (!roles.includes(event.context.user.role as Role)) {
-  //   throw createError({
-  //     statusMessage: "Forbidden",
-  //     statusCode: 403,
-  //   });
-  // }
+  if (!event.context.user) {
+    throw createError({
+      statusMessage: "Unauthorized",
+      statusCode: 401,
+    });
+  }
+  if (!roles.includes(event.context.user.role as Role)) {
+    throw createError({
+      statusMessage: "Forbidden",
+      statusCode: 403,
+    });
+  }
 };

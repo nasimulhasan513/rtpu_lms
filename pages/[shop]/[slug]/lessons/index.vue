@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div v-if="pending" class="flex items-center justify-center h-64">
+        <div v-if="status === 'pending'" class="flex items-center justify-center h-64">
             <Spinner />
         </div>
 
@@ -84,8 +84,30 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
+const nuxtApp = useNuxtApp()
+const { data, status, error, refresh } = await useFetch(`/api/courses/${route.params.slug}/lessons`, {
+    transform(input) {
+        return {
+            ...input,
+            fetchedAt: new Date()
+        }
+    },
+    getCachedData(key) {
+        const data = nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+        if (!data) {
+            return
+        }
 
-const { data, pending, error, refresh } = await useFetch(`/api/courses/${route.params.slug}/lessons`)
+        // Is the data older than 1 hour?
+        const expirationDate = new Date(data.fetchedAt)
+        expirationDate.setHours(expirationDate.getHours() + 1)
+        const isExpired = expirationDate.getTime() < Date.now()
+        if (isExpired) {
+            return
+        }
+        return data
+    }
+})
 
 const subjects = computed(() => {
     const subjectMap = new Map()

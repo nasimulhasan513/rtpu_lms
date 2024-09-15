@@ -57,6 +57,7 @@
     "vue-picture-cropper": "^0.7.0",
     "vue-plyr": "^7.0.0",
     "vue-recaptcha-v3": "^2.0.1",
+    "vuedraggable": "^4.1.0",
     "zeptomail": "^6.0.0",
     "zod": "^3.23.8"
   },

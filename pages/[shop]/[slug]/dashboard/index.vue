@@ -40,13 +40,18 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const { toast } = useToast()
+const nuxtApp = useNuxtApp()
 
-const { data: dashboardData, error } = useFetch(`/api/courses/${route.params.slug}/dashboard`)
-
-const { fetchCourse } = useCourse()
-onMounted(async () => {
-    await fetchCourse(route.params.slug)
+const { data: dashboardData, error } = useFetch(`/api/courses/${route.params.slug}/dashboard`, {
+    getCachedData(key) {
+        return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+    }
 })
+
+// const { fetchCourse } = useCourse()
+// onMounted(async () => {
+//     await fetchCourse(route.params.slug)
+// })
 
 if (error.value) {
     toast({

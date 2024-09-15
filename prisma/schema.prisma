@@ -186,10 +186,11 @@ model Subject {
   name  String
   order Int    @default(0)
 
-  chapters  Chapter[]
-  lessons   Lesson[]
-  questions Question[]
-  Exam      Exam[]
+  chapters   Chapter[]
+  lessons    Lesson[]
+  questions  Question[]
+  Exam       Exam[]
+  Assignment Assignment[]
 }
 
 model Chapter {
@@ -349,6 +350,7 @@ model Submission {
 model Assignment {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
+  subjectId   String   @db.ObjectId
   description String
   pdf         String?
   total_marks Int
@@ -360,6 +362,7 @@ model Assignment {
   status      String   @default("draft")
 
   course      Course                 @relation(fields: [courseId], references: [id])
+  subject     Subject                @relation(fields: [subjectId], references: [id])
   submissions AssignmentSubmission[]
 }
 
