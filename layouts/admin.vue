@@ -12,6 +12,28 @@ useServerHead({
     },
 })
 
+
+const user = useUser()
+
+const rbacMenus = computed(() => {
+    if (user.value?.role === 'admin') {
+        return navMenu
+    }
+    return navMenu.filter(menu => {
+        if ('role' in menu && menu.role === user.value?.role) {
+            if ('children' in menu) {
+                menu.children = menu.children.filter(child => child.role === user.value?.role)
+            }
+            return true
+        }
+        return false
+    })
+})
+
+
+
+
+
 const router = useRouter()
 
 defineShortcuts({
@@ -24,11 +46,13 @@ defineShortcuts({
 <template>
     <div class="grid w-full duration-300 transition-width min-h-dvh"
         :class="cn('pl-0 lg:pl-64 sm:pl-20', isOpen ? 'lg:pl-64 sm:pl-20' : 'lg:pl-20')">
-        <LayoutSidebar :navMenu="navMenu" :navMenuBottom="navMenuBottom" />
+        <LayoutSidebar :navMenu="rbacMenus" :navMenuBottom="navMenuBottom" />
         <div flex="~ col">
             <LayoutHeader />
             <main class="flex-1 min-h-[calc(100vh-53px)] p-4 lg:p-6"
                 :class="isBgWhite ? 'bg-background' : 'bg-muted dark:bg-muted/20'">
+
+               
                 <slot />
             </main>
         </div>

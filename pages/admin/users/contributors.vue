@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { useToast } from '@/components/ui/toast/use-toast'
+
 definePageMeta({
     layout: 'admin',
     middleware: 'admin'
 })
 
 import {
-    File,
-    MoreHorizontal,
     Search,
 } from 'lucide-vue-next'
 
 const perpage = ref('10')
 const search = ref('')
 const currentPage = ref(1)
-const { data, status, error, refresh } = await useFetch('/api/admin/users', {
+const { data, status, error, refresh } = await useFetch('/api/admin/users/contributors', {
     key: 'users',
     query: {
         limit: perpage,
@@ -23,59 +22,79 @@ const { data, status, error, refresh } = await useFetch('/api/admin/users', {
     }
 })
 
+const courses = ref([])
+const selectedCourse = ref('')
 
-const { toast } = useToast()
-
-const assignRole = async (role: string, user_id: string) => {
+// Fetch courses
+const fetchCourses = async () => {
     try {
-        const data = await $fetch('/api/admin/users/role', {
-            method: 'PUT',
-            body: {
-                role,
-                user_id
-            }
-        })
-
-        if (data) {
-            refresh()
-            toast({
-                title: 'Success',
-                description: 'Role assigned successfully',
-
-            })
-        }
-
-
+        const { data: coursesData } = await useFetch('/api/courses')
+        courses.value = coursesData.value
     } catch (error) {
-
-        toast({
-            title: error as string,
-            variant: 'destructive'
-        })
-
+        console.error('Error fetching courses:', error)
     }
 }
 
+onMounted(fetchCourses)
 
-const exportAsCSV = async () => {
-    const users = data.value?.users
-
-    const headers = Object.keys(users[0])
-    const csv = users.map((row) => {
-        return Object.values(row).join(',')
-    }).join('\n')
-
-    const blob = new Blob([headers.join(',') + '\n' + csv], { type: 'text/csv' })
-
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'users.csv'
-    a.click()
-    window.URL.revokeObjectURL(url)
+const { toast } = useToast()
 
 
+const assignContributor = async (userId: string) => {
+    if (!selectedCourse.value) {
+        toast({
+            title: 'Error',
+            description: 'Please select a course',
+            variant: 'destructive'
+        })
+        return
+    }
+
+    try {
+        const { data } = await useFetch('/api/admin/users/course', {
+            method: 'POST',
+            body: {
+                userId,
+                courseId: selectedCourse.value,
+                permission: 'EDIT' // You might want to make this dynamic if needed
+            }
+        })
+
+        if (data.value?.success) {
+            toast({
+                title: 'Success',
+                description: 'Contributor assigned successfully',
+            })
+            refresh()
+        }
+    } catch (error) {
+        toast({
+            title: 'Error',
+            description: error.message || 'Failed to assign contributor',
+            variant: 'destructive'
+        })
+    }
 }
+
+const removeContributor = async (id: string) => {
+    try {
+        const data = await $fetch('/api/admin/users/course', {
+            method: 'DELETE',
+            body: {
+                id
+            }
+        })
+        refresh()
+    }
+    catch (error) {
+        toast({
+            title: 'Error',
+            description: error.message || 'Failed to remove contributor',
+            variant: 'destructive'
+        })
+    }
+}
+
 const paginate = (page: number) => {
     currentPage.value = page
 }
@@ -95,7 +114,10 @@ debouncedWatch(presearch, (value) => {
 
         <div class="flex flex-col sm:gap-4 sm:py-4 ">
 
+
             <main class="grid items-end flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+
+
                 <div class="flex items-end justify-between ">
                     <div class="relative">
                         <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -122,20 +144,15 @@ debouncedWatch(presearch, (value) => {
                             </Select>
 
                         </div>
-                        <Button variant="outline" class="gap-1 " @click="exportAsCSV">
-                            <File class="h-3.5 w-3.5" />
-                            <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Export
-                            </span>
-                        </Button>
+
                     </div>
 
                 </div>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Registered Users</CardTitle>
+                        <CardTitle>Contributors</CardTitle>
                         <CardDescription>
-                            Manage your users from here
+                            Manage your contributors from here
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -149,19 +166,14 @@ debouncedWatch(presearch, (value) => {
                                     <TableHead class="hidden md:table-cell">
                                         Email
                                     </TableHead>
-                                    <TableHead class="hidden md:table-cell">
-                                        Batch
-                                    </TableHead>
-                                    <TableHead class="hidden md:table-cell">
-                                        District
-                                    </TableHead>
+
                                     <TableHead>
-                                        <span class="sr-only">Actions</span>
+                                        Select Course
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                <TableRow v-for="user in data?.users">
+                                <TableRow v-for="user in data?.users" :key="user.id">
 
                                     <TableCell class="font-medium">
                                         {{ user?.name }}
@@ -172,34 +184,43 @@ debouncedWatch(presearch, (value) => {
                                     <TableCell class="hidden md:table-cell">
                                         {{ user?.email }}
                                     </TableCell>
-                                    <TableCell class="hidden md:table-cell">
-                                        <Badge>
-                                            {{ user?.role }}
-                                        </Badge>
+
+
+
+                                    <TableCell class="flex items-center">
+
+                                        <Select v-model="selectedCourse">
+                                            <SelectTrigger class="w-[180px]">
+                                                <SelectValue placeholder="Select Course" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem v-for="course in courses" :key="course.id"
+                                                    :value="course.id">
+                                                    {{ course.name }}
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <Button @click="assignContributor(user.id)" class="ml-2">
+                                            Assign
+                                        </Button>
                                     </TableCell>
-
-
                                     <TableCell>
-                                        <ClientOnly>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger as-child>
-                                                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                                                        <MoreHorizontal class="w-4 h-4" />
-                                                        <span class="sr-only">Toggle menu</span>
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                    <DropdownMenuItem @click="assignRole('ADMIN', user.id)">
-                                                        Make Admin
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </ClientOnly>
-                                    </TableCell>
-                                </TableRow>
 
+                                        <div v-if="user?.Contributor && user.Contributor.length > 0"
+                                            class="flex flex-wrap gap-2">
+                                            <Button v-for="contributor in user.Contributor" :key="contributor.id"
+                                                variant="outline" size="sm" class="flex items-center">
+                                                {{ contributor.course.name }}
+                                                <Icon name="lucide:x" @click="removeContributor(contributor.id)"
+                                                    class="w-4 h-4 ml-2 cursor-pointer" />
+                                            </Button>
+                                        </div>
+
+
+
+                                    </TableCell>
+
+                                </TableRow>
                             </TableBody>
                         </Table>
                         <AppLoader v-else />

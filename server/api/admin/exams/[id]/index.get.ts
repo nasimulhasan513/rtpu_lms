@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     return createError({
       statusCode: 400,
-      message: 'Exam ID is required',
+      message: "Exam ID is required",
     });
   }
 
@@ -14,7 +14,12 @@ export default defineEventHandler(async (event) => {
       include: {
         courseExams: {
           include: {
-            course: true,
+            course: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -23,19 +28,16 @@ export default defineEventHandler(async (event) => {
     if (!exam) {
       return createError({
         statusCode: 404,
-        message: 'Exam not found',
+        message: "Exam not found",
       });
     }
 
-    return {
-      statusCode: 200,
-      body: exam,
-    };
+    return exam;
   } catch (error) {
-    console.error('Error fetching exam:', error);
+    console.error("Error fetching exam:", error);
     return createError({
       statusCode: 500,
-      message: 'Failed to fetch exam',
+      message: "Failed to fetch exam",
     });
   }
 });

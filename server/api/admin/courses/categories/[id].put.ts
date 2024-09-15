@@ -21,6 +21,12 @@ export default defineEventHandler(async (event) => {
       name: data.name,
       slug: data.slug,
       image: data.image,
+      logo: data.logo,
+      platformName: data.platformName,
+      price: data.price,
+      is_class: data.is_class,
+      is_mcq: data.is_mcq,
+      is_cq: data.is_cq,
     },
   });
 

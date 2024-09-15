@@ -1,120 +1,139 @@
 <template>
-    <div class="flex justify-between">
-        <AppHeading title="Course Categories" subtitle="Create, Update or organize categories." />
-    </div>
+    <div class="container px-4 py-8 mx-auto">
+        <div class="flex items-center justify-between mb-8">
+            <AppHeading title="Course Categories" subtitle="Create, Update or organize categories." />
+            <Button @click="openModal" size="sm">
+                <Icon name="lucide:plus" class="mr-2" />
+                Add Category
+            </Button>
+        </div>
 
-    <div v-if="status === 'success'" class="grid gap-5 mt-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        <Card class="cursor-pointer" @click="openModal">
-            <CardContent class="flex flex-col items-center justify-center h-full">
-                <div>
-                    <div class="text-center">
-                        <Icon name="lucide:plus" size="45" class="mx-auto" />
+        <div v-if="status === 'success'" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <Card v-for="category in data" :key="category.id" class="overflow-hidden transition-shadow hover:shadow-lg">
+                <CardContent class="p-0">
+                    <div class="relative h-48">
+                        <NuxtImg :src="category.image" :alt="category.name" class="object-cover w-full h-full" />
+                        <div class="absolute top-0 right-0 m-2">
+                            <NuxtImg :src="category.logo" :alt="category.name"
+                                class="w-12 h-12 p-1 bg-white rounded-full" />
+                        </div>
                     </div>
-                    <p class="text-sm text-center">
-                        Create a new category
-                    </p>
+                    <div class="p-4">
+                        <h3 class="mb-2 text-xl font-semibold">{{ category.name }}</h3>
+                        <p class="mb-2 text-sm text-gray-600">{{ category.platformName }}</p>
+                        <p class="text-lg font-bold text-primary">{{ formatPrice(category.price) }}</p>
+                        <div class="mt-2 space-x-2">
+                            <Badge v-if="category.is_class" variant="secondary">Class</Badge>
+                            <Badge v-if="category.is_mcq" variant="secondary">MCQ Exam</Badge>
+                            <Badge v-if="category.is_cq" variant="secondary">CQ Exam</Badge>
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter class="flex justify-end p-2 space-x-2 border-t bg-gray-50">
+                    <Button @click="openModal(category)" variant="outline" size="sm">
+                        <Icon name="lucide:pencil" size="16" />
+                    </Button>
+                    <Button @click="deleteCategory(category.id)" variant="destructive" size="sm">
+                        <Icon name="lucide:trash" size="16" />
+                    </Button>
+                </CardFooter>
+            </Card>
+        </div>
+
+        <AppModal :isOpen="isOpen" :title="editingCategory ? 'Update Category' : 'Create Category'"
+            :description="editingCategory ? 'Update existing category' : 'Create a new category'" @onClose="closeModal"
+            v-if="isOpen">
+            <form @submit.prevent="onSubmit" class="space-y-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="col-span-2">
+                        <ImageUpload :image="form.values.image" @upload="uploadCategoryCover" label="Category Cover"
+                            class="h-64" />
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <ImageUpload :image="form.values.logo" @upload="uploadCategoryLogo" label="Category Logo"
+                            class="h-32" />
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <FormField v-slot="{ componentField }" name="name">
+                            <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                    <Input v-bind="componentField" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        </FormField>
+                    </div>
+                    <FormField v-slot="{ componentField }" name="slug">
+                        <FormItem>
+                            <FormLabel>Shop Link</FormLabel>
+                            <FormControl>
+                                <Input v-bind="componentField" />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
+                    <FormField v-slot="{ componentField }" name="platformName">
+                        <FormItem>
+                            <FormLabel>Platform Name</FormLabel>
+                            <FormControl>
+                                <Input v-bind="componentField" />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
+                    <FormField v-slot="{ componentField }" name="price">
+                        <FormItem>
+                            <FormLabel>Price</FormLabel>
+                            <FormControl>
+                                <Input type="number" v-bind="componentField" />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
+
                 </div>
-            </CardContent>
-        </Card>
-        <Card v-for="category in data" :key="category.id">
-            <CardContent class="p-3 space-y-2">
-                <div class="flex items-center justify-center overflow-hidden">
-                    <NuxtImg :src="category.image" :alt="category.name" class="object-cover w-32 h-32 rounded-sm" />
+                <div class="grid grid-cols-3 gap-6">
+                    <FormField v-slot="{ componentField }" name="is_class">
+                        <FormItem class="flex flex-row items-start space-x-3 space-y-0">
+                            <FormControl>
+                                <Checkbox :checked="form.values.is_class"
+                                    @update:checked="form.setFieldValue('is_class', !form.values.is_class)" />
+                            </FormControl>
+                            <FormLabel class="font-normal">
+                                Class
+                            </FormLabel>
+                        </FormItem>
+                    </FormField>
+                    <FormField v-slot="{ componentField }" name="is_mcq">
+                        <FormItem class="flex flex-row items-start space-x-3 space-y-0">
+                            <FormControl>
+                                <Checkbox :checked="form.values.is_mcq"
+                                    @update:checked="form.setFieldValue('is_mcq', !form.values.is_mcq)" />
+                            </FormControl>
+                            <FormLabel class="font-normal">
+                                MCQ Exam
+                            </FormLabel>
+                        </FormItem>
+                    </FormField>
+                    <FormField v-slot="{ componentField }" name="is_cq">
+                        <FormItem class="flex flex-row items-start space-x-3 space-y-0">
+                            <FormControl>
+                                <Checkbox :checked="form.values.is_cq"
+                                    @update:checked="form.setFieldValue('is_cq', !form.values.is_cq)" />
+                            </FormControl>
+                            <FormLabel class="font-normal">
+                                CQ Exam
+                            </FormLabel>
+                        </FormItem>
+                    </FormField>
                 </div>
-                <h3 class="text-lg font-semibold text-center">{{ category.name }}</h3>
-
-                <h3 class="text-lg font-semibold text-center">{{ category.platformName }}</h3>
-            </CardContent>
-            <CardFooter class="flex items-center justify-center gap-2">
-                <Button @click="openModal(category)" variant="outline" size="xs">
-                    <Icon name="lucide:pencil" />
-                </Button>
-                <Button @click="deleteCategory(category.id)" variant="destructive" size="xs">
-                    <Icon name="lucide:trash" />
-                </Button>
-            </CardFooter>
-        </Card>
-    </div>
-
-    <AppModal :isOpen="isOpen" :title="editingCategory ? 'Update Category' : 'Create Category'"
-        :description="editingCategory ? 'Update existing category' : 'Create a new category'" @onClose="closeModal"
-        v-if="isOpen">
-        <form @submit.prevent="onSubmit">
-            <div class="space-y-6">
-                <!-- Cover Image Upload -->
-                <div @click="chooseCover"
-                    class="relative flex flex-col items-center justify-center gap-4 p-20 transition border-2 cursor-pointer hover:opacity-70 border-nuetral-300 text-nuetral-600">
-                    <input type="file" class="hidden" accept="image/*" capture="user" ref="coverUploader"
-                        @change="uploadCategoryCover" />
-                    <Icon v-if="!form.values.image" name="lucide:image-plus" size="50" />
-                    <div v-if="!form.values.image" class="text-lg font-semibold">
-                        <p>
-                            Click to upload
-                        </p>
-                        <p class="text-sm font-thin text-secondary-foreground">
-                            Category Cover
-                        </p>
-                    </div>
-                    <div v-else class="absolute inset-0 w-full h-full">
-                        <NuxtImg :src="form.values.image" class="object-cover w-full h-full" alt="category cover" />
-                    </div>
-                </div>
-
-                <!-- Logo Upload -->
-                <div @click="chooseLogo"
-                    class="relative flex flex-col items-center justify-center gap-4 p-10 transition border-2 cursor-pointer hover:opacity-70 border-nuetral-300 text-nuetral-600">
-                    <input type="file" class="hidden" accept="image/*" capture="user" ref="logoUploader"
-                        @change="uploadCategoryLogo" />
-                    <Icon v-if="!form.values.logo" name="lucide:image-plus" size="30" />
-                    <div v-if="!form.values.logo" class="text-base font-semibold">
-                        <p>
-                            Click to upload
-                        </p>
-                        <p class="text-sm font-thin text-secondary-foreground">
-                            Category Logo
-                        </p>
-                    </div>
-                    <div v-else class="absolute inset-0 w-full h-full">
-                        <NuxtImg :src="form.values.logo" class="object-contain w-full h-full" alt="category logo" />
-                    </div>
-                </div>
-
-                <FormField v-slot="{ componentField }" name="name">
-                    <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                            <Input type="text" placeholder="Category Name" v-bind="componentField" />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                </FormField>
-                <FormField v-slot="{ componentField }" name="slug">
-                    <FormItem>
-                        <FormLabel>Shop Link</FormLabel>
-                        <FormControl>
-                            <Input type="text" placeholder="Link" v-bind="componentField" />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                </FormField>
-
-                <FormField v-slot="{ componentField }" name="platformName">
-                    <FormItem>
-                        <FormLabel>Platform Name</FormLabel>
-                        <FormControl>
-                            <Input type="text" placeholder="Platform Name" v-bind="componentField" />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                </FormField>
-
                 <AppButton type="submit" class="w-full" :loading="isLoading"
-                    :label="editingCategory ? 'Update' : 'Create'"
-                    :loadingLabel="editingCategory ? 'Updating...' : 'Creating...'">
-                </AppButton>
-            </div>
-        </form>
-    </AppModal>
+                    :label="editingCategory ? 'Update Category' : 'Create Category'"
+                    :loadingLabel="editingCategory ? 'Updating...' : 'Creating...'" />
+            </form>
+        </AppModal>
+    </div>
 </template>
 
 <script setup>
@@ -147,6 +166,10 @@ const openModal = (category = null) => {
             image: category.image,
             logo: category.logo,
             platformName: category.platformName,
+            price: category.price,
+            is_class: category.is_class,
+            is_mcq: category.is_mcq,
+            is_cq: category.is_cq,
         })
     }
     isOpen.value = true
@@ -162,6 +185,10 @@ const form = useForm({
         slug: '',
         logo: '',
         platformName: '',
+        price: 0,
+        is_class: false,
+        is_mcq: false,
+        is_cq: false,
     }
 })
 
@@ -258,6 +285,10 @@ const deleteCategory = async (categoryId) => {
             })
         }
     }
+}
+
+const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'BDT' }).format(price)
 }
 </script>
 

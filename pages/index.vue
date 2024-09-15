@@ -1,7 +1,7 @@
 <template>
   <AppContainer>
-    <div class="min-h-[76vh] bg-background">
-      <section class="container py-12">
+    <div class="min-h-[76vh] bg-background ">
+      <section class="py-12 ">
         <div class="flex flex-col mb-8 md:flex-row md:items-center md:justify-between">
           <h2 class="mb-4 text-3xl font-bold md:mb-0">
             কোর্স সমূহ

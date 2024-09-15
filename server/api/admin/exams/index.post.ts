@@ -8,8 +8,9 @@ const examSchema = z.object({
   endTime: z.string(),
   duration: z.number(),
   totalMarks: z.number(),
-  resultPublishTime: z.string(),
-  solutionPublishTime: z.string(),
+  instantResult: z.boolean(),
+  resultPublishTime: z.string().optional(),
+  solutionPublishTime: z.string().optional(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -25,8 +26,9 @@ export default defineEventHandler(async (event) => {
         endTime: new Date(examData.endTime),
         duration: examData.duration,
         totalMarks: examData.totalMarks,
-        resultPublishTime: new Date(examData.resultPublishTime),
-        solutionPublishTime: new Date(examData.solutionPublishTime),
+        instantResult: examData.instantResult,
+        resultPublishTime: examData.resultPublishTime ? new Date(examData.resultPublishTime) : undefined,
+        solutionPublishTime: examData.solutionPublishTime ? new Date(examData.solutionPublishTime) : undefined,
         subject: {
           connect: { id: examData.subjectId }
         },

@@ -1,11 +1,19 @@
 <template>
-    <div @click="navigateTo('/')" class="cursor-pointer">
-        <img src="~/assets/logo.png" alt="Bangla Benjon" class="h-10" />
+    <div @click="navigateTo('/')" class="flex items-center gap-2 cursor-pointer">
+        <img :src="route.params.shop ? shop?.logo : defaultLogo" alt="Bangla Benjon" class="h-10" />
+
+        <span v-if="!route.params.shop" class="hidden text-xl font-bold md:block text-primary ">কোর্স</span>
     </div>
 
 </template>
 
 <script setup>
+import defaultLogo from '~/assets/logo.png'
+const { shop } = useShop()
+
+
+const route = useRoute()
+
 
 </script>
 

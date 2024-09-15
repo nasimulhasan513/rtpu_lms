@@ -11,7 +11,7 @@
                                     <AvatarImage :src="user.image" :alt="user.name" />
                                     <AvatarFallback>{{ user.name.charAt(0) }}</AvatarFallback>
                                 </Avatar>
-                                <span class="hidden text-sm font-medium md:block text-primary">
+                                <span class="hidden text-sm font-medium md:block">
                                     {{ user.name }}
                                 </span>
                             </Button>

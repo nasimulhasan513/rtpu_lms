@@ -19,16 +19,13 @@ export default defineEventHandler(async (event) => {
     // Find the category by slug
     const category = await db.category.findUnique({
       where: { slug: parsedSlug.data },
-      include: {
-        courses: true,
-      },
       cacheStrategy: {
         ttl: 60 * 60 * 24 * 7, // 1 week
       },
     });
 
     if (!category) {
-      throw createError({
+      return createError({
         statusCode: 404,
         message: "Category not found",
       });

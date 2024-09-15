@@ -44,16 +44,15 @@ export default defineNuxtConfig({
   css: ["~/assets/css/tailwind.css", "vue-plyr/dist/vue-plyr.css"],
   app: {
     head: {
-      title: "বাংলা ব্যঞ্জন ২৫-২৬ ব্যাচ",
+      title: "ACS Courses",
       meta: [
         {
           name: "og:title",
-          content: "বাংলা ব্যঞ্জন ২৫-২৬ ব্যাচ",
+          content: "ACS Courses",
         },
         {
           name: "og:description",
-          content:
-            "বাংলা ১ম পত্র ও ২য় পত্র ফুল সিলেবাস সম্পূর্ণ করে, আশা করছি কলেজ,বোর্ড এক্সাম এবং এডমিশনে সাফল্য নিশ্চিতের ভিত্তি গড়ে তুলবে এই ব্যাচ।",
+          content: "ACS Courses",
         },
 
         {

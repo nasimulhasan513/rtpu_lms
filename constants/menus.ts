@@ -5,67 +5,62 @@ export const navMenu: NavMenuItems = [
     title: "Dashboard",
     icon: "i-lucide-layout-dashboard",
     link: "/admin",
+    role: "contributor",
   },
   {
     title: "Courses",
     icon: "lucide:graduation-cap",
+    role: "contributor",
     children: [
       {
         title: "All Courses",
         link: "/admin/courses",
         icon: "lucide:list-video",
+        role: "contributor",
       },
       {
         title: "Add Course",
         link: "/admin/courses/create",
         icon: "lucide:plus-circle",
+        role: "admin",
       },
       {
         title: "Categories",
         link: "/admin/courses/categories",
         icon: "lucide:layers",
+        role: "admin",
       },
       {
         title: "Teachers",
         link: "/admin/courses/teachers",
         icon: "game-icons:teacher",
+        role: "admin",
       },
     ],
-  },
-  // {
-  //   title: "Classes",
-  //   icon: "lucide:video",
-  //   link: "/admin/lessons",
-  // },
-  {
-    title: "Live Classes",
-    icon: "lucide:tv",
-    link: "/admin/live",
   },
 
   {
     title: "Notifications",
     icon: "lucide:bell",
     link: "/admin/notifications",
+    role: "contributor",
   },
   {
     title: "Exams",
     icon: "i-lucide-clipboard-list",
+    role: "contributor",
     children: [
       {
         title: "All Exams",
         link: "/admin/exams",
         icon: "i-lucide-clipboard-list",
+        role: "contributor",
       },
       {
         title: "Add Exam",
         link: "/admin/exams/create",
         icon: "lucide:plus-circle",
-      },
-      {
-        title: "Submissions",
-        link: "/admin/exams/submissions",
-        icon: "lucide:inbox",
+        role: "contributor",
       },
     ],
   },
@@ -77,33 +72,40 @@ export const navMenu: NavMenuItems = [
         title: "All Assignments",
         link: "/admin/assignments",
         icon: "lucide:clipboard-list",
+        role: "contributor",
       },
       {
         title: "Add Assignment",
         link: "/admin/assignments/create",
         icon: "lucide:plus-circle",
+        role: "contributor",
       },
       {
         title: "Submissions",
         link: "/admin/assignments/submissions",
         icon: "lucide:inbox",
+        role: "contributor",
       },
     ],
   },
-  {
-    title: "Questions",
-    icon: "i-lucide-file-question",
-    link: "/admin/questions",
-  },
+
   {
     title: "Subjects",
     icon: "i-lucide-book-open",
     link: "/admin/subjects",
+    role: "admin",
+  },
+  {
+    title: "Contributors",
+    icon: "i-lucide-users",
+    link: "/admin/users/contributors",
+    role: "admin",
   },
   {
     title: "Students",
     icon: "i-lucide-users",
-    link: "/admin/students",
+    link: "/admin/users",
+    role: "admin",
   },
 ];
 
@@ -117,6 +119,11 @@ const additionalMenu = [
     title: "Badges & Achievements",
     icon: "lucide:award",
     link: "/admin/badges",
+  },
+  {
+    title: "Questions",
+    icon: "i-lucide-file-question",
+    link: "/admin/questions",
   },
   {
     title: "Sales",

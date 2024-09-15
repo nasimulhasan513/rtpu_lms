@@ -1,13 +1,7 @@
 <template>
     <div>
 
-        <div class="flex justify-between">
-            <AppHeading title="Courses" />
-            <Button @click="navigateTo('/admin/courses/create')">
-                <Icon name="tabler:plus" class="mr-2" />
-                Add new course
-            </Button>
-        </div>
+
         <div v-if="status === 'success'" class="grid gap-5 md:grid-cols-3">
             <div v-for="c in data.body" :key="c.id">
                 <Card class="w-full max-w-md overflow-hidden rounded-lg">
@@ -37,7 +31,7 @@
                         <Button variant="secondary" @click="navigateTo(`/admin/courses/${c.id}`)">
                             Edit
                         </Button>
-                        <Button variant="destructive" @click="deleteCourse(c.id)">
+                        <Button variant="destructive" @click="handleDeleteCourse(c.id)">
                             Delete
                         </Button>
 
@@ -62,13 +56,18 @@ const { data, status, error, refresh } = await useFetch('/api/admin/courses', {
     key: 'courses',
 })
 
-const { deleteCourse } = useCourse()
 const { toast } = useToast()
 
 const handleDeleteCourse = async (courseId) => {
     if (confirm('Are you sure you want to delete this course?')) {
         try {
-            await deleteCourse(courseId)
+
+            await $fetch(`/api/admin/courses/${courseId}`, {
+                method: 'DELETE'
+            })
+
+
+
             toast({
                 title: 'Course deleted successfully',
                 variant: 'success'

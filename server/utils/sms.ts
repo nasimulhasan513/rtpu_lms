@@ -9,24 +9,13 @@ export const sendSMS = async (phone: string, sms: string) => {
       return;
     }
 
-    const url = "http://bulksmsbd.net/api/smsapi";
-    const response = await axios.get(url, {
-      params: {
-        api_key: "aYslG6TTqJRdhemI3yUs",
-        type: "text",
-        number: phone,
-        senderid: "Rhombus",
-        message: sms,
-      },
+    const url =
+      "https://smsgatewaybe-production.up.railway.app/api/sms/send-single";
+    const response = await axios.post(url, {
+      api_key: "66e67dc27898e0f6445c8ab2",
+      phone: phone,
+      message: sms,
     });
-
-    // const url =
-    //   "https://smsgatewaybe-production.up.railway.app/api/sms/send-single";
-    // const response = await axios.post(url, {
-    //   api_key: "66c2120add23cefb8184cc6b",
-    //   phone: phone,
-    //   message: sms,
-    // });
 
     return response.data;
   } catch (error) {

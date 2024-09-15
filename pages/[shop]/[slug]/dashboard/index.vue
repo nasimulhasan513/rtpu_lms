@@ -1,6 +1,6 @@
 <template>
 
-    <div v-if="dashboardData">
+    <div v-if="dashboardData" class="flex flex-col-reverse gap-3 md:flex-col">
 
         <!-- Progress Overview -->
         <div class="grid grid-cols-1 gap-6 mb-12 md:grid-cols-3">

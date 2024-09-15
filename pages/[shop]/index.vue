@@ -3,13 +3,13 @@
         <AppContainer>
 
             <div v-if="status === 'success'">
-                <div class="flex items-center justify-center pt-10">
-                    <AppHeading :title="data.platformName" :subtitle="data.name" :center="true" />
+                <div v-if="shopStatus === 'success'" class="flex items-center justify-center pt-10">
+                    <AppHeading :title="shop.platformName" :subtitle="shop.name" :center="true" />
 
                 </div>
-                <div v-if="data.courses.length > 0">
+                <div v-if="courses.length > 0">
 
-                    <HomeFeaturedCourses :courses="data.courses" :category="data.slug" />
+                    <HomeFeaturedCourses :courses="courses" :category="shop.slug" />
                 </div>
                 <div v-else class="py-12 text-center">
                     <h2 class="mb-4 text-2xl font-semibold">কোনো কোর্স পাওয়া যায়নি</h2>
@@ -28,9 +28,8 @@
 </template>
 
 <script setup>
-const route = useRoute()
-
-const { data, status, refresh } = useFetch(`/api/category/${route.params.shop}`)
+const { status, shopStatus, shop, courses, fetchCourses } = useShop()
+fetchCourses()
 </script>
 
 <style lang="scss" scoped></style>

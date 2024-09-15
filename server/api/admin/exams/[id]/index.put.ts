@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const examSchema = z.object({
   title: z.string(),
-  courseId: z.string(),
+  courses: z.array(z.string()),
   subjectId: z.string(),
   startTime: z.string(),
   endTime: z.string(),
@@ -10,6 +10,7 @@ const examSchema = z.object({
   totalMarks: z.number(),
   resultPublishTime: z.string(),
   solutionPublishTime: z.string(),
+  instantResult: z.boolean(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -19,7 +20,7 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     return createError({
       statusCode: 400,
-      message: 'Exam ID is required',
+      message: "Exam ID is required",
     });
   }
 
@@ -29,36 +30,36 @@ export default defineEventHandler(async (event) => {
     const updatedExam = await db.exam.update({
       where: { id },
       data: {
-        ...examData,
+        title: examData.title,
+        subjectId: examData.subjectId,
+        duration: examData.duration,
+        totalMarks: examData.totalMarks,
+        instantResult: examData.instantResult,
         startTime: new Date(examData.startTime),
         endTime: new Date(examData.endTime),
         resultPublishTime: new Date(examData.resultPublishTime),
         solutionPublishTime: new Date(examData.solutionPublishTime),
         courseExams: {
-          update: {
-            where: {
-              examId_courseId: {
-                examId: id,
-                courseId: examData.courseId,
-              },
-            },
-            data: {
-              courseId: examData.courseId,
-            },
-          },
+          deleteMany: {},
+          create: examData.courses.map((courseId) => ({
+            courseId,
+          })),
         },
       },
     });
 
     return {
       statusCode: 200,
-      body: updatedExam,
+      body: "Exam updated successfully",
     };
   } catch (error) {
-    console.error('Error updating exam:', error);
+    console.error("Error updating exam:", error);
     return createError({
       statusCode: 400,
-      message: error instanceof z.ZodError ? error.errors[0].message : 'Invalid exam data',
+      message:
+        error instanceof z.ZodError
+          ? error.errors[0].message
+          : "Invalid exam data",
     });
   }
 });

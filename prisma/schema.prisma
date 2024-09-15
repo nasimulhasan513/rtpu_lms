@@ -32,6 +32,8 @@ model User {
   Question             Question[]
   hostedLiveClasses    LiveClass[]
   LessonProgress       LessonProgress[]
+  Category             Category[]
+  Contributor          Contributor[]
 }
 
 model Session {
@@ -72,13 +74,22 @@ model Teacher {
 }
 
 model Category {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  slug         String   @unique
-  image        String
-  logo         String
-  platformName String
-  courses      Course[]
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  slug          String  @unique
+  image         String
+  logo          String
+  platformName  String
+  contributorId String?
+  contributor   User?   @relation(fields: [contributorId], references: [id])
+  price         Int
+
+  is_class Boolean @default(false)
+  is_mcq   Boolean @default(false)
+  is_cq    Boolean @default(false)
+
+  courses    Course[]
+  Enrollment Enrollment[]
 }
 
 model Course {
@@ -108,9 +119,10 @@ model Course {
   enrollments  Enrollment[]
   couponCourse CouponCourse[]
 
-  assignment Assignment[]
-  category   Category     @relation(fields: [categoryId], references: [id])
-  Feedback   Feedback[]
+  assignment  Assignment[]
+  category    Category      @relation(fields: [categoryId], references: [id])
+  Feedback    Feedback[]
+  Contributor Contributor[]
 }
 
 model CourseTeacher {
@@ -159,10 +171,12 @@ model Enrollment {
   status           String   @default("pending")
   enrolledAt       DateTime @default(now())
   couponId         String?  @db.ObjectId
+  categoryId       String?  @db.ObjectId
 
-  user   User    @relation(fields: [userId], references: [id])
-  course Course  @relation(fields: [courseId], references: [id])
-  coupon Coupon? @relation(fields: [couponId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
+  course   Course    @relation(fields: [courseId], references: [id])
+  coupon   Coupon?   @relation(fields: [couponId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id])
 
   @@unique([userId, courseId])
 }
@@ -279,16 +293,18 @@ model Question {
 }
 
 model Exam {
-  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-  title               String
-  startTime           DateTime
-  endTime             DateTime
-  duration            Int
-  totalMarks          Int
-  resultPublishTime   DateTime
-  solutionPublishTime DateTime
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  startTime     DateTime
+  endTime       DateTime
+  duration      Int
+  totalMarks    Int
+  instantResult Boolean  @default(false)
+
+  resultPublishTime   DateTime?
+  solutionPublishTime DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   submissions Submission[]
   questions   Question[]
@@ -439,4 +455,15 @@ enum LiveClassStatus {
   SCHEDULED
   LIVE
   ENDED
+}
+
+model Contributor {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String
+  courseId String @db.ObjectId
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
 }

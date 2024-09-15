@@ -25,6 +25,10 @@ export default defineEventHandler(async (event) => {
         where: { courseId },
       });
 
+      await tx.contributor.deleteMany({
+        where: { courseId },
+      });
+
       // Delete the course
       await tx.course.delete({
         where: { id: courseId },
