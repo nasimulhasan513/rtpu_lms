@@ -10,6 +10,26 @@
                 <Label for="description">Description</Label>
                 <Textarea id="description" v-model="form.description" required />
             </div>
+            <FormField>
+                <FormItem>
+                    <FormLabel>Subject</FormLabel>
+                    <Select v-model="form.subjectId">
+                        <FormControl>
+                            <SelectTrigger class="bg-white dark:bg-slate-800">
+                                <SelectValue placeholder="Select a subject" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem v-for="subject in subjects" :key="subject.id" :value="subject.id">
+                                    {{ subject.name }}
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
+                </FormItem>
+            </FormField>
             <div class="mb-4">
                 <Label for="course">Course</Label>
                 <Select id="course" v-model="form.courseId">
@@ -55,11 +75,17 @@ const { courses, fetchCourses } = await useCourse()
 
 const { uploadImage } = useCloudflareImage()
 const { toast } = useToast()
+const { subjects, fetchSubjects } = useSubject();
+
+onMounted(async () => {
+    await fetchSubjects()
+})
 
 const form = reactive({
     title: '',
     description: '',
     courseId: '',
+    subjectId: '',
     total_marks: 0,
     startDate: '',
     endDate: '',

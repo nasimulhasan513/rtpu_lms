@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
   const assignment = await db.assignment.create({
     data: {
       title: validatedData.title,
+      subjectId: validatedData.subjectId,
       description: validatedData.description,
       courseId: validatedData.courseId,
       total_marks: validatedData.total_marks,

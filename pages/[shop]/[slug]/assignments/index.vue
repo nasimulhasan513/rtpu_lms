@@ -47,9 +47,8 @@ definePageMeta({
 const route = useRoute()
 const { toast } = useToast()
 
-// const { data: assignments, status } = await useFetch(`/api/courses/${route.params.slug}/assignments`)
+const { data: assignments, status } = await useFetch(`/api/courses/${route.params.slug}/assignments`)
 
-const assignments = ref([])
 
 const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString()

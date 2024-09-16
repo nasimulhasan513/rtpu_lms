@@ -20,9 +20,7 @@ export const useShop = () => {
     shop.value = response as Category;
     shopStatus.value = "success";
 
-    useHead({
-      title: shop.value?.platformName,
-    });
+    
   };
 
   const fetchCourses = async () => {

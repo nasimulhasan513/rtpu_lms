@@ -4,6 +4,7 @@ export const assignmentSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   courseId: z.string().min(1),
+  subjectId: z.string().min(1),
   total_marks: z.number().int().positive(),
   startDate: z.string(),
   endDate: z.string(),
