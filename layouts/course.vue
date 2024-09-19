@@ -50,6 +50,12 @@ const menus = computed(() => {
                 link: `/${route.params.shop}/${slug.value}/${item.link}`,
             })
         }
+        if(item.type === "general"){
+            initMenus.push({
+                ...item,
+                link: `/${route.params.shop}/${slug.value}/${item.link}`,
+            })
+        }
 
         if(item.type==='all' && shop.value?.is_class){
             initMenus.push({
@@ -58,6 +64,8 @@ const menus = computed(() => {
             })
             }
         })
+
+        
     }
     return initMenus
 })

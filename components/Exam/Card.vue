@@ -41,22 +41,22 @@
         <CardFooter class="flex justify-center space-x-3">
 
             <Button v-if="exam.status === 'ongoing' && (!exam.submission || exam.submission.status === 'pending')"
-                @click="navigateTo(`exams/${exam.id}/onboard`)" class="w-full">
+                @click="navigateTo(`mcq/${exam.id}/onboard`)" class="w-full">
                 Start Exam
             </Button>
             <p v-else-if="exam.status === 'ongoing'" class="font-semibold text-green-500">
                 Thanks for participation.
             </p>
             <template v-if="exam.status === 'past'">
-                <Button @click="navigateTo(`exams/${exam.id}/practice`)" variant="outline" class="flex-1">
+                <Button @click="navigateTo(`mcq/${exam.id}/practice`)" variant="outline" class="flex-1">
                     <Icon name="lucide:book-open" class="w-4 h-4 mr-2" />
                     Practice Exam
                 </Button>
-                <Button @click="navigateTo(`exams/${exam.id}/solution`)" variant="outline" class="flex-1">
+                <Button @click="navigateTo(`mcq/${exam.id}/solution`)" variant="outline" class="flex-1">
                     <Icon name="lucide:check-circle" class="w-4 h-4 mr-2" />
                     Solution
                 </Button>
-                <Button @click="navigateTo(`exams/${exam.id}/leaderboard`)" variant="outline" class="flex-1">
+                <Button @click="navigateTo(`mcq/${exam.id}/leaderboard`)" variant="outline" class="flex-1">
                     <Icon name="lucide:trophy" class="w-4 h-4 mr-2" />
                     Leaderboard
                 </Button>

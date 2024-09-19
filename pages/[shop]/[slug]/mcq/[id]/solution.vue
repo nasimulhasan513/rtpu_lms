@@ -22,14 +22,14 @@
                 <Badge> প্রশ্ন নংঃ {{ formatNumber(i + 1) }}</Badge>
                 <Badge> {{ q.subject.name }}</Badge>
                 <Badge> ১ নম্বর</Badge>
-                <Badge v-if="notAnswered(q.id)" class="bg-red-500">উত্তর দেওয়া হয়নি</Badge>
+                <Badge v-if="notAnswered(q.id)" >উত্তর করা হয়নি</Badge>
             </div>
             <div class="mt-3 space-y-3 ">
 
                 <div v-for="(a, j) in q.options" :key="j"
-                    class="relative flex items-center p-3 space-x-2 transition-colors border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
+                    class="relative flex items-center p-3 space-x-2 text-gray-900 transition-colors border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
                     :class="{ 'border-green-500': a.correct, 'border-red-500': wrongAnswer(a.id) && !a.correct }">
-                    <Icon name="lucide:check-circle-2" size="24" class="absolute text-green-500 right-3"
+                    <Icon name="lucide:check-circle-2" size="24" class="absolute text-white-500 right-3"
                         v-if="a.correct" />
                     <AppMath v-model="a.option_text">
                     </AppMath>

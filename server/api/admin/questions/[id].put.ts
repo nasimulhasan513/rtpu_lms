@@ -1,16 +1,20 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
-  const { question, options, subject, set, serial, explain } = body;
+  const { question, options, subjectId, chapterId, difficulty, explain, examId } = body;
 
-  const questionId = event.context.params?.id;
-
-  if (!question || !options || !subject || !serial) {
+  if (!question || !options || !subjectId || !chapterId) {
     return {
       statusCode: 400,
       message: "Required fields are missing",
     };
   }
+
+  let creatorId = event.context.user?.id;
+
+  const questionId = event.context.params?.id;
+
+  
 
   try {
     // Update the question details
@@ -18,33 +22,44 @@ export default defineEventHandler(async (event) => {
       where: { id: questionId },
       data: {
         question,
-        subject,
-        set,
-        serial: serial as number,
-        explain,
-        creatorId: event.context.user?.id,
+        subject: {
+          connect: {
+            id: subjectId,
+          },
+        },
+        chapter: {
+          connect: {
+            id: chapterId,
+          },
+        },
+        creator: {
+          connect: {
+            id: creatorId,
+          },
+        },
+        difficulty: difficulty || "Medium",
+        explain,       
       },
     });
-
-    // Update the options
-    await Promise.all(
-      options.map(async (option) => {
-        if (option.id && option.type == "update") {
-          // Update existing option
-          await db.option.update({
-            where: { id: option.id },
-            data: {
-              option_text: option.option_text,
-              correct: option.correct,
-            },
-          });
-        } else if (option.type == "delete") {
-          await db.option.delete({
-            where: { id: option.id },
-          });
-        }
-      })
-    );
+ // Update the options
+ await Promise.all(
+  options.map(async (option) => {
+    console.log('====================================');
+    console.log(option);
+    console.log('====================================');
+    if (option.id) {
+      // Update existing option
+      await db.option.update({
+        where: { id: option.id },
+        data: {
+          option_text: option.option_text,
+          correct: option.correct,
+        },
+      });
+    } 
+  })
+);
+   
 
     return {
       statusCode: 200,

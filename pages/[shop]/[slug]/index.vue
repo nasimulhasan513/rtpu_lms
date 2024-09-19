@@ -98,9 +98,12 @@ const enrollCourse = async () => {
             title: 'Success',
             description: 'You have been enrolled in the course',
         })
-
-        navigateTo(`/${route.params.shop}/${route.params.slug}/dashboard`)
-
+        const category = await $fetch(`/api/category/${route.params.shop}`);
+      if(category?.is_class){
+          return navigateTo(`/${route.params.shop}/${route.params.slug}/dashboard`);
+      }else{
+          return navigateTo(`/${route.params.shop}/${route.params.slug}/mcq`);
+      }
 
     } catch (error) {
         console.log(error)

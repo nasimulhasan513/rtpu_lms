@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       if(response?.is_class){
           return navigateTo(`/${to.params.shop}/${to.params.slug}/dashboard`);
       }else{
-          return navigateTo(`/${to.params.shop}/${to.params.slug}/exams`);
+          return navigateTo(`/${to.params.shop}/${to.params.slug}/mcq`);
       }
             
      

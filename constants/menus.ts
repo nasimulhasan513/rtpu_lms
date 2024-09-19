@@ -200,14 +200,32 @@ export const courseMenu = [
   },
   {
     title: "বহুনির্বাচনী পরীক্ষা",
-    link: "exams",
+    link: "mcq",
     icon: "lucide:clipboard-list",
     type: "is_mcq"
   },
   {
     title: "লিখিত পরীক্ষা",
-    link: "assignments",
+    link: "written",
     icon: "lucide:file-text",
     type: "is_cq"
   },
+  {
+    title: "হোম ওয়ার্কস",
+    link: "homeworks",
+    icon: "lucide:home",
+    type: "general"
+  },
+  {
+    title: "প্রোগ্রেস রিপোর্ট",
+    link: "progress",
+    icon: "lucide:bar-chart-3",
+    type: "general"
+  },
+  {
+    title: "নোটিস",
+    link: "notice",
+    icon: "lucide:bell",
+    type: "general"
+  }
 ];

@@ -2,7 +2,7 @@
     <AppContainer>
         <div class="container py-8 mx-auto">
 
-            <div v-if="status === 'success'" class="grid gap-6 lg:grid-cols-2">
+            <div v-if="status === 'success' && assignments.length > 0" class="grid gap-6 lg:grid-cols-2">
                 <Card v-for="assignment in assignments" :key="assignment.id" class="flex flex-col">
 
 
