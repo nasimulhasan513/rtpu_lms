@@ -22,7 +22,7 @@
                 <ExamInfoBox icon="lucide:clock" label="Duration" :value="`${exam.duration} minutes`"
                     color="text-green-500" />
                 <ExamInfoBox icon="lucide:award" label="Total Marks"
-                    :value="`${exam.totalMarks} x 1 = ${exam.totalMarks}`" color="text-yellow-500" />
+                    :value="`${exam.totalMarks} x 1 = ${exam.totalMarks} ${exam.negativeMarking ? '(-0.25/wrong answer)' : ''}`" color="text-yellow-500" />
             </div>
 
             <div v-if="exam.status !== 'past'" class="p-4 rounded-lg bg-primary/5">

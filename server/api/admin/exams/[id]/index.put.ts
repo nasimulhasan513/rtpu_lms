@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { formatDate } from "~/server/utils/format";
 
 const examSchema = z.object({
   title: z.string(),
@@ -12,6 +13,7 @@ const examSchema = z.object({
   resultPublishTime: z.string(),
   solutionPublishTime: z.string(),
   instantResult: z.boolean(),
+  negativeMarking: z.boolean(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -36,11 +38,12 @@ export default defineEventHandler(async (event) => {
         subjectId: examData.subjectId,
         duration: examData.duration,
         totalMarks: examData.totalMarks,
+        negativeMarking: examData.negativeMarking,
         instantResult: examData.instantResult,
-        startTime: new Date(examData.startTime),
-        endTime: new Date(examData.endTime),
-        resultPublishTime: new Date(examData.resultPublishTime),
-        solutionPublishTime: new Date(examData.solutionPublishTime),
+        startTime: formatDate(examData.startTime),
+        endTime: formatDate(examData.endTime),
+        resultPublishTime: formatDate(examData.resultPublishTime),
+        solutionPublishTime: formatDate(examData.solutionPublishTime),
         courseExams: {
           deleteMany: {},
           create: examData.courses.map((courseId) => ({

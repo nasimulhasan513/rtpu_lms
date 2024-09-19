@@ -11,6 +11,25 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+
+  const exam = await db.exam.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      negativeMarking: true,
+    },
+  });
+
+  if (!exam) {
+    return createError({
+      statusCode: 404,
+      statusMessage: "Exam not found",
+    });
+  }
+
+
+
   let submission = await db.submission.findFirst({
     where: {
       examId: id,
@@ -40,7 +59,7 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  const negMarks = (optionIds.length - marks) * 0.25;
+  const negMarks = exam.negativeMarking ? (optionIds.length - marks) * 0.25 : 0;
 
   await db.submission.update({
     where: {

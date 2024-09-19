@@ -18,7 +18,7 @@ export const dateFieldFormat = (date: string) => {
   }
 
   return (
-    new Date(new Date(date).getTime() + 6 * 60 * 60 * 1000)
+    new Date(new Date(date).getTime())
       .toISOString()
       .slice(0, 16) || null
   );

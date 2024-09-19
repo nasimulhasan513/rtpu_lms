@@ -31,6 +31,7 @@
                         <TableHead>Subject</TableHead>
                         <TableHead>Start Time</TableHead>
                         <TableHead>End Time</TableHead>
+                        <TableHead>Negative Marking</TableHead>
                         <TableHead>Duration</TableHead>
                         <TableHead>Actions</TableHead>
                     </TableRow>
@@ -42,6 +43,7 @@
                         <TableCell>{{ exam.subject.name }}</TableCell>
                         <TableCell>{{ formatDate(exam.startTime) }}</TableCell>
                         <TableCell>{{ formatDate(exam.endTime) }}</TableCell>
+                        <TableCell>{{ exam.negativeMarking ? 'Yes' : 'No' }}</TableCell>
                         <TableCell>{{ exam.duration }} minutes</TableCell>
                         <TableCell>
                             <div class="flex items-center space-x-2">
@@ -98,9 +100,7 @@ onMounted(async () => {
     await fetchCourses();
 })
 
-const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString();
-};
+
 
 const editExam = (examId) => {
     navigateTo(`/admin/exams/${examId}/edit`);

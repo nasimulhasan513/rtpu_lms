@@ -102,7 +102,7 @@ const submitAns = async () => {
             variant: 'destructive'
         })
     }
-    navigateTo(`/${route.params.shop}/${route.params.slug}/exams`)
+    navigateTo(`/${route.params.shop}/${route.params.slug}/mcq`)
 }
 
 const selectOption = (idx, a_id) => {

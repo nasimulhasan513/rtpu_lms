@@ -140,7 +140,7 @@
                 <FormItem
                     class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
                     <FormControl>
-                        <Checkbox v-bind="field" />
+                        <Checkbox v-bind="field" @click="form.setFieldValue('instantResult', !form.values.instantResult)" />
                     </FormControl>
                     <div class="space-y-1 leading-none">
                         <FormLabel>
@@ -156,7 +156,7 @@
                 <FormItem
                     class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
                     <FormControl>
-                        <Checkbox v-bind="field" />
+                        <Checkbox v-bind="field" @click="form.setFieldValue('negativeMarking', !form.values.negativeMarking)" />
                     </FormControl>
                     <div class="space-y-1 leading-none">
                         <FormLabel>
