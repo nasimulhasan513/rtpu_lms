@@ -1,12 +1,15 @@
 <template>
+   
     <AppContainer class="flex items-center justify-center min-h-[76vh]">
         <div class="flex flex-col gap-3" v-if="!user && isGoogleLoginSupported">
             <AuthGoogleButton @loggedin="" />
         </div>
+      <ClientOnly >
         <p class="text-sm text-center text-red-500" v-if="!isGoogleLoginSupported">
             [বি:দ্র: ওয়েবএ্যাপের লিংকটি ক্রোম ব্রাউজারে ওপেন করবে। সরাসরি ফেসবুক অথবা মেসেঞ্জার থেকে লগইন করা যাবে
             না।]
         </p>
+     
         <Card class="max-w-[425px] mx-auto" v-else-if="user">
             <CardHeader>
                 <CardTitle>কোর্স এক্সেস</CardTitle>
@@ -30,6 +33,7 @@
                 </Button>
             </CardFooter>
         </Card>
+    </ClientOnly>
     </AppContainer>
 </template>
 
@@ -42,9 +46,25 @@ import { useToast } from '@/components/ui/toast/use-toast'
 
 const route = useRoute()
 
-const {data } = useFetch(`/api/courses/${slug}`)
+const {data } = await useFetch(`/api/courses/${route.params.slug}/course`)
 
-
+useHead({
+    title: data.value.name,
+    meta: [
+        {
+            name: 'og:title',
+            content: data.value.name
+        },
+        {
+            name: 'og:image',
+            content: data.value.image
+        },
+        {
+            name: 'og:description',
+            content: data.value.description
+        }
+    ]
+})
 
 
 

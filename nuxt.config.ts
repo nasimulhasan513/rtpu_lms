@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@nuxt/image",
     "nuxt-vue3-google-signin",
+    "@nuxtjs/seo",
   ],
   vite: {
     optimizeDeps: {
@@ -54,12 +55,17 @@ export default defineNuxtConfig({
           name: "og:description",
           content: "ACS Courses",
         },
-        {
-          name: "og:image",
-          content:
-            "https://pub-de86fc8fea3047248c160c647017965e.r2.dev/cover/Bangla-Benjon-25-and-26_151_1725693603058",
-        },
       ],
     },
   },
+  site: {
+    url: "https://courses.apars.tech",
+    name: "ACS Courses",
+    description: "ACS Courses",
+    defaultLocale: "en",
+
+  },
+  sitemap: {
+    exclude: ["/admin/**", "/api/**"],
+  }
 });

@@ -66,6 +66,7 @@
     "@nuxt/icon": "^1.4.5",
     "@nuxt/image": "^1.8.0",
     "@nuxtjs/color-mode": "^3.4.2",
+    "@nuxtjs/seo": "2.0.0-rc.21",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@prisma/client": "^5.19.1",
     "nuxt-vue3-google-signin": "^0.0.11",
