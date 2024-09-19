@@ -1,5 +1,6 @@
 <template>
 
+ <div class="min-h-screen bg-white ">
     <header class="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
         <AppContainer>
             <div class="container flex items-center justify-between px-2 py-4 mx-auto md:px-4">
@@ -36,7 +37,7 @@
             <div class="mt-3 space-y-3 ">
 
                 <div v-for="(a, j) in q.options" :key="j"
-                    class="flex items-center p-3 space-x-2 transition-colors border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
+                    class="flex items-center p-3 space-x-2 text-gray-900 transition-colors border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
                     :class="{ 'border-slate-500': data.questions[i].selected == a.id }" @click="selectOption(i, a.id)">
 
 
@@ -54,6 +55,7 @@
     <div v-else>
         <AppLoader />
     </div>
+ </div>
 
 </template>
 

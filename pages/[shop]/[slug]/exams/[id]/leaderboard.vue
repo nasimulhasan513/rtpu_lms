@@ -8,25 +8,24 @@
             </div>
 
             <div class="relative mb-4">
-                <Input type="text" placeholder="Search by name or institute..." class="pl-10" v-model="presearch" />
-                <Icon name="lucide:search" class="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                    size="20" />
+                <Input type="text" placeholder="Search by name or institute..." class="pl-10 dark:bg-gray-800 dark:text-white" v-model="presearch" />
+                <Icon name="lucide:search" class="absolute text-gray-400 transform -translate-y-1/2 dark:text-gray-300 left-3 top-1/2" size="20" />
             </div>
 
-            <div v-if="leaderboard.length > 0" class="overflow-hidden bg-white border rounded-lg shadow-md">
+            <div v-if="leaderboard.length > 0" class="overflow-hidden bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead class="w-[50px]">Rank</TableHead>
-                            <TableHead>Participant</TableHead>
-                            <TableHead>Institute</TableHead>
-                            <TableHead class="text-right">Marks</TableHead>
-                            <TableHead class="text-right">Duration</TableHead>
+                            <TableHead class="w-[50px] dark:text-gray-300">Rank</TableHead>
+                            <TableHead class="dark:text-gray-300">Participant</TableHead>
+                            <TableHead class="dark:text-gray-300">Institute</TableHead>
+                            <TableHead class="text-right dark:text-gray-300">Marks</TableHead>
+                            <TableHead class="text-right dark:text-gray-300">Duration</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow v-for="(rank, i) in leaderboard" :key="i" class="hover:bg-gray-50">
-                            <TableCell class="font-medium">
+                        <TableRow v-for="(rank, i) in leaderboard" :key="i" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <TableCell class="font-medium dark:text-gray-300">
                                 {{ i + 1 }}
                             </TableCell>
                             <TableCell>
@@ -36,14 +35,14 @@
                                         :alt="rank.user.name"
                                         class="w-8 h-8 mr-2 rounded-full"
                                     />
-                                    {{ rank.user.name }}
+                                    <span class="dark:text-gray-300">{{ rank.user.name }}</span>
                                 </div>
                             </TableCell>
-                            <TableCell>{{ rank.user.institute }}</TableCell>
-                            <TableCell class="font-semibold text-right">{{ rank.marks }}</TableCell>
-                            <TableCell class="text-right">
+                            <TableCell class="dark:text-gray-300">{{ rank.user.institute }}</TableCell>
+                            <TableCell class="font-semibold text-right dark:text-gray-300">{{ rank.marks }}</TableCell>
+                            <TableCell class="text-right dark:text-gray-300">
                                 <span class="flex items-center justify-end">
-                                    <Icon name="lucide:clock" class="mr-1" size="14" />
+                                    <Icon name="lucide:clock" class="mr-1 dark:text-gray-300" size="14" />
                                     {{ millisecToTime(rank.duration, examDuration) }}
                                 </span>
                             </TableCell>
@@ -57,7 +56,7 @@
                 <AppEmptyState v-if="!loading && leaderboard.length === 0" />
             </div>
 
-            <Button v-if="hasMorePages" @click="loadMoreLeaderboard" :disabled="loadingMore" class="w-full mt-4">
+            <Button v-if="hasMorePages" @click="loadMoreLeaderboard" :disabled="loadingMore" class="w-full mt-4 dark:bg-gray-700 dark:text-white">
                 {{ loadingMore ? 'Loading...' : 'Load More' }}
             </Button>
         </div>

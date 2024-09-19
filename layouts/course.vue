@@ -51,7 +51,7 @@ const menus = computed(() => {
             })
         }
 
-        if(item.type==='all'){
+        if(item.type==='all' && shop.value?.is_class){
             initMenus.push({
                 ...item,
                 link: `/${route.params.shop}/${slug.value}/${item.link}`,
@@ -76,7 +76,7 @@ const menus = computed(() => {
             <LayoutCourseHeader :navMenu="menus" />
             <main class="flex-1 min-h-[calc(100vh-53px)] p-4 lg:p-6"
                 :class="isBgWhite ? 'bg-background' : 'bg-muted dark:bg-muted/20'">
-               
+              
                 <slot />
             </main>
         </div>
