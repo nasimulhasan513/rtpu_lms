@@ -20,6 +20,9 @@ dependencies:
   '@distube/ytdl-core':
     specifier: ^4.14.4
     version: 4.14.4
+  '@editorjs/editorjs':
+    specifier: ^2.30.6
+    version: 2.30.6
   '@faker-js/faker':
     specifier: ^9.0.0
     version: 9.0.0
@@ -1362,6 +1365,10 @@ packages:
       undici: 5.28.4
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /@editorjs/editorjs@2.30.6:
+    resolution: {integrity: sha512-6eQMc4Di3Hz9p4o+NGRgKaCeAF7eAk106m+bsDLc4eo94VGYO1M163OiGFdmanE+w503qTmXOzycWff5blEOAQ==}
     dev: false
 
   /@emnapi/core@0.45.0:

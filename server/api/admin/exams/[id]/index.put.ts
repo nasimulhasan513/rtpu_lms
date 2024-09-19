@@ -6,6 +6,7 @@ const examSchema = z.object({
   subjectId: z.string(),
   startTime: z.string(),
   endTime: z.string(),
+  description: z.string().optional().nullable(),
   duration: z.number(),
   totalMarks: z.number(),
   resultPublishTime: z.string(),
@@ -31,6 +32,7 @@ export default defineEventHandler(async (event) => {
       where: { id },
       data: {
         title: examData.title,
+        description: examData.description,
         subjectId: examData.subjectId,
         duration: examData.duration,
         totalMarks: examData.totalMarks,

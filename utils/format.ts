@@ -29,3 +29,7 @@ export const millisecToTime = (millis, duration) => {
   var seconds = ((millis % 60000) / 1000).toFixed(0);
   return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 };
+
+export const inputFormat = (date: string) => {
+  return new Date(new Date(date).getTime() + 6 * 60 * 60 * 1000).toISOString().slice(0, 16)
+}

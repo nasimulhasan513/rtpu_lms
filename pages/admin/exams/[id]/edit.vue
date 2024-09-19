@@ -51,6 +51,15 @@
                     <FormMessage />
                 </FormItem>
             </FormField>
+            <FormField v-slot="{ field }" name="description">
+                    <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                            <Textarea v-bind="field" placeholder="Enter exam description/instructions/syllabus" />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                </FormField>
 
             <div class="grid grid-cols-2 gap-4">
                 <FormField v-slot="{ field }" name="duration">
@@ -126,12 +135,12 @@
                 </FormField>
             </div>
 
+            <div class="grid grid-cols-2 gap-5">
             <FormField v-slot="{ field }" name="instantResult">
                 <FormItem
                     class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
                     <FormControl>
-                        <Checkbox @click="form.setFieldValue('instantResult', !form.values.instantResult)"
-                            :checked="form.values.instantResult" />
+                        <Checkbox v-bind="field" />
                     </FormControl>
                     <div class="space-y-1 leading-none">
                         <FormLabel>
@@ -143,6 +152,23 @@
                     </div>
                 </FormItem>
             </FormField>
+            <FormField v-slot="{ field }" name="negativeMarking">
+                <FormItem
+                    class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
+                    <FormControl>
+                        <Checkbox v-bind="field" />
+                    </FormControl>
+                    <div class="space-y-1 leading-none">
+                        <FormLabel>
+                            Negative Marking
+                        </FormLabel>
+                        <FormDescription>
+                            Apply negative marking for incorrect answers
+                        </FormDescription>
+                    </div>
+                </FormItem>
+            </FormField>
+           </div>
 
             <Button type="submit" class="w-full">Update Exam</Button>
         </form>
@@ -172,6 +198,7 @@ const formSchema = toTypedSchema(z.object({
     title: z.string().min(1, 'Title is required'),
     courses: z.array(z.string()).min(1, 'At least one course is required'),
     subjectId: z.string().min(1, 'Subject is required'),
+    description: z.string().optional().nullable(),
     startTime: z.string().min(1, 'Start time is required'),
     endTime: z.string().min(1, 'End time is required'),
     duration: z.number().min(1, 'Duration must be at least 1 minute'),
@@ -179,6 +206,7 @@ const formSchema = toTypedSchema(z.object({
     resultPublishTime: z.string().min(1, 'Result publish time is required'),
     solutionPublishTime: z.string().min(1, 'Solution publish time is required'),
     instantResult: z.boolean().optional(),
+    negativeMarking: z.boolean().optional(),
 }));
 
 const form = useForm({
@@ -187,6 +215,7 @@ const form = useForm({
         title: '',
         courses: [],
         subjectId: '',
+        description: '',
         startTime: '',
         endTime: '',
         duration: 0,
@@ -194,21 +223,28 @@ const form = useForm({
         resultPublishTime: '',
         solutionPublishTime: '',
         instantResult: false,
+        negativeMarking: false,
     },
 });
+
+
+
 
 // Fetch exam data
 const fetchExamData = async () => {
     try {
         const exam = await $fetch(`/api/admin/exams/${examId}`);
+        console.log(exam);
         form.setValues({
             ...exam,
+            description: exam.description || '',
             courses: exam.courseExams.map(ce => ce.course.id),
-            startTime: new Date(exam.startTime).toISOString().slice(0, 16),
-            endTime: new Date(exam.endTime).toISOString().slice(0, 16),
-            resultPublishTime: new Date(exam.resultPublishTime).toISOString().slice(0, 16),
-            solutionPublishTime: new Date(exam.solutionPublishTime).toISOString().slice(0, 16),
+            startTime: inputFormat(exam.startTime)  ,
+            endTime: inputFormat(exam.endTime),
+            resultPublishTime: inputFormat(exam.resultPublishTime),
+            solutionPublishTime: inputFormat(exam.solutionPublishTime),
             instantResult: exam.instantResult,
+            negativeMarking: exam.negativeMarking,
         });
 
         courseOptions.value = courseOptions.value.map(course => ({
@@ -256,7 +292,7 @@ watch([() => form.values.endTime, () => form.values.duration, () => form.values.
                 return; // If no duration and not instant result, don't update
             }
 
-            const formattedPublishTime = publishDateTime.toISOString().slice(0, 16);
+            const formattedPublishTime = inputFormat(publishDateTime);
             form.setFieldValue('resultPublishTime', formattedPublishTime);
             form.setFieldValue('solutionPublishTime', formattedPublishTime);
         }

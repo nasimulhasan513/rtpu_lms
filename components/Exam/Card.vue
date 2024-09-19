@@ -10,7 +10,8 @@
                     {{ exam.status.charAt(0).toUpperCase() + exam.status.slice(1) }}
                 </Badge>
             </div>
-            <p class="mt-1 text-sm text-muted-foreground">{{ exam.subject.name }}</p>
+            <p class="mt-1 text-sm text-muted-foreground" v-if="exam.subject.name!=='Others'" >{{ exam.subject.name }}</p>
+            <p class="mt-1 text-sm text-muted-foreground">{{ exam.description }}</p>
         </CardHeader>
         <CardContent class="flex-grow">
             <div class="grid grid-cols-2 gap-4 mb-6">
