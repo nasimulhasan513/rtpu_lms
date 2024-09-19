@@ -189,20 +189,25 @@ export const courseMenu = [
     title: "ড্যাশবোর্ড",
     link: "dashboard",
     icon: "tabler:dashboard",
+    type: "all"
   },
   {
     title: "ক্লাসসমূহ",
     link: "lessons",
     icon: "lucide:video",
+    type: "is_class"
+
   },
   {
     title: "বহুনির্বাচনী পরীক্ষা",
     link: "exams",
     icon: "lucide:clipboard-list",
+    type: "is_mcq"
   },
   {
     title: "লিখিত পরীক্ষা",
     link: "assignments",
     icon: "lucide:file-text",
+    type: "is_cq"
   },
 ];
