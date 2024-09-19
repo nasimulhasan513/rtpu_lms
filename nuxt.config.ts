@@ -68,5 +68,10 @@ export default defineNuxtConfig({
   },
   sitemap: {
     exclude: ["/admin/**", "/api/**"],
+  },
+  icon: {
+    serverBundle: {
+      collections: ['lucide'] // <!--- this
+    }
   }
 });
