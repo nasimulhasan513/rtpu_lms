@@ -250,6 +250,7 @@ const onSubmit = async () => {
         reset()
         onClose()
     } catch (error) {
+        console.log(error)
         if (error instanceof z.ZodError) {
             toast({
                 title: "Validation Error",
@@ -295,6 +296,7 @@ const reset = () => {
             { option_text: '', correct: false },
             { option_text: '', correct: false }
         ],
+        examId: examId.value,
         subjectId: '',
         chapterId: '',
         difficulty: 'Medium',

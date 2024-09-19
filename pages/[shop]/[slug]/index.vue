@@ -41,6 +41,15 @@ definePageMeta({
 import { useToast } from '@/components/ui/toast/use-toast'
 
 const route = useRoute()
+
+const {data } = useFetch(`/api/courses/${slug}`)
+
+
+
+
+
+
+
 const uniqueId = ref('')
 const { toast } = useToast()
 const isEnrolling = ref(false)

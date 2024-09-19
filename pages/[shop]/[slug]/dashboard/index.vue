@@ -10,7 +10,7 @@
         </div>
 
         <!-- Lessons -->
-        <div class="mb-12">
+        <div class="mb-12" v-if="dashboardData.subjects.length > 0">
             <h2 class="mb-4 text-2xl font-semibold">বিষয়সমূহ</h2>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <LessonSubjectThumbnail v-for="subject in dashboardData.subjects" :key="subject.id" :subject="subject"

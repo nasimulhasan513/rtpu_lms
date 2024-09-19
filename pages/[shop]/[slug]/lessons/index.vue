@@ -1,6 +1,11 @@
 <template>
 
-    <div class="space-y-6">
+    <div v-if="status === 'success' && data.lessons.length === 0" class="flex items-center justify-center h-64">
+        <p class="text-lg text-center text-red-500">
+            কোর্সে কোনো ক্লাস নেই
+        </p>
+    </div>
+    <div class="space-y-6" v-if="status === 'success' && data.lessons.length > 0">
 
         <!-- Breadcrumb -->
         <div class="flex items-center space-x-2">
@@ -61,17 +66,19 @@
             </div>
         </div>
 
-        <div v-if="status === 'pending'" class="flex items-center justify-center h-64">
-            <Spinner />
-        </div>
+       
 
-        <Alert v-if="error" variant="destructive">
+      
+    </div>
+    <Alert v-if="error" variant="destructive">
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>
                 {{ error.message }}
             </AlertDescription>
         </Alert>
-    </div>
+    <div v-if="status === 'pending'" class="flex items-center justify-center h-64">
+            <Spinner />
+        </div>
 
 </template>
 
