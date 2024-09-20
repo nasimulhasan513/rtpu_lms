@@ -17,11 +17,7 @@ export const dateFieldFormat = (date: string) => {
     return null;
   }
 
-  return (
-    new Date(new Date(date).getTime())
-      .toISOString()
-      .slice(0, 16) || null
-  );
+  return new Date(new Date(date).getTime()).toISOString().slice(0, 16) || null;
 };
 
 export const millisecToTime = (millis, duration) => {
@@ -31,5 +27,5 @@ export const millisecToTime = (millis, duration) => {
 };
 
 export const inputFormat = (date: string) => {
-  return new Date(new Date(date).getTime() + 6 * 60 * 60 * 1000).toISOString().slice(0, 16)
-}
+  return new Date(new Date(date).getTime()).toISOString().slice(0, 16);
+};
