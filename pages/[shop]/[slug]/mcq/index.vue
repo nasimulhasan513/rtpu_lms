@@ -3,7 +3,7 @@
 
         <div v-if="status === 'success'" class="space-y-6">
 
-            <div class="max-w-2xl mx-auto">
+            <div class="max-w-2xl mx-auto space-y-5">
                 <ExamCard v-for="exam in data.body.ongoingExams" :key="exam.id" :exam="exam" />
             </div>
             <Tabs default-value="upcoming">

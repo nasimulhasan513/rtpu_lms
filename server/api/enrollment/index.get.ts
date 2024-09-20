@@ -3,6 +3,14 @@ export default defineEventHandler(async (event) => {
 
   const userId = event.context.user?.id;
 
+  const role = event.context.user?.role;
+
+  if (role !== "user") {
+    return {
+      enrollment: true,
+    };
+  }
+
   const enrollment = await db.enrollment.findFirst({
     where: {
       userId: userId as string,
