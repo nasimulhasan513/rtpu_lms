@@ -27,5 +27,9 @@ export const millisecToTime = (millis, duration) => {
 };
 
 export const inputFormat = (date: string) => {
-  return new Date(new Date(date).getTime()).toISOString().slice(0, 16);
+  return new Date(
+    new Date(date).toLocaleTimeString("en-US", { timeZone: "Asia/Dhaka" })
+  )
+    .toISOString()
+    .slice(0, 16);
 };
