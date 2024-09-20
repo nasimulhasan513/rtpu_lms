@@ -1,7 +1,8 @@
-import { toZonedTime } from "date-fns-tz";
+import { format, toZonedTime } from "date-fns-tz";
 
 const tz = "Asia/Dhaka";
 
 export const formatDate = (date: string) => {
-  return new Date(toZonedTime(date, tz)).toISOString().slice(0, 16);
+  let time = new Date(toZonedTime(date, tz));
+  return time;
 };

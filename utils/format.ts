@@ -20,7 +20,7 @@ export const dateFieldFormat = (date: string) => {
     return null;
   }
 
-  return new Date(toZonedTime(date, tz)).toISOString().slice(0, 16) || null;
+  return moment(toZonedTime(date, tz)).format("YYYY-MM-DDTHH:mm") || null;
 };
 
 export const millisecToTime = (millis, duration) => {
@@ -30,5 +30,5 @@ export const millisecToTime = (millis, duration) => {
 };
 
 export const inputFormat = (date: string) => {
-  return new Date(toZonedTime(date, tz)).toISOString().slice(0, 16);
+  return moment(toZonedTime(date, tz)).format("YYYY-MM-DDTHH:mm") || null;
 };
