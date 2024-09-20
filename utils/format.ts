@@ -27,5 +27,7 @@ export const millisecToTime = (millis, duration) => {
 };
 
 export const inputFormat = (date: string) => {
-  return new Date(date).toISOString().slice(0, 16);
+  return new Date(new Date(date).getTime() + 6 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 16);
 };
