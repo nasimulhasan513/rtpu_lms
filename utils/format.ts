@@ -1,15 +1,18 @@
+import { toZonedTime } from "date-fns-tz";
 import moment from "moment";
+
+const tz = "Asia/Dhaka";
 
 export function formatNumber(number: number): string {
   return Intl.NumberFormat("bn-BD").format(number);
 }
 
 export const formatTime = (time: string) => {
-  return moment(time).format("DD MMMM YYYY, h:mm:ss a");
+  return moment(toZonedTime(time, tz)).format("DD MMMM YYYY, h:mm:ss a");
 };
 
 export const formatDate = (time: string) => {
-  return moment(time).format("DD MMMM YYYY, h:mm:ss a");
+  return moment(toZonedTime(time, tz)).format("DD MMMM YYYY, h:mm:ss a");
 };
 
 export const dateFieldFormat = (date: string) => {
@@ -17,7 +20,7 @@ export const dateFieldFormat = (date: string) => {
     return null;
   }
 
-  return new Date(new Date(date).getTime()).toISOString().slice(0, 16) || null;
+  return new Date(toZonedTime(date, tz)).toISOString().slice(0, 16) || null;
 };
 
 export const millisecToTime = (millis, duration) => {
@@ -27,7 +30,5 @@ export const millisecToTime = (millis, duration) => {
 };
 
 export const inputFormat = (date: string) => {
-  return new Date(new Date(date).getTime() + 6 * 60 * 60 * 1000)
-    .toISOString()
-    .slice(0, 16);
+  return new Date(toZonedTime(date, tz)).toISOString().slice(0, 16);
 };

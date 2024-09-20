@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id;
-  process.env.TZ = "Asia/Dhaka";
+ 
   const exam = await db.exam.findUnique({
     where: { id: id },
   });

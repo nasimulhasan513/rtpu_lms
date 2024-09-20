@@ -83,6 +83,9 @@ dependencies:
   date-fns:
     specifier: ^3.6.0
     version: 3.6.0
+  date-fns-tz:
+    specifier: ^3.1.3
+    version: 3.1.3(date-fns@3.6.0)
   google-auth-library:
     specifier: ^9.14.1
     version: 9.14.1
@@ -5841,6 +5844,14 @@ packages:
 
   /custom-event-polyfill@1.0.7:
     resolution: {integrity: sha512-TDDkd5DkaZxZFM8p+1I3yAlvM3rSr1wbrOliG4yJiwinMZN8z/iGL7BTlDkrJcYTmgUSb4ywVCc3ZaUtOtC76w==}
+    dev: false
+
+  /date-fns-tz@3.1.3(date-fns@3.6.0):
+    resolution: {integrity: sha512-ZfbMu+nbzW0mEzC8VZrLiSWvUIaI3aRHeq33mTe7Y38UctKukgqPR4nTDwcwS4d64Gf8GghnVsroBuMY3eiTeA==}
+    peerDependencies:
+      date-fns: ^3.0.0
+    dependencies:
+      date-fns: 3.6.0
     dev: false
 
   /date-fns@3.6.0:
