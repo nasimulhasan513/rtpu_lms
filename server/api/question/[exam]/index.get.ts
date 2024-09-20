@@ -47,6 +47,9 @@ export default defineEventHandler(async (event) => {
       },
       explain: false,
     },
+    orderBy: {
+      serial: "asc",
+    },
   });
 
   let submission = await db.submission.findFirst({

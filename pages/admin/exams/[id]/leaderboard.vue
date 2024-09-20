@@ -40,6 +40,11 @@
                                     {{ millisecToTime(rank.duration, data.examData.duration) }}
                                 </span>
                             </TableCell>
+                            <TableCell>
+                                <Button @click="removeFromLeaderboard(rank.id)">
+                                    <Icon name="lucide:trash" size="16" />
+                                </Button>
+                            </TableCell>
 
                         </TableRow>
 
@@ -108,6 +113,17 @@ const loadMoreLeaderboard = async () => {
     }
 }
 
+
+
+const removeFromLeaderboard = async (id) => {
+    const response = await fetch(`/api/question/${route.params.id}/leaderboard/${id}`, {
+        method: 'DELETE'
+    })
+    const data = await response.json()
+    if (data.success) {
+        leaderboard.value = leaderboard.value.filter(rank => rank.id !== id)
+    }
+}
 
 const presearch = ref('')
 debouncedWatch(presearch, (value) => {

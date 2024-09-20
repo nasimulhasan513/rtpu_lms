@@ -44,7 +44,12 @@ const handleGoogleLoginSuccess = async (response) => {
         if (route.name == "shop-slug") {
             const enrollment = await isEnrolled(route.params.slug);
             if (enrollment) {
-                return navigateTo(`/${route.params.shop}/${route.params.slug}/dashboard`);
+                const category = await $fetch(`/api/category/${route.params.shop}`);
+                if (category?.is_class) {
+                    return navigateTo(`/${route.params.shop}/${route.params.slug}/dashboard`);
+                } else {
+                    return navigateTo(`/${route.params.shop}/${route.params.slug}/mcq`);
+                }
             }
         }
 

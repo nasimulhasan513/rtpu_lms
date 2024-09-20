@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
       },
     },
     orderBy: {
-      createdAt: "desc",
+      serial: "asc",
     },
   });
   return {
