@@ -294,15 +294,16 @@ model Question {
 }
 
 model Exam {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  title         String
-  description   String?
-  startTime     DateTime
-  endTime       DateTime
-  duration      Int
-  totalMarks    Int
-  instantResult Boolean  @default(false)
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  description     String?
+  startTime       DateTime
+  endTime         DateTime
+  duration        Int
+  totalMarks      Int
+  instantResult   Boolean  @default(false)
   negativeMarking Boolean  @default(false)
+  shuffleQuestion Boolean  @default(false)
 
   resultPublishTime   DateTime?
   solutionPublishTime DateTime?

@@ -20,7 +20,7 @@
                         <ExamCard v-for="exam in data.body.upcomingExams" :key="exam.id" :exam="exam" />
                     </div>
 
-                    <AppEmptyState v-else title="কোন পরীক্ষা নির্ধারিত নেই" />
+                    <AppEmptyState v-else title="কোন পরীক্ষা নির্ধারিত নেই" subtitle="পরবর্তী পরীক্ষাসমূহ" />
 
 
                 </TabsContent>
@@ -28,7 +28,7 @@
                     <div v-if="data.body.pastExams.length > 0" class="grid gap-6 lg:grid-cols-2">
                         <ExamCard v-for="exam in data.body.pastExams" :key="exam.id" :exam="exam" />
                     </div>
-                    <AppEmptyState title="No exam found" v-else />
+                    <AppEmptyState v-else title="কোন পরীক্ষা নির্ধারিত নেই" subtitle="পূর্ববর্তী পরীক্ষাসমূহ" />
 
                 </TabsContent>
             </Tabs>

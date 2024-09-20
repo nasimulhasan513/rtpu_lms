@@ -1,20 +1,8 @@
 import { z } from "zod";
+import { examSchema } from "~/schema/exam.schema";
 import { formatDate } from "~/server/utils/format";
 
-const examSchema = z.object({
-  title: z.string(),
-  courses: z.array(z.string()), // Fix: Specify the type of array elements
-  subjectId: z.string(),
-  startTime: z.string(),
-  endTime: z.string(),
-  description: z.string().optional().nullable(),
-  duration: z.number(),
-  totalMarks: z.number(),
-  instantResult: z.boolean(),
-  resultPublishTime: z.string().optional(),
-  solutionPublishTime: z.string().optional(),
-  negativeMarking: z.boolean(),
-});
+
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -34,6 +22,7 @@ export default defineEventHandler(async (event) => {
         resultPublishTime: examData.resultPublishTime ? formatDate(examData.resultPublishTime) : undefined,
         solutionPublishTime: examData.solutionPublishTime ? formatDate(examData.solutionPublishTime) : undefined,
         negativeMarking: examData.negativeMarking,
+        shuffleQuestion: examData.shuffleQuestion,
         subject: {
           connect: { id: examData.subjectId }
         },

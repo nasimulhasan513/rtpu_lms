@@ -1,20 +1,6 @@
 import { z } from "zod";
+import { examSchema } from "~/schema/exam.schema";
 import { formatDate } from "~/server/utils/format";
-
-const examSchema = z.object({
-  title: z.string(),
-  courses: z.array(z.string()),
-  subjectId: z.string(),
-  startTime: z.string(),
-  endTime: z.string(),
-  description: z.string().optional().nullable(),
-  duration: z.number(),
-  totalMarks: z.number(),
-  resultPublishTime: z.string(),
-  solutionPublishTime: z.string(),
-  instantResult: z.boolean(),
-  negativeMarking: z.boolean(),
-});
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id;
