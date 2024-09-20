@@ -1,5 +1,4 @@
-import { toZonedTime } from "date-fns-tz";
-import moment from "moment";
+import { formatInTimeZone } from "date-fns-tz";
 
 const tz = "Asia/Dhaka";
 
@@ -8,11 +7,11 @@ export function formatNumber(number: number): string {
 }
 
 export const formatTime = (time: string) => {
-  return moment(toZonedTime(time, tz)).format("DD MMMM YYYY, h:mm:ss a");
+  return formatInTimeZone(time, tz, "dd MMM yyyy hh:mm:ss a");
 };
 
 export const formatDate = (time: string) => {
-  return moment(toZonedTime(time, tz)).format("DD MMMM YYYY, h:mm:ss a");
+  return formatInTimeZone(time, tz, "dd MMM yyyy hh:mm:ss a");
 };
 
 export const dateFieldFormat = (date: string) => {
@@ -20,7 +19,7 @@ export const dateFieldFormat = (date: string) => {
     return null;
   }
 
-  return moment(toZonedTime(date, tz)).format("YYYY-MM-DDTHH:mm") || null;
+  return formatInTimeZone(date, tz, "YYYY-MM-DDTHH:mm") || null;
 };
 
 export const millisecToTime = (millis, duration) => {
@@ -30,5 +29,5 @@ export const millisecToTime = (millis, duration) => {
 };
 
 export const inputFormat = (date: string) => {
-  return moment(toZonedTime(date, tz)).format("YYYY-MM-DDTHH:mm") || null;
+  return formatInTimeZone(date, tz, "yyyy-MM-dd'T'HH:mm") || null;
 };
