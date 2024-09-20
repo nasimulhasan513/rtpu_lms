@@ -1,4 +1,5 @@
 export default defineEventHandler(async (event) => {
+  process.env.TZ = "Asia/Dhaka";
   const exams = await db.exam.findMany({
     where: {
       courseExams: {

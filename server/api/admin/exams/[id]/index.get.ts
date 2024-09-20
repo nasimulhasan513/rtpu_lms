@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
       message: "Exam ID is required",
     });
   }
-
+  process.env.TZ = "Asia/Dhaka";
   try {
     const exam = await db.exam.findUnique({
       where: { id },

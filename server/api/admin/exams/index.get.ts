@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
+    process.env.TZ = "Asia/Dhaka";
     if (event.context.user?.role === "contributor") {
       const courses = await db.contributor.findMany({
         where: {
