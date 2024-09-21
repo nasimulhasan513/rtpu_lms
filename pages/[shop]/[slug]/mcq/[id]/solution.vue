@@ -28,7 +28,7 @@
                 <div class="flex flex-wrap gap-3 ">
                     <Badge> প্রশ্ন নংঃ {{ formatNumber(i + 1) }}</Badge>
                     <Badge> {{ q.subject.name }}</Badge>
-                    <Badge> ১ নম্বর</Badge>
+
                 </div>
                 <Badge class="bg-orange-500" v-if="notAnswered(q.id)">উত্তর করা হয়নি</Badge>
                 <Badge class="bg-red-500" v-else-if="isWrongAnswer(q)"> ভুল উত্তর </Badge>
