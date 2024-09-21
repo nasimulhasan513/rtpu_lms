@@ -12,9 +12,11 @@
 
         </div>
 
-        <ExamSolutionChart :correct="data.exam.correct" :wrong="data.exam.wrong" :skipped="data.exam.skipped"
-            :total="data.exam.totalMarks" />
+        <div v-if="data.exam && data.exam.totalMarks > 0 && data.submission">
+            <ExamSolutionChart :correct="data.exam.correct" :wrong="data.exam.wrong" :skipped="data.exam.skipped"
+                :total="data.exam.totalMarks" />
 
+        </div>
 
 
 
