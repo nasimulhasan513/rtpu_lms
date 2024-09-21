@@ -6,7 +6,8 @@
             <ExamStatCard title="Correct" :value="correct" color="bg-green-100 text-green-800" />
             <ExamStatCard title="Wrong" :value="wrong" color="bg-red-100 text-red-800" />
             <ExamStatCard title="Skipped" :value="skipped" color="bg-yellow-100 text-yellow-800" />
-            <ExamStatCard title="Total" :value="total" color="bg-blue-100 text-blue-800" />
+            <ExamStatCard title="Accuracy" :value="correct / total * 100" suffix="%"
+                color="bg-blue-100 text-blue-800" />
         </div>
         <div class="mt-4">
             <!-- <Progress v-model="(correct / total) * 100" class="w-full" /> -->

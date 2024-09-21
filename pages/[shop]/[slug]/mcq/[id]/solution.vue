@@ -32,15 +32,19 @@
                 </div>
                 <Badge class="bg-orange-500" v-if="notAnswered(q.id)">উত্তর করা হয়নি</Badge>
                 <Badge class="bg-red-500" v-else-if="isWrongAnswer(q)"> ভুল উত্তর </Badge>
-                <Badge class="bg-green-500" v-else> সঠিক উত্তর </Badge>
+                <Badge class="bg-green-500" v-else-if="isCorrectAnswer(q)"> সঠিক উত্তর </Badge>
             </div>
             <div class="mt-3 space-y-3 ">
 
                 <div v-for="(a, j) in q.options" :key="j"
                     class="relative flex items-center p-3 space-x-2 text-gray-900 transition-colors border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
                     :class="{ 'border-green-500': a.correct, 'border-red-500': wrongAnswer(a.id) && !a.correct }">
-                    <Icon name="lucide:check-circle-2" size="24" class="absolute text-white-500 right-3"
+                    <Icon name="lucide:check-circle-2" size="24" class="absolute bg-green-500 text-white-500 right-3"
                         v-if="a.correct" />
+                    <Icon name="lucide:check-circle-2" size="24" class="absolute bg-green-500 text-white-500 right-3"
+                        v-if="a.correct" />
+                    <Icon name="lucide:circle-x" size="24" class="absolute bg-red-500 text-white-500 right-3"
+                        v-if="wrongAnswer(a.id) && !a.correct" />
                     <AppMath v-model="a.option_text">
                     </AppMath>
                 </div>
@@ -74,9 +78,14 @@ const { data, status, error, refresh } = await useFetch('/api/question/' + route
 const isWrongAnswer = (q) => {
     const wrong = data.value.submission.find(s => s.q == q.id)
     const option = q.options.find(o => o.id == wrong.a)
-    return option && !option.correct
+    return option && !option.correct && data.value.submission
 }
 
+const isCorrectAnswer = (q) => {
+    const correct = data.value.submission.find(s => s.q == q.id)
+    const option = q.options.find(o => o.id == correct.a)
+    return option && option.correct && data.value.submission
+}
 
 // Existing functions
 const wrongAnswer = (o) => {
@@ -86,7 +95,7 @@ const wrongAnswer = (o) => {
 
 const notAnswered = (o) => {
     // if exists
-    return !(data.value.submission.find(s => s.q == o))
+    return !(data.value.submission.find(s => s.q == o)) && data.value.submission
 }
 
 
