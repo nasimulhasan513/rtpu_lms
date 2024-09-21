@@ -12,17 +12,25 @@
 
         </div>
 
+        <ExamSolutionChart :correct="data.exam.correct" :wrong="data.exam.wrong" :skipped="data.exam.skipped"
+            :total="data.exam.totalMarks" />
+
+
 
 
         <div v-for="(q, i) in data.questions" :key="i" class="p-6 space-y-3 bg-white border rounded-lg shadow-md">
 
             <div class="text-lg font-semibold text-gray-900 " v-html="q.question"></div>
 
-            <div class="flex flex-wrap gap-3 ">
-                <Badge> প্রশ্ন নংঃ {{ formatNumber(i + 1) }}</Badge>
-                <Badge> {{ q.subject.name }}</Badge>
-                <Badge> ১ নম্বর</Badge>
-                <Badge v-if="notAnswered(q.id)" >উত্তর করা হয়নি</Badge>
+            <div class="flex justify-between ">
+                <div class="flex flex-wrap gap-3 ">
+                    <Badge> প্রশ্ন নংঃ {{ formatNumber(i + 1) }}</Badge>
+                    <Badge> {{ q.subject.name }}</Badge>
+                    <Badge> ১ নম্বর</Badge>
+                </div>
+                <Badge class="bg-orange-500" v-if="notAnswered(q.id)">উত্তর করা হয়নি</Badge>
+                <Badge class="bg-red-500" v-else-if="isWrongAnswer(q)"> ভুল উত্তর </Badge>
+                <Badge class="bg-green-500" v-else> সঠিক উত্তর </Badge>
             </div>
             <div class="mt-3 space-y-3 ">
 
@@ -60,6 +68,15 @@ const { data, status, error, refresh } = await useFetch('/api/question/' + route
 })
 
 
+
+const isWrongAnswer = (q) => {
+    const wrong = data.value.submission.find(s => s.q == q.id)
+    const option = q.options.find(o => o.id == wrong.a)
+    return option && !option.correct
+}
+
+
+// Existing functions
 const wrongAnswer = (o) => {
     // if exists
     return data.value.submission.find(s => s.a == o)

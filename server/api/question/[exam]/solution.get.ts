@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  let submission = await db.submission.findFirst({
+  const submissionData = await db.submission.findFirst({
     where: {
       examId: id,
       userId: userId,
@@ -28,6 +28,9 @@ export default defineEventHandler(async (event) => {
 
     select: {
       answers: true,
+      correct: true,
+      wrong: true,
+      skipped: true,
     },
   });
 
@@ -50,13 +53,18 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  submission =
+  const submission =
     // @ts-ignore
-    submission && submission?.answers ? submission.answers : [];
+    submissionData && submissionData?.answers ? submissionData.answers : [];
 
   return {
     statusCode: 200,
-    exam,
+    exam: {
+      ...exam,
+      correct: submissionData?.correct,
+      wrong: submissionData?.wrong,
+      skipped: submissionData?.skipped,
+    },
     questions,
     submission,
   };

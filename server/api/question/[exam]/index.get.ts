@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const questions = await db.question.findMany({
+  let questions = await db.question.findMany({
     where: { examId: id },
 
     include: {
@@ -51,6 +51,9 @@ export default defineEventHandler(async (event) => {
       serial: "asc",
     },
   });
+  if (exam.shuffleQuestion) {
+    questions = questions.sort(() => Math.random() - 0.5);
+  }
 
   let submission = await db.submission.findFirst({
     where: {

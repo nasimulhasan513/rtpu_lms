@@ -10,7 +10,8 @@
                     {{ exam.status.charAt(0).toUpperCase() + exam.status.slice(1) }}
                 </Badge>
             </div>
-            <p class="mt-1 text-sm text-muted-foreground" v-if="exam.subject.name!=='Others'" >{{ exam.subject.name }}</p>
+            <p class="mt-1 text-sm text-muted-foreground" v-if="exam.subject.name !== 'Others'">{{ exam.subject.name }}
+            </p>
             <p class="mt-1 text-sm text-muted-foreground">{{ exam.description }}</p>
         </CardHeader>
         <CardContent class="flex-grow">
@@ -22,7 +23,8 @@
                 <ExamInfoBox icon="lucide:clock" label="Duration" :value="`${exam.duration} minutes`"
                     color="text-green-500" />
                 <ExamInfoBox icon="lucide:award" label="Total Marks"
-                    :value="`${exam.totalMarks} x 1 = ${exam.totalMarks} ${exam.negativeMarking ? '(-0.25/wrong answer)' : ''}`" color="text-yellow-500" />
+                    :value="`${exam.totalMarks} x 1 = ${exam.totalMarks} ${exam.negativeMarking ? '(-0.25/wrong answer)' : ''}`"
+                    color="text-yellow-500" />
             </div>
 
             <div v-if="exam.status !== 'past'" class="p-4 rounded-lg bg-primary/5">
@@ -44,10 +46,11 @@
                 @click="navigateTo(`mcq/${exam.id}/onboard`)" class="w-full">
                 Start Exam
             </Button>
-            <p v-else-if="exam.status === 'ongoing'" class="font-semibold text-green-500">
+            <p v-else-if="exam.status === 'ongoing' && !exam.instantResult" class="font-semibold text-green-500">
                 Thanks for participation.
             </p>
-            <template v-if="exam.status === 'past'">
+            <template
+                v-else-if="exam.status === 'past' || (exam.instantResult && (!exam.submission || exam.submission.status === 'submitted'))">
                 <Button @click="navigateTo(`mcq/${exam.id}/practice`)" variant="outline" class="flex-1">
                     <Icon name="lucide:book-open" class="w-4 h-4 mr-2" />
                     Practice Exam

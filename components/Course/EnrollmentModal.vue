@@ -1,88 +1,127 @@
 <template>
+    <Button @click="openModal">
+        <Icon icon="lucide:user-plus" />
+        Manual Enrollment
+    </Button>
+
     <Dialog :open="isOpen" @close="closeModal">
         <DialogContent class="sm:max-w-[425px]">
             <DialogHeader>
                 <DialogTitle>Enroll in Course</DialogTitle>
                 <DialogDescription>
-                    You can find the group joining ID from ASG SHOP invoice.
+                    Enter user email and the group joining ID from ASG SHOP invoice.
                 </DialogDescription>
             </DialogHeader>
             <div class="grid gap-4">
                 <div class="space-y-2">
-                    <Label for="uniqueId">
-                        Access Code
-                    </Label>
-                    <Input id="uniqueId" placeholder="Group Joining ID" v-model="uniqueId" class="col-span-3" />
+                    <Label for="email">Email</Label>
+                    <Input id="email" type="email" placeholder="User email" v-model="email" :disabled="step !== 1" />
+                </div>
+                <div v-if="step >= 2" class="space-y-2">
+                    <Label for="uniqueId">Access Code</Label>
+                    <Input id="uniqueId" placeholder="Group Joining ID" v-model="uniqueId" :disabled="step !== 2" />
                 </div>
             </div>
             <DialogFooter>
                 <Button @click="closeModal">Cancel</Button>
-                <Button @click="enrollCourse" :disabled="isEnrolling">
-                    {{ isEnrolling ? 'Enrolling...' : 'Enroll' }}
+                <Button v-if="step === 1" @click="checkUser" :disabled="isLoading">
+                    {{ isLoading ? 'Searching...' : 'Search User' }}
+                </Button>
+
+                <Button v-if="step === 2" @click="enrollCourse" :disabled="isLoading">
+                    {{ isLoading ? 'Enrolling...' : 'Enroll' }}
                 </Button>
             </DialogFooter>
         </DialogContent>
     </Dialog>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
+<script setup>
 import { useToast } from '@/components/ui/toast/use-toast'
 
-const props = defineProps<{
-    isOpen: boolean
-    courseId: string
-}>()
-
-const emit = defineEmits<{
-    (e: 'close'): void
-    (e: 'enrolled'): void
-}>()
-
+const route = useRoute()
+const isOpen = ref(false)
 const { toast } = useToast()
+const email = ref('')
 const uniqueId = ref('')
-const isEnrolling = ref(false)
+const isLoading = ref(false)
+const step = ref(1)
+const user = ref(null)
 
-const closeModal = () => {
-    emit('close')
-    uniqueId.value = ''
+const openModal = () => {
+    isOpen.value = true
+    step.value = 1
 }
 
-const enrollCourse = async () => {
-    if (!uniqueId.value) {
+const closeModal = () => {
+    isOpen.value = false
+    email.value = ''
+    uniqueId.value = ''
+    user.value = null
+    step.value = 1
+}
+
+const checkUser = async () => {
+    if (!email.value) {
         toast({
             title: 'Error',
-            description: 'Please enter a unique ID',
+            description: 'Please enter an email address',
             variant: 'destructive',
         })
         return
     }
 
-    isEnrolling.value = true
+    isLoading.value = true
+    try {
+        const response = await $fetch('/api/auth/exists', {
+            method: 'POST',
+            body: { email: email.value },
+        })
+        user.value = response.existingUser
+        if (user.value) {
+            step.value = 2
+        } else {
+            toast({
+                title: 'User not found',
+                description: 'No user found with this email address',
+                variant: 'destructive',
+            })
+        }
+    } catch (error) {
+        toast({
+            title: 'Error',
+            description: error.message || 'Failed to check user',
+            variant: 'destructive',
+        })
+    } finally {
+        isLoading.value = false
+    }
+}
 
+const enrollCourse = async () => {
+    isLoading.value = true
     try {
         const response = await $fetch('/api/enrollment', {
             method: 'POST',
             body: {
-                courseId: props.courseId,
+                courseId: route.params.id,
                 uniqueId: uniqueId.value,
+                user: user.value,
             },
         })
-
         toast({
             title: 'Success',
-            description: 'You have been enrolled in the course',
+            description: 'User has been enrolled in the course',
         })
-        emit('enrolled')
         closeModal()
-    } catch (error: any) {
+    } catch (error) {
         toast({
             title: 'Error',
             description: error.message || 'Failed to enroll in the course',
             variant: 'destructive',
         })
     } finally {
-        isEnrolling.value = false
+        isLoading.value = false
     }
 }
 </script>

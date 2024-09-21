@@ -74,6 +74,9 @@ dependencies:
   axios:
     specifier: ^1.7.5
     version: 1.7.5
+  chart.js:
+    specifier: ^4.4.4
+    version: 4.4.4
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -134,6 +137,9 @@ dependencies:
   vue:
     specifier: latest
     version: 3.4.38(typescript@5.5.4)
+  vue-chartjs:
+    specifier: ^5.3.1
+    version: 5.3.1(chart.js@4.4.4)(vue@3.4.38)
   vue-mathjax-next:
     specifier: ^0.0.6
     version: 0.0.6
@@ -2156,6 +2162,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@kurkle/color@0.3.2:
+    resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
+    dev: false
 
   /@kwsites/file-exists@1.1.1:
     resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
@@ -5341,6 +5351,13 @@ packages:
 
   /charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
+    dev: false
+
+  /chart.js@4.4.4:
+    resolution: {integrity: sha512-emICKGBABnxhMjUjlYRR12PmOXhJ2eJjEHL2/dZlWjxRAZT1D8xplLFq5M0tMQK8ja+wBS/tuVEJB5C6r7VxJA==}
+    engines: {pnpm: '>=8'}
+    dependencies:
+      '@kurkle/color': 0.3.2
     dev: false
 
   /cheerio-select@2.1.0:
@@ -10787,6 +10804,16 @@ packages:
     resolution: {integrity: sha512-uZ+5ZJdZ/b43gMblWtcpikY6spJd0nERaM/1RtgioXNfWFbjKlUwrS8HlrddN6T2xtptmOouWclxLUkpgcVX3Q==}
     dependencies:
       ufo: 1.5.4
+    dev: false
+
+  /vue-chartjs@5.3.1(chart.js@4.4.4)(vue@3.4.38):
+    resolution: {integrity: sha512-rZjqcHBxKiHrBl0CIvcOlVEBwRhpWAVf6rDU3vUfa7HuSRmGtCslc0Oc8m16oAVuk0erzc1FCtH1VCriHsrz+A==}
+    peerDependencies:
+      chart.js: ^4.1.1
+      vue: ^3.0.0-0 || ^2.7.0
+    dependencies:
+      chart.js: 4.4.4
+      vue: 3.4.38(typescript@5.5.4)
     dev: false
 
   /vue-demi@0.14.10(vue@3.4.38):

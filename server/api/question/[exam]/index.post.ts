@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
     },
     select: {
       negativeMarking: true,
+      totalMarks: true,
     },
   });
 
@@ -61,11 +62,18 @@ export default defineEventHandler(async (event) => {
 
   const negMarks = exam.negativeMarking ? (optionIds.length - marks) * 0.25 : 0;
 
+  const correct = marks;
+  const wrong = optionIds.length - marks;
+  const skipped = exam.totalMarks - (correct + wrong);
+
   await db.submission.update({
     where: {
       id: submission.id,
     },
     data: {
+      correct,
+      wrong,
+      skipped,
       answers,
       duration,
       submittedAt: new Date(),

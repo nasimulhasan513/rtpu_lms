@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const paramSchema = z.object({
   slug: z.string().nonempty(),
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
                   },
                 },
               },
-              orderBy: { order: 'asc' },
+              orderBy: { order: "asc" },
             },
             exams: {
               select: {
@@ -73,37 +73,43 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const [submissionCount, assignmentSubmissionCount, totalAssignments] = await Promise.all([
-      db.submission.count({
-        where: {
-          userId,
-          exam: { courseExams: { some: { courseId: enrollment.courseId } } },
-        },
-      }),
-      db.assignmentSubmission.count({
-        where: {
-          userId,
-          assignment: { courseId: enrollment.courseId },
-        },
-      }),
-      db.assignment.count({
-        where: { courseId: enrollment.courseId },
-      }),
-    ]);
+    const [submissionCount, assignmentSubmissionCount, totalAssignments] =
+      await Promise.all([
+        db.submission.count({
+          where: {
+            userId,
+            exam: { courseExams: { some: { courseId: enrollment.courseId } } },
+          },
+        }),
+        db.assignmentSubmission.count({
+          where: {
+            userId,
+            assignment: { courseId: enrollment.courseId },
+          },
+        }),
+        db.assignment.count({
+          where: { courseId: enrollment.courseId },
+        }),
+      ]);
 
     const lessons = enrollment.course.lessons;
     const totalLessons = lessons.length;
-    const completedLessons = lessons.filter(l => l.lesson.LessonProgress[0]?.completed).length;
+    const completedLessons = lessons.filter(
+      (l) => l.lesson.LessonProgress[0]?.completed
+    ).length;
 
-    const subjects = lessons.reduce((acc, { lesson }) => {
-      const { id, name } = lesson.subject;
-      if (!acc[id]) {
-        acc[id] = { id, name, totalLessons: 1 };
-      } else {
-        acc[id].totalLessons++;
-      }
-      return acc;
-    }, {} as Record<string, { id: string; name: string; totalLessons: number }>);
+    const subjects = lessons.reduce(
+      (acc, { lesson }) => {
+        const { id, name } = lesson.subject;
+        if (!acc[id]) {
+          acc[id] = { id, name, totalLessons: 1 };
+        } else {
+          acc[id].totalLessons++;
+        }
+        return acc;
+      },
+      {} as Record<string, { id: string; name: string; totalLessons: number }>
+    );
 
     const exams = enrollment.course.exams;
     const totalExams = exams.length;
@@ -128,16 +134,25 @@ export default defineEventHandler(async (event) => {
         assignments: {
           total: totalAssignments,
           completed: assignmentSubmissionCount,
-          percentage: Math.round((assignmentSubmissionCount / totalAssignments) * 100),
+          percentage: Math.round(
+            (assignmentSubmissionCount / totalAssignments) * 100
+          ),
         },
       },
       subjects: Object.values(subjects),
-      exams: exams.map(({ exam }) => ({
-        id: exam.id,
-        title: exam.title,
-        startTime: exam.startTime,
-        endTime: exam.endTime,
-      })),
+      exams: exams
+        .map(({ exam }) => ({
+          id: exam.id,
+          title: exam.title,
+          status:
+            new Date() > new Date(exam.startTime) &&
+            new Date() < new Date(exam.endTime)
+              ? "ongoing"
+              : new Date() > new Date(exam.endTime)
+                ? "past"
+                : "upcoming",
+        }))
+        .filter((exam) => exam.status !== "past"),
     };
   } catch (error) {
     console.error(error);

@@ -1,8 +1,14 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const querySchema = z.object({
-  page: z.string().optional().transform(val => parseInt(val) || 1),
-  limit: z.string().optional().transform(val => parseInt(val) || 10),
+  page: z
+    .string()
+    .optional()
+    .transform((val) => parseInt(val) || 1),
+  limit: z
+    .string()
+    .optional()
+    .transform((val) => parseInt(val) || 10),
 });
 
 export default defineEventHandler(async (event) => {
@@ -11,7 +17,7 @@ export default defineEventHandler(async (event) => {
   const { page, limit } = querySchema.parse(query);
   const skip = (page - 1) * limit;
 
-  const courseId = getRouterParam(event, "id");
+  const courseId = event.context.params?.slug;
 
   const [enrollments, totalUsers] = await Promise.all([
     db.enrollment.findMany({
@@ -29,15 +35,15 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
-      orderBy: { enrolledAt: 'desc' },
+      orderBy: { enrolledAt: "desc" },
     }),
     db.enrollment.count({ where: { courseId: courseId as string } }),
   ]);
 
-  const userIds = enrollments.map(e => e.user.id);
+  const userIds = enrollments.map((e) => e.user.id);
 
   const lessonProgressCounts = await db.lessonProgress.groupBy({
-    by: ['userId'],
+    by: ["userId"],
     where: {
       userId: { in: userIds },
       lesson: {
@@ -47,9 +53,9 @@ export default defineEventHandler(async (event) => {
     _count: { _all: true },
   });
 
-  const progressMap = new Map(lessonProgressCounts.map(p => [p.userId, p]));
+  const progressMap = new Map(lessonProgressCounts.map((p) => [p.userId, p]));
 
-  const usersWithProgress = enrollments.map(enrollment => ({
+  const usersWithProgress = enrollments.map((enrollment) => ({
     ...enrollment,
     progress: progressMap.get(enrollment.user.id) || { _count: { _all: 0 } },
   }));

@@ -19,7 +19,7 @@ export const dateFieldFormat = (date: string) => {
     return null;
   }
 
-  return formatInTimeZone(date, tz, "YYYY-MM-DDTHH:mm") || null;
+  return formatInTimeZone(date, tz, "yyyy-MM-dd'T'HH:mm") || null;
 };
 
 export const millisecToTime = (millis, duration) => {
