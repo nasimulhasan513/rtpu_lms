@@ -1,141 +1,170 @@
 <template>
-    <div>
-        <div class="max-w-3xl p-4 mx-auto ">
-
-            <AppHeading :center="true" title="Leaderboard"
-                :subtitle="status === 'success' ? data.examData.title : ''" />
-
-            <div class="relative mt-4 mb-4">
-                <Input type="text" placeholder="Search by name or institute..." class="pl-10" v-model="presearch" />
-                <Icon name="lucide:search" class="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                    size="20" />
+    <AppContainer>
+        <div class="max-w-3xl mx-auto print:w-screen print:scale-95">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-primary">Leaderboard</h2>
+                <p class="text-lg text-gray-500"> {{ examTitle }} </p>
             </div>
-            <div v-if="status === 'success'" class="overflow-hidden bg-white border rounded-lg shadow-md">
+            <div v-if="leaderboard.length > 0" class="pt-2 mt-12 mb-8">
+                <ExamTopRankers :rankers="leaderboard.slice(0, 3)" />
+            </div>
+
+            <div class="flex gap-3">
+                <div class="relative flex-1 mb-4 print:hidden">
+                    <Input type="text" placeholder="Search by name or institute..."
+                        class="pl-10 dark:bg-gray-800 dark:text-white" v-model="presearch" />
+                    <Icon name="lucide:search"
+                        class="absolute text-gray-400 transform -translate-y-1/2 dark:text-gray-300 left-3 top-1/2"
+                        size="20" />
+
+                </div>
+
+                <Button variant="outline" class="print:hidden" aria-label="Home" @click="printLeaderboard">
+                    Export PDF
+                </Button>
+            </div>
+
+
+            <div v-if="leaderboard.length > 0"
+                class="overflow-hidden bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead class="w-[50px]">Rank</TableHead>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Institute</TableHead>
-                            <TableHead class="text-right">Marks</TableHead>
-                            <TableHead class="text-right">Duration</TableHead>
+                            <TableHead class="w-[50px] dark:text-gray-300">Rank</TableHead>
+                            <TableHead class="dark:text-gray-300">Participant</TableHead>
+                            <TableHead class="dark:text-gray-300">Institute</TableHead>
+                            <TableHead class="text-right dark:text-gray-300">Marks</TableHead>
+                            <TableHead class="text-right dark:text-gray-300">Duration</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-
-                        <TableRow v-for="rank, i in leaderboard" :key="rank.id" class="hover:bg-gray-50">
-                            <TableCell class="flex items-center font-medium">
-                                <div v-if="!search" class="flex items-center">
-                                    {{ i + 1 }}
-                                    <Icon v-if="i < 3" name="lucide:medal" size="16" :class="`inline-block ml-1 ${i === 0 ? 'text-yellow-400' : i === 1 ? 'text-gray-400' : 'text-amber-600'
-                }`" />
-                                </div>
-                            </TableCell>
-                            <TableCell>{{ rank.user.name }}</TableCell>
-                            <TableCell>{{ rank.user.institute }}</TableCell>
-                            <TableCell class="font-semibold text-right">{{ rank.marks }}</TableCell>
-                            <TableCell class="text-right">
-                                <span class="flex items-center justify-end">
-                                    <Icon name="lucide:clock" class="mr-1" size="14" />
-                                    {{ millisecToTime(rank.duration, data.examData.duration) }}
-                                </span>
+                        <TableRow v-for="(rank, i) in leaderboard" :key="i"
+                            class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <TableCell class="font-medium dark:text-gray-300">
+                                {{ i + 1 }}
                             </TableCell>
                             <TableCell>
-                                <Button @click="removeFromLeaderboard(rank.id)">
-                                    <Icon name="lucide:trash" size="16" />
-                                </Button>
+                                <div class="flex items-center">
+                                    <img :src="rank.user.image" :alt="rank.user.name"
+                                        class="w-8 h-8 mr-2 rounded-full" />
+                                    <span class="dark:text-gray-300">{{ rank.user.name }}</span>
+                                </div>
                             </TableCell>
-
+                            <TableCell class="dark:text-gray-300">{{ rank.user.institute }}</TableCell>
+                            <TableCell class="font-semibold text-right dark:text-gray-300">{{ rank.marks }}</TableCell>
+                            <TableCell class="text-right dark:text-gray-300">
+                                <span class="flex items-center justify-end">
+                                    <Icon name="lucide:clock" class="mr-1 dark:text-gray-300" size="14" />
+                                    {{ millisecToTime(rank.duration, examDuration) }}
+                                </span>
+                            </TableCell>
                         </TableRow>
-
                     </TableBody>
                 </Table>
             </div>
+
             <div class="my-5">
-
-                <AppLoader v-if="status === 'pending' || loadingMore" />
-                <AppEmptyState v-if="status === 'success' && data.leaderboard.length === 0" />
-
+                <AppLoader v-if="loading" />
+                <AppEmptyState v-if="!loading && leaderboard.length === 0" />
             </div>
+
+            <Button v-if="hasMorePages" @click="loadMoreLeaderboard" :disabled="loadingMore"
+                class="w-full mt-4 dark:bg-gray-700 dark:text-white">
+                {{ loadingMore ? 'Loading...' : 'Load More' }}
+            </Button>
         </div>
-    </div>
+    </AppContainer>
 </template>
 
 <script setup>
+import { useInfiniteScroll } from '@vueuse/core'
+
 definePageMeta({
-    layout: 'admin',
+    layout: 'admin'
 })
 
 const route = useRoute()
 const search = ref('')
+const presearch = ref('')
 const page = ref(1)
 const pageSize = 25
 const leaderboard = ref([])
 const loadingMore = ref(false)
+const examTitle = ref('')
+const examDuration = ref(0)
+const hasMorePages = ref(false)
+const loading = ref(true)
 
-const { data, status, error, refresh } = await useLazyFetch(`/api/question/${route.params.id}/leaderboard`, {
-    key: 'leaderboard',
-    query: {
-        search: search
-    },
-})
-
-watch(data, () => {
-    if (!search) {
-        leaderboard.value = [...leaderboard.value, ...data.value.leaderboard]
-    } else {
-        leaderboard.value = data.value.leaderboard
+const fetchLeaderboard = async () => {
+    loading.value = true
+    try {
+        const { data } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
+            query: {
+                search: search.value,
+                page: page.value,
+                pageSize
+            },
+        })
+        if (data.value) {
+            leaderboard.value = data.value.leaderboard
+            examTitle.value = data.value.examData.title
+            examDuration.value = data.value.examData.duration
+            hasMorePages.value = data.value.pagination.currentPage < data.value.pagination.totalPages
+        }
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error)
+    } finally {
+        loading.value = false
     }
-})
+}
 
-const onScroll = async () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const clientHeight = window.innerHeight || document.documentElement.clientHeight;
-    const scrollHeight = document.documentElement.scrollHeight;
-
-    if (data.value.pagination.totalPages === page.value) return
-
-    if (scrollTop + clientHeight >= scrollHeight - 10 && !loadingMore.value) {
-        loadingMore.value = true;
-        page.value += 1;
-        await loadMoreLeaderboard();
-        loadingMore.value = false;
-    }
-};
-
+onMounted(fetchLeaderboard)
 
 const loadMoreLeaderboard = async () => {
-    const response = await fetch(`/api/question/${route.params.id}/leaderboard?page=${page.value}&pageSize=${pageSize}&search=${search.value}`)
-    const moreData = await response.json()
-
-    if (moreData.leaderboard && moreData.leaderboard.length > 0) {
-        leaderboard.value.push(...moreData.leaderboard)
+    if (loadingMore.value || !hasMorePages.value) return
+    loadingMore.value = true
+    page.value += 1
+    try {
+        const { data } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
+            query: {
+                search: search.value,
+                page: page.value,
+                pageSize
+            },
+        })
+        if (data.value) {
+            leaderboard.value = [...leaderboard.value, ...data.value.leaderboard]
+            hasMorePages.value = data.value.pagination.currentPage < data.value.pagination.totalPages
+        }
+    } catch (error) {
+        console.error('Error loading more leaderboard data:', error)
+    } finally {
+        loadingMore.value = false
     }
 }
 
+useInfiniteScroll(
+    window,
+    async () => {
+        if (!loading.value && !loadingMore.value && hasMorePages.value) {
+            await loadMoreLeaderboard()
+        }
+    },
+    { distance: 10 }
+)
 
-
-const removeFromLeaderboard = async (id) => {
-    const response = await fetch(`/api/question/${route.params.id}/leaderboard/${id}`, {
-        method: 'DELETE'
-    })
-    const data = await response.json()
-    if (data.success) {
-        leaderboard.value = leaderboard.value.filter(rank => rank.id !== id)
-    }
-}
-
-const presearch = ref('')
 debouncedWatch(presearch, (value) => {
     search.value = value
     page.value = 1
-    refresh()
+    leaderboard.value = []
+    fetchLeaderboard()
 }, { debounce: 500 })
 
+const printLeaderboard = () => {
+    window.print()
+}
 
-onMounted(() => {
-    window.addEventListener('scroll', onScroll)
-})
+
 
 </script>
 

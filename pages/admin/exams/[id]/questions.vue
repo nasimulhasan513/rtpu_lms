@@ -3,10 +3,13 @@
 
         <div class="flex justify-between print:hidden">
             <h1 class="text-2xl font-semibold">Questions</h1>
-            <Button @click="onOpen(route.params.id)">
-                <Icon name="bx:bx-plus" />
-                Add Question
-            </Button>
+            <div class="flex gap-2">
+                <QuestionImport />
+                <Button @click="onOpen(route.params.id)">
+                    <Icon name="bx:bx-plus" />
+                    Add Question
+                </Button>
+            </div>
         </div>
 
 

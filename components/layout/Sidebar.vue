@@ -33,7 +33,7 @@ const route = useRoute()
 
 <template>
   <aside
-    class="fixed left-0 z-20 flex-col items-center hidden h-full duration-300 border-r inset-y bg-background transition-width sm:flex"
+    class="fixed left-0 z-20 flex-col items-center hidden h-full duration-300 border-r inset-y bg-background transition-width sm:flex print:hidden"
     :class="cn('w-20 lg:w-64', isOpen ? 'lg:w-64' : 'lg:w-20')">
     <div class="relative px-3 py-2 text-center border-b" :class="cn('w-20 lg:w-64', isOpen ? 'lg:w-64' : 'lg:w-20')">
       <div class="flex items-center gap-3"

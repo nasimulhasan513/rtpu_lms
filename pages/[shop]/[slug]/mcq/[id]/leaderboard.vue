@@ -1,18 +1,24 @@
 <template>
     <AppContainer>
-        <div class="max-w-3xl p-4 mx-auto">
-            <AppHeading :center="true" title="Leaderboard" :subtitle="examTitle" />
-
-            <div v-if="leaderboard.length > 0" class="mb-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-primary">Leaderboard</h2>
+                <p class="text-lg text-gray-500"> {{ examTitle }} </p>
+            </div>
+            <div v-if="leaderboard.length > 0" class="pt-2 mt-12 mb-8">
                 <ExamTopRankers :rankers="leaderboard.slice(0, 3)" />
             </div>
 
             <div class="relative mb-4">
-                <Input type="text" placeholder="Search by name or institute..." class="pl-10 dark:bg-gray-800 dark:text-white" v-model="presearch" />
-                <Icon name="lucide:search" class="absolute text-gray-400 transform -translate-y-1/2 dark:text-gray-300 left-3 top-1/2" size="20" />
+                <Input type="text" placeholder="Search by name or institute..."
+                    class="pl-10 dark:bg-gray-800 dark:text-white" v-model="presearch" />
+                <Icon name="lucide:search"
+                    class="absolute text-gray-400 transform -translate-y-1/2 dark:text-gray-300 left-3 top-1/2"
+                    size="20" />
             </div>
 
-            <div v-if="leaderboard.length > 0" class="overflow-hidden bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+            <div v-if="leaderboard.length > 0"
+                class="overflow-hidden bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -24,17 +30,15 @@
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow v-for="(rank, i) in leaderboard" :key="i" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <TableRow v-for="(rank, i) in leaderboard" :key="i"
+                            class="hover:bg-gray-50 dark:hover:bg-gray-700">
                             <TableCell class="font-medium dark:text-gray-300">
                                 {{ i + 1 }}
                             </TableCell>
                             <TableCell>
                                 <div class="flex items-center">
-                                    <img
-                                        :src="rank.user.image"
-                                        :alt="rank.user.name"
-                                        class="w-8 h-8 mr-2 rounded-full"
-                                    />
+                                    <img :src="rank.user.image" :alt="rank.user.name"
+                                        class="w-8 h-8 mr-2 rounded-full" />
                                     <span class="dark:text-gray-300">{{ rank.user.name }}</span>
                                 </div>
                             </TableCell>
@@ -53,10 +57,12 @@
 
             <div class="my-5">
                 <AppLoader v-if="loading" />
-                <AppEmptyState v-if="!loading && leaderboard.length === 0" />
+                <AppEmptyState v-if="!loading && leaderboard.length === 0" title="No participants yet"
+                    subtitle="Be the first to participate in this exam" />
             </div>
 
-            <Button v-if="hasMorePages" @click="loadMoreLeaderboard" :disabled="loadingMore" class="w-full mt-4 dark:bg-gray-700 dark:text-white">
+            <Button v-if="hasMorePages" @click="loadMoreLeaderboard" :disabled="loadingMore"
+                class="w-full mt-4 dark:bg-gray-700 dark:text-white">
                 {{ loadingMore ? 'Loading...' : 'Load More' }}
             </Button>
         </div>
