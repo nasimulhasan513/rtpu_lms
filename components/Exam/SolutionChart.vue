@@ -24,11 +24,24 @@
             <ExamStatCard title="Accuracy" :value="correct / total * 100" suffix="%"
                 color="bg-blue-100 text-blue-800" />
         </div>
+
+
+        <div>
+            <div class="mt-4">
+                <h4 class="mb-2 text-lg font-semibold">Subject-wise Performance</h4>
+                <div class="space-y-2">
+                    <div v-for="(marks, subject) in subjectWiseMarks" :key="subject" class="flex items-center justify-between p-2 bg-gray-100 rounded-md">
+                        <span class="font-medium">{{ subject }}</span>
+                        <span class="text-primary">{{ formatNumber(marks) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
 <script setup>
-import { Progress } from '@/components/ui/progress'
 
 const props = defineProps({
     correct: {
@@ -46,6 +59,10 @@ const props = defineProps({
     total: {
         type: Number,
         default: 0
+    },
+    subjectWiseMarks: {
+        type: Object,
+        default: () => ({})
     }
 })
 </script>

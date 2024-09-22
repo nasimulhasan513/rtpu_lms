@@ -12,9 +12,11 @@
 
         </div>
 
+
+
         <div v-if="data.exam && data.exam.totalMarks > 0 && data.submission">
             <ExamSolutionChart :correct="data.exam.correct" :wrong="data.exam.wrong" :skipped="data.exam.skipped"
-                :total="data.exam.totalMarks" />
+                :total="data.exam.totalMarks" :subjectWiseMarks="subjectWiseMarks" />
 
         </div>
 
@@ -76,15 +78,27 @@ const { data, status, error, refresh } = await useFetch('/api/question/' + route
 
 
 const isWrongAnswer = (q) => {
+
+    if (!data.value.submission) return false
+
     const wrong = data.value.submission.find(s => s.q == q.id)
+
+    if (!wrong) return false
+
     const option = q.options.find(o => o.id == wrong.a)
-    return option && !option.correct && data.value.submission
+    return option && !option.correct
 }
 
 const isCorrectAnswer = (q) => {
+
+    if (!data.value.submission) return false
+
     const correct = data.value.submission.find(s => s.q == q.id)
+
+    if (!correct) return false
+
     const option = q.options.find(o => o.id == correct.a)
-    return option && option.correct && data.value.submission
+    return option && option.correct
 }
 
 // Existing functions
@@ -94,10 +108,29 @@ const wrongAnswer = (o) => {
 }
 
 const notAnswered = (o) => {
+    if (!data.value.submission) return false
     // if exists
     return !(data.value.submission.find(s => s.q == o)) && data.value.submission
 }
 
+
+const subjectWiseMarks = computed(() => {
+    const subjectMarks = {}
+    data.value.questions.forEach(q => {
+        const subject = q.subject.name
+        if (!subjectMarks[subject]) {
+            subjectMarks[subject] = 0
+        }
+        if (isCorrectAnswer(q)) {
+            subjectMarks[subject] += 1
+        }
+        if (isWrongAnswer(q)) {
+            subjectMarks[subject] -= 0.25
+        }
+    })
+
+    return subjectMarks
+})
 
 
 </script>
