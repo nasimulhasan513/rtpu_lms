@@ -45,7 +45,7 @@ defineShortcuts({
 
 <template>
     <div class="grid w-full duration-300 transition-width min-h-dvh"
-        :class="cn('pl-0 lg:pl-64 sm:pl-20', isOpen ? 'lg:pl-64 sm:pl-20' : 'lg:pl-20')">
+        :class="cn('pl-0 lg:pl-64 sm:pl-20 print:pl-0', isOpen ? 'lg:pl-64 sm:pl-20' : 'lg:pl-20')">
         <LayoutSidebar :navMenu="rbacMenus" :navMenuBottom="navMenuBottom" />
         <div flex="~ col">
             <LayoutHeader />

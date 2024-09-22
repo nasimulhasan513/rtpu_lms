@@ -46,7 +46,7 @@
                             <TableCell>
                                 <div class="flex items-center">
                                     <img :src="rank.user.image" :alt="rank.user.name"
-                                        class="w-8 h-8 mr-2 rounded-full" />
+                                        class="w-8 h-8 mr-2 rounded-full print:hidden" />
                                     <span class="dark:text-gray-300">{{ rank.user.name }}</span>
                                 </div>
                             </TableCell>

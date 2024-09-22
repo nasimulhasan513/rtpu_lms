@@ -26,11 +26,12 @@
         </div>
 
 
-        <div>
+        <div v-if="Object.keys(subjectWiseMarks).length > 1">
             <div class="mt-4">
                 <h4 class="mb-2 text-lg font-semibold">Subject-wise Performance</h4>
                 <div class="space-y-2">
-                    <div v-for="(marks, subject) in subjectWiseMarks" :key="subject" class="flex items-center justify-between p-2 bg-gray-100 rounded-md">
+                    <div v-for="(marks, subject) in subjectWiseMarks" :key="subject"
+                        class="flex items-center justify-between p-2 bg-gray-100 rounded-md">
                         <span class="font-medium">{{ subject }}</span>
                         <span class="text-primary">{{ formatNumber(marks) }}</span>
                     </div>
