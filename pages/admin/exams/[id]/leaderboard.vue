@@ -2,6 +2,7 @@
     <AppContainer>
         <div class="max-w-3xl mx-auto print:w-screen print:scale-95">
             <div class="text-center">
+                <h1 class="text-3xl font-bold text-primary"> {{ courseName }} </h1>
                 <h2 class="text-2xl font-bold text-primary">Leaderboard</h2>
                 <p class="text-lg text-gray-500"> {{ examTitle }} </p>
             </div>
@@ -91,6 +92,7 @@ const pageSize = 25
 const leaderboard = ref([])
 const loadingMore = ref(false)
 const examTitle = ref('')
+const courseName = ref('')
 const examDuration = ref(0)
 const hasMorePages = ref(false)
 const loading = ref(true)
@@ -108,6 +110,7 @@ const fetchLeaderboard = async () => {
         if (data.value) {
             leaderboard.value = data.value.leaderboard
             examTitle.value = data.value.examData.title
+            courseName.value = data.value.examData.courseExams[0].course.name
             examDuration.value = data.value.examData.duration
             hasMorePages.value = data.value.pagination.currentPage < data.value.pagination.totalPages
         }

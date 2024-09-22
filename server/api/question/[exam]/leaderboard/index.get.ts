@@ -22,6 +22,17 @@ export default defineEventHandler(async (event) => {
     where: {
       id: exam as string,
     },
+    include: {
+      courseExams: {
+        include: {
+          course: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   // Fetch the leaderboard data with search, pagination, and sorting
