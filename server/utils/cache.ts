@@ -5,13 +5,19 @@ const redis = new Redis({
   token: "AVLcAAIjcDFlZTAyMDc4NjRiNTY0NzhiOWRhOGYzZmVlNTM2ZWFmZHAxMA",
 });
 
-export const setCache = async (key: string, value: any) => {
-  await redis.set(key, JSON.stringify(value));
+const DEFAULT_EXPIRATION = 60 * 60 * 1; // 1 hour
+
+export const setCache = async (
+  key: string,
+  value: any,
+  expiration: number = DEFAULT_EXPIRATION
+) => {
+  await redis.set(key, JSON.stringify(value), { ex: expiration });
 };
 
 export const getCache = async (key: string) => {
   const data = await redis.get(key);
-  return JSON.parse(data);
+  return data ? data : null;
 };
 
 export const deleteCache = async (key: string) => {

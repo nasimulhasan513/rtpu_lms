@@ -66,19 +66,19 @@
             </div>
         </div>
 
-       
 
-      
+
+
     </div>
     <Alert v-if="error" variant="destructive">
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-                {{ error.message }}
-            </AlertDescription>
-        </Alert>
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>
+            {{ error.message }}
+        </AlertDescription>
+    </Alert>
     <div v-if="status === 'pending'" class="flex items-center justify-center h-64">
-            <Spinner />
-        </div>
+        <Spinner />
+    </div>
 
 </template>
 
@@ -92,7 +92,7 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const nuxtApp = useNuxtApp()
-const { data, status, error, refresh } = await useFetch(`/api/courses/${route.params.slug}/lessons?is_archive=false`, {
+const { data, status, error, refresh } = await useFetch(`/api/courses/${route.params.slug}/lessons?is_archive=true`, {
     transform(input) {
         return {
             ...input,

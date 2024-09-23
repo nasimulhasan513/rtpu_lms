@@ -35,6 +35,11 @@ export default defineEventHandler(async (event) => {
     },
   });
 
+  
+ 
+
+
+
   // Fetch the leaderboard data with search, pagination, and sorting
   const leaderboard = await db.submission.findMany({
     where: {

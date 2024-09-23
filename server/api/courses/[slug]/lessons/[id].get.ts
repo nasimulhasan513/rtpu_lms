@@ -9,10 +9,11 @@ export default defineEventHandler(async (event) => {
   try {
     const { slug, id } = paramsSchema.parse(event.context.params);
 
+ 
     const lesson = await db.courseLesson.findFirst({
       where: {
         lesson: {
-          id: id,
+          id: id
         },
         course: {
           slug: slug,

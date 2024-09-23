@@ -189,43 +189,43 @@ export const courseMenu = [
     title: "ড্যাশবোর্ড",
     link: "dashboard",
     icon: "tabler:dashboard",
-    type: "all"
+    type: "all",
   },
   {
     title: "ক্লাসসমূহ",
     link: "lessons",
     icon: "lucide:video",
-    type: "is_class"
-
+    type: "is_class",
   },
+  
   {
     title: "বহুনির্বাচনী পরীক্ষা",
     link: "mcq",
     icon: "lucide:clipboard-list",
-    type: "is_mcq"
+    type: "is_mcq",
   },
   {
     title: "লিখিত পরীক্ষা",
     link: "written",
     icon: "lucide:file-text",
-    type: "is_cq"
+    type: "is_cq",
   },
   {
     title: "হোম ওয়ার্কস",
     link: "homeworks",
     icon: "lucide:home",
-    type: "general"
+    type: "general",
   },
   {
     title: "প্রোগ্রেস রিপোর্ট",
     link: "progress",
     icon: "lucide:bar-chart-3",
-    type: "general"
+    type: "general",
   },
   {
     title: "নোটিস",
     link: "notice",
     icon: "lucide:bell",
-    type: "general"
-  }
+    type: "general",
+  },
 ];

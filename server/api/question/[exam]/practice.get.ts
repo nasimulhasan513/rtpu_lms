@@ -20,6 +20,18 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  // const cacheKey = `practice-questions-${id}`;
+
+  // const cachedQuestions = await getCache(cacheKey);
+
+  // if (cachedQuestions) {
+  //   return {
+  //     statusCode: 200,
+  //     exam,
+  //     questions: cachedQuestions,
+  //   };
+  // }
+
   const questions = await db.question.findMany({
     where: { examId: id },
 
@@ -38,6 +50,8 @@ export default defineEventHandler(async (event) => {
       },
     },
   });
+
+  // await setCache(cacheKey, questions);
 
   return {
     statusCode: 200,

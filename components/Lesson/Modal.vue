@@ -135,7 +135,7 @@
                     <FormField v-slot="{ componentField }" name="is_downloadable">
                         <FormItem class="flex flex-row items-start p-4 space-x-3 space-y-0 border rounded-md">
                             <FormControl>
-                                <Checkbox v-bind="componentField"
+                                <Checkbox :checked="form.values.is_downloadable"
                                     @click="form.setFieldValue('is_downloadable', !form.values.is_downloadable)" />
                             </FormControl>
                             <div class="space-y-1 leading-none">
@@ -150,7 +150,7 @@
                     <FormField v-slot="{ componentField }" name="is_archive">
                         <FormItem class="flex flex-row items-start p-4 space-x-3 space-y-0 border rounded-md">
                             <FormControl>
-                                <Checkbox v-bind="componentField"
+                                <Checkbox :checked="form.values.is_archive"
                                     @click="form.setFieldValue('is_archive', !form.values.is_archive)" />
                             </FormControl>
                             <div class="space-y-1 leading-none">
@@ -165,7 +165,7 @@
                 </div>
                 <div class="flex flex-col gap-2 py-6">
                     <div class="flex flex-row items-center w-full gap-4">
-                        <Button type="submit" class="w-full">
+                        <Button type="submit" class="w-full" :disabled="isLoading">
                             {{ initialValues?.id ? 'Update' : 'Create' }} a lesson
                         </Button>
                     </div>
