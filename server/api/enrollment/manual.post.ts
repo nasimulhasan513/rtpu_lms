@@ -7,10 +7,9 @@ const enrollmentSchema = z.object({
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  
-
   try {
     const { courseId, uniqueId, userId } = enrollmentSchema.parse(body);
+
     // Check if the user is already enrolled in the course
     const existingEnrollment = await db.enrollment.findUnique({
       where: {
@@ -34,10 +33,9 @@ export default defineEventHandler(async (event) => {
         courseId: courseId as string,
         transactionId: uniqueId,
         status: "active",
+        enrolled_by: event.context.user?.id,
       },
     });
-
-   
 
     return {
       message: "Enrollment successful",

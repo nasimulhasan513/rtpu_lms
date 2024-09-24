@@ -1,39 +1,28 @@
 <template>
-    <Button @click="openModal">
-        <Icon icon="lucide:user-plus" />
-        Manual Enrollment
-    </Button>
 
-    <Dialog :open="isOpen" @close="closeModal">
-        <DialogContent class="sm:max-w-[425px]">
-            <DialogHeader>
-                <DialogTitle>Enroll in Course</DialogTitle>
-                <DialogDescription>
-                    Enter user email and the group joining ID from ASG SHOP invoice.
-                </DialogDescription>
-            </DialogHeader>
-            <div class="grid gap-4">
-                <div class="space-y-2">
-                    <Label for="email">Email</Label>
-                    <Input id="email" type="email" placeholder="User email" v-model="email" :disabled="step !== 1" />
-                </div>
-                <div v-if="step >= 2" class="space-y-2">
-                    <Label for="uniqueId">Access Code</Label>
-                    <Input id="uniqueId" placeholder="Group Joining ID" v-model="uniqueId" :disabled="step !== 2" />
-                </div>
+
+    <div class="flex items-end gap-5 ">
+        <div class="grid flex-1 gap-4">
+            <div class="space-y-2">
+                <Label for="email">Email</Label>
+                <Input id="email" type="email" placeholder="User email" v-model="email" :disabled="step !== 1" />
             </div>
-            <DialogFooter>
-                <Button @click="closeModal">Cancel</Button>
-                <Button v-if="step === 1" @click="checkUser" :disabled="isLoading">
-                    {{ isLoading ? 'Searching...' : 'Search User' }}
-                </Button>
+            <div v-if="step >= 2" class="space-y-2">
+                <Label for="uniqueId">Access Code</Label>
+                <Input id="uniqueId" placeholder="Group Joining ID" v-model="uniqueId" :disabled="step !== 2" />
+            </div>
+        </div>
 
-                <Button v-if="step === 2" @click="enrollCourse" :disabled="isLoading">
-                    {{ isLoading ? 'Enrolling...' : 'Enroll' }}
-                </Button>
-            </DialogFooter>
-        </DialogContent>
-    </Dialog>
+        <Button v-if="step === 1" @click="checkUser" :disabled="isLoading">
+            {{ isLoading ? 'Searching...' : 'Search User' }}
+        </Button>
+
+        <Button v-if="step === 2" @click="enrollCourse" :disabled="isLoading">
+            {{ isLoading ? 'Enrolling...' : 'Enroll' }}
+        </Button>
+    </div>
+
+
 </template>
 
 <script setup>
@@ -101,12 +90,12 @@ const checkUser = async () => {
 const enrollCourse = async () => {
     isLoading.value = true
     try {
-        const response = await $fetch('/api/enrollment', {
+        const response = await $fetch('/api/enrollment/manual', {
             method: 'POST',
             body: {
                 courseId: route.params.id,
                 uniqueId: uniqueId.value,
-                user: user.value,
+                userId: user.value.id,
             },
         })
         toast({

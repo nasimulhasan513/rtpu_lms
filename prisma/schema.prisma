@@ -172,6 +172,7 @@ model Enrollment {
   enrolledAt       DateTime @default(now())
   couponId         String?  @db.ObjectId
   categoryId       String?  @db.ObjectId
+  enrolled_by      String?
 
   user     User      @relation(fields: [userId], references: [id])
   course   Course    @relation(fields: [courseId], references: [id])

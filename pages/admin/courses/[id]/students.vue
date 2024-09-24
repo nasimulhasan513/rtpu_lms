@@ -101,7 +101,9 @@ debouncedWatch(presearch, (value) => {
 
         <div class="flex flex-col sm:gap-4 sm:py-4 ">
 
+
             <main class="grid items-end flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+                <CourseEnrollmentModal />
 
                 <div class="flex items-end justify-between ">
                     <div class="relative">
@@ -110,6 +112,9 @@ debouncedWatch(presearch, (value) => {
                             class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]" />
                     </div>
                     <div class="flex items-end gap-3" v-if="status == 'success'">
+                        <Button variant="outline" class="gap-1">
+                            Total: {{ data?.totalUsers }}
+                        </Button>
                         <div>
                             <Label>
                                 Per Page
@@ -157,7 +162,7 @@ debouncedWatch(presearch, (value) => {
                                     <TableHead>Institute</TableHead>
                                     <TableHead>Enrolled At</TableHead>
 
-                                    <TableHead>Progress</TableHead>
+                                    <TableHead>Lesson Progress</TableHead>
                                     <TableHead>
                                         <span class="sr-only">Actions</span>
                                     </TableHead>

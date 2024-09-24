@@ -2,10 +2,7 @@
     <AppModal :isOpen="isOpen" title="Lesson" description="Add or update lesson" @onClose="onClose" v-if="isOpen">
         <AppLoader v-if="isLoading" />
 
-        <div class="space-y-6">
-
-
-
+        <div class="space-y-6">         
             <form @submit="onSubmit">
                 <div class="space-y-6">
 
@@ -250,19 +247,19 @@ const onSubmit = form.handleSubmit(async (values) => {
     }
 })
 
-watch(() => initialValues.value, (value) => {
-    if (value) {
+watch(() => initialValues, (value) => {
+    if (value.value) {
         form.setValues({
-            title: value.title,
-            subjectId: value.subjectId,
-            chapterId: value.chapterId,
-            source: value.source,
-            content: value.content,
-            pdf: value.pdf,
+            title: value.value.title,
+            subjectId: value.value.subjectId,
+            chapterId: value.value.chapterId,
+            source: value.value.source,
+            content: value.value.content,
+            pdf: value.value.pdf,
             courseIds: [...courseIds.value],
-            is_archive: value.is_archive || false,
-            is_downloadable: value.is_downloadable || false,
-            teacherId: value.teacherId,
+            is_archive: value.value.is_archive || false,
+            is_downloadable: value.value.is_downloadable || false,
+            teacherId: value.value.teacherId,
         })
     }
 }, {
