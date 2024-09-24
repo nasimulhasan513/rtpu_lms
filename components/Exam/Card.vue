@@ -12,7 +12,7 @@
             </div>
             <p class="mt-1 text-sm text-muted-foreground" v-if="exam.subject.name !== 'Others'">{{ exam.subject.name }}
             </p>
-            <p class="mt-1 text-sm text-muted-foreground">{{ exam.description }}</p>
+            <p class="mt-1 text-sm text-muted-foreground" v-if="exam.description">{{ exam.description }}</p>
         </CardHeader>
         <CardContent class="flex-grow">
             <div class="grid grid-cols-2 gap-4 mb-6">
@@ -41,13 +41,13 @@
             </div>
             <div>
                 <div v-if="(exam.submission && exam.submission.status === 'submitted') && (exam.status === 'past' || exam.instantResult)"
-                    class="p-4 mt-4 text-center bg-green-100 rounded-lg">
+                    class="p-4 mt-4 space-y-2 text-center bg-green-100 rounded-lg">
                     <p class="text-lg font-semibold text-green-700">Your Score</p>
                     <p class="text-3xl font-bold text-green-800">
                         {{ exam.submission.marks }} <span class="text-xl text-green-600">/ {{ exam.totalMarks }}</span>
                     </p>
-                    <p class="mt-2 text-sm text-green-600">
-                        {{ ((exam.submission.marks / exam.totalMarks) * 100).toFixed(2) }}% Achieved
+                    <p class="text-sm text-green-600">
+                        Average Score: {{ exam.avgMarks.toFixed(2) }}
                     </p>
                 </div>
                 <div v-else-if="exam.status === 'past' && (!exam.submission || exam.submission.status === 'pending')">

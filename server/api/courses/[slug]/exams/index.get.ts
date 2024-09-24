@@ -27,26 +27,39 @@ export default defineEventHandler(async (event) => {
 
   const currentDate = new Date();
 
-  const examsWithStatus = exams.map((exam) => {
-    let status = "";
+  const examsWithStatus = await Promise.all(
+    exams.map(async (exam) => {
+      let status = "";
+      let avgMarks = 0;
 
-    if (currentDate < new Date(exam.startTime)) {
-      status = "upcoming";
-    } else if (
-      currentDate >= new Date(exam.startTime) &&
-      currentDate <= new Date(exam.endTime)
-    ) {
-      status = "ongoing";
-    } else if (currentDate > new Date(exam.startTime)) {
-      status = "past";
-    }
+      if (currentDate < new Date(exam.startTime)) {
+        status = "upcoming";
+      } else if (
+        currentDate >= new Date(exam.startTime) &&
+        currentDate <= new Date(exam.endTime)
+      ) {
+        status = "ongoing";
+      } else if (currentDate > new Date(exam.startTime)) {
+        status = "past";
+        let avgData = await db.submission.aggregate({
+          where: {
+            examId: exam.id,
+          },
+          _avg: {
+            marks: true,
+          },
+        });
+        avgMarks = avgData?._avg.marks || 0;
+      }
 
-    return {
-      ...exam,
-      status,
-      submission: exam.submissions?.[0],
-    };
-  });
+      return {
+        ...exam,
+        status,
+        submission: exam.submissions?.[0],
+        avgMarks,
+      };
+    })
+  );
 
   const ongoingExams = examsWithStatus.filter((e) => e.status === "ongoing");
   const upcomingExams = examsWithStatus.filter((e) => e.status === "upcoming");
