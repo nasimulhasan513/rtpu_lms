@@ -15,18 +15,13 @@ export default defineEventHandler(async (event) => {
     // if (cachedCourse) {
     //   return cachedCourse;
     // }
-    const isArchive = event.context.query?.is_archive == "true";
 
     const course = await db.course.findFirst({
       where: {
         slug,
       },
-
       include: {
         lessons: {
-          where: {
-            is_archive: isArchive,
-          },
           include: {
             lesson: {
               include: {

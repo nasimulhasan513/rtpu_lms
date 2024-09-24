@@ -9,7 +9,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     if (enrollment && to.name == "shop-slug") {
       const response = await $fetch(`/api/category/${to.params.shop}`);
       if(response?.is_class){
-          return navigateTo(`/${to.params.shop}/${to.params.slug}/dashboard`);
+          return navigateTo(`/${to.params.shop}/${to.params.slug}/lessons`);
       }else{
           return navigateTo(`/${to.params.shop}/${to.params.slug}/mcq`);
       }

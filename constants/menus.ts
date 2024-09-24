@@ -186,18 +186,12 @@ export const mainMenu = [
 
 export const courseMenu = [
   {
-    title: "ড্যাশবোর্ড",
-    link: "dashboard",
-    icon: "tabler:dashboard",
-    type: "all",
-  },
-  {
     title: "ক্লাসসমূহ",
     link: "lessons",
     icon: "lucide:video",
     type: "is_class",
   },
-  
+
   {
     title: "বহুনির্বাচনী পরীক্ষা",
     link: "mcq",

@@ -92,7 +92,12 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const nuxtApp = useNuxtApp()
-const { data, status, error, refresh } = await useFetch(`/api/courses/${route.params.slug}/lessons?is_archive=false`, {
+const { data, status, error, refresh } = await useFetch(`/api/courses/${route.params.slug}/lessons`, {
+
+    query: {
+        is_archive: false
+    },
+
     transform(input) {
         return {
             ...input,

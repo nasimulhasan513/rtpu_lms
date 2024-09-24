@@ -10,5 +10,5 @@ export default defineEventHandler(async (event) => {
       statusCode: 400,
     });
   }
-  return true;
+  return { user: existingUser };
 });

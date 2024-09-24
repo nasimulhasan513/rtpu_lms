@@ -100,7 +100,7 @@ const enrollCourse = async () => {
         })
         const category = await $fetch(`/api/category/${route.params.shop}`);
       if(category?.is_class){
-          return navigateTo(`/${route.params.shop}/${route.params.slug}/dashboard`);
+          return navigateTo(`/${route.params.shop}/${route.params.slug}/lessons`);
       }else{
           return navigateTo(`/${route.params.shop}/${route.params.slug}/mcq`);
       }

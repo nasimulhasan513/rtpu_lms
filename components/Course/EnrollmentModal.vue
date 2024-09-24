@@ -77,7 +77,7 @@ const checkUser = async () => {
             method: 'POST',
             body: { email: email.value },
         })
-        user.value = response.existingUser
+        user.value = response.user
         if (user.value) {
             step.value = 2
         } else {

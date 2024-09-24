@@ -70,7 +70,11 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    if (verificationResponse && !verificationResponse.courses.includes(slug)) {
+    if (
+      verificationResponse &&
+      !verificationResponse.courses.includes(slug) &&
+      !verificationResponse.courses.includes("banjon")
+    ) {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid unique ID",
