@@ -34,12 +34,7 @@ export default defineEventHandler(async (event) => {
                 lesson: {
                   select: {
                     id: true,
-                    subject: {
-                      select: {
-                        id: true,
-                        name: true,
-                      },
-                    },
+                    is_archive: true,
                     LessonProgress: {
                       where: { userId },
                       select: { completed: true },
@@ -55,8 +50,18 @@ export default defineEventHandler(async (event) => {
                   select: {
                     id: true,
                     title: true,
-                    startTime: true,
-                    endTime: true,
+                    totalMarks: true,
+                    duration: true,
+                    submissions: {
+                      where: { userId, status: "submitted" },
+                      select: {
+                        id: true,
+                        marks: true,
+                        correct: true,
+                        wrong: true,
+                        duration: true,
+                      },
+                    },
                   },
                 },
               },
@@ -92,27 +97,26 @@ export default defineEventHandler(async (event) => {
         }),
       ]);
 
-    const lessons = enrollment.course.lessons;
-    const totalLessons = lessons.length;
-    const completedLessons = lessons.filter(
+    const liveLessons = enrollment.course.lessons.filter(
+      (l) => !l.lesson.is_archive
+    );
+    const totalLessons = liveLessons.length;
+    const completedLessons = liveLessons.filter(
       (l) => l.lesson.LessonProgress[0]?.completed
     ).length;
 
-    const subjects = lessons.reduce(
-      (acc, { lesson }) => {
-        const { id, name } = lesson.subject;
-        if (!acc[id]) {
-          acc[id] = { id, name, totalLessons: 1 };
-        } else {
-          acc[id].totalLessons++;
-        }
-        return acc;
-      },
-      {} as Record<string, { id: string; name: string; totalLessons: number }>
+    const archivedLessons = enrollment.course.lessons.filter(
+      (l) => l.lesson.is_archive
     );
+    const totalArchivedLessons = archivedLessons.length;
+    const completedArchivedLessons = archivedLessons.filter(
+      (l) => l.lesson.LessonProgress[0]?.completed
+    ).length;
 
-    const exams = enrollment.course.exams;
-    const totalExams = exams.length;
+    const exams = enrollment.course.exams.filter(
+      (e) => e.exam.submissions.length > 0
+    );
+    const totalExams = enrollment.course.exams;
 
     return {
       course: {
@@ -121,15 +125,53 @@ export default defineEventHandler(async (event) => {
         slug: enrollment.course.slug,
       },
       progress: {
-        lessons: {
+        liveLessons: {
           total: totalLessons,
           completed: completedLessons,
           percentage: Math.round((completedLessons / totalLessons) * 100),
         },
+        archivedLessons: {
+          total: totalArchivedLessons,
+          completed: completedArchivedLessons,
+          percentage: Math.round(
+            (completedArchivedLessons / totalArchivedLessons) * 100
+          ),
+        },
         exams: {
           total: totalExams,
-          completed: submissionCount,
-          percentage: Math.round((submissionCount / totalExams) * 100),
+          completed: exams.filter((e) => e.exam.submissions.length > 0).length,
+          percentage: Math.round(
+            (exams.filter((e) => e.exam.submissions.length > 0).length /
+              totalExams) *
+              100
+          ),
+          submissions: exams.map((e) => ({
+            title: e.exam.title,
+            totalMarks: e.exam.totalMarks,
+            marks: e.exam.submissions[0]?.marks || 0,
+            correct: e.exam.submissions[0]?.correct || 0,
+            wrong: e.exam.submissions[0]?.wrong || 0,
+            duration: e.exam.submissions[0]?.duration || 0,
+            totalDuration: e.exam.duration * 60 * 1000,
+            percentage: e.exam.submissions[0]
+              ? Math.round(
+                  (e.exam.submissions[0].marks / e.exam.totalMarks) * 100
+                )
+              : 0,
+            accuracy: e.exam.submissions[0]
+              ? Math.round(
+                  (e.exam.submissions[0].correct / e.exam.totalMarks) * 100
+                )
+              : 0,
+            durationEfficiency: e.exam.submissions[0]
+              ? Math.round(
+                  ((e.exam.duration * 60 * 1000 -
+                    e.exam.submissions[0].duration) /
+                    (e.exam.duration * 60 * 1000)) *
+                    100
+                )
+              : 0,
+          })),
         },
         assignments: {
           total: totalAssignments,
@@ -139,20 +181,6 @@ export default defineEventHandler(async (event) => {
           ),
         },
       },
-      subjects: Object.values(subjects),
-      exams: exams
-        .map(({ exam }) => ({
-          id: exam.id,
-          title: exam.title,
-          status:
-            new Date() > new Date(exam.startTime) &&
-            new Date() < new Date(exam.endTime)
-              ? "ongoing"
-              : new Date() > new Date(exam.endTime)
-                ? "past"
-                : "upcoming",
-        }))
-        .filter((exam) => exam.status !== "past"),
     };
   } catch (error) {
     console.error(error);

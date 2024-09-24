@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
         select: {
           id: true,
           status: true,
+          marks: true,
         },
       },
       courseExams: true,

@@ -39,6 +39,28 @@
                     <AppTimer v-else-if="exam.status === 'upcoming'" :end="exam.startTime" />
                 </div>
             </div>
+            <div>
+                <div v-if="(exam.submission && exam.submission.status === 'submitted') && (exam.status === 'past' || exam.instantResult)"
+                    class="p-4 mt-4 text-center bg-green-100 rounded-lg">
+                    <p class="text-lg font-semibold text-green-700">Your Score</p>
+                    <p class="text-3xl font-bold text-green-800">
+                        {{ exam.submission.marks }} <span class="text-xl text-green-600">/ {{ exam.totalMarks }}</span>
+                    </p>
+                    <p class="mt-2 text-sm text-green-600">
+                        {{ ((exam.submission.marks / exam.totalMarks) * 100).toFixed(2) }}% Achieved
+                    </p>
+                </div>
+                <div v-else-if="exam.status === 'past' && (!exam.submission || exam.submission.status === 'pending')">
+                    <div class="p-4 mt-4 text-center bg-yellow-100 rounded-lg">
+                        <Icon name="lucide:alert-circle" class="w-8 h-8 mx-auto mb-2 text-yellow-600" />
+                        <p class="text-lg font-semibold text-yellow-700">Not Participated</p>
+                        <p class="mt-2 text-sm text-yellow-600">
+                            You didn't participate in this exam.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
         </CardContent>
         <CardFooter class="flex justify-center space-x-3">
 
@@ -49,8 +71,10 @@
             <p v-else-if="exam.status === 'ongoing' && !exam.instantResult" class="font-semibold text-green-500">
                 Thanks for participation.
             </p>
+
             <template
                 v-else-if="exam.status === 'past' || (exam.instantResult && (!exam.submission || exam.submission.status === 'submitted'))">
+
                 <Button @click="navigateTo(`mcq/${exam.id}/practice`)" variant="outline" class="flex-1">
                     <Icon name="lucide:book-open" class="w-4 h-4 mr-2" />
                     Practice Exam

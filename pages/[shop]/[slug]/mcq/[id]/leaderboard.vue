@@ -88,6 +88,8 @@ const examDuration = ref(0)
 const hasMorePages = ref(false)
 const loading = ref(true)
 
+
+
 const fetchLeaderboard = async () => {
     loading.value = true
     try {

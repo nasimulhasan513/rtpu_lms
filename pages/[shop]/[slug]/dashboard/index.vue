@@ -36,6 +36,8 @@
             </div>
         </div>
 
+        <ExamProgressReport :exam-progress="dashboardData.progress.exams" />
+
     </div>
     <div v-else-if="error" class="text-center text-red-500">
         {{ error }}
