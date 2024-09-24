@@ -34,29 +34,24 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-
-  
   const questions = await db.question.findMany({
-      where: { examId: id },
+    where: { examId: id },
 
-      include: {
-        options: {
-          select: {
-            id: true,
-            option_text: true,
-            correct: true,
-          },
-        },
-        subject: {
-          select: {
-            name: true,
-          },
+    include: {
+      options: {
+        select: {
+          id: true,
+          option_text: true,
+          correct: true,
         },
       },
-    });
-
-   
-  }
+      subject: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
 
   const submission =
     // @ts-ignore

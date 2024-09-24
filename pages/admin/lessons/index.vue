@@ -2,7 +2,6 @@
     <div>
         <div class="flex justify-between mb-4">
             <AppHeading title="Classes" />
-
         </div>
 
         <div class="p-4 mb-6 bg-gray-100 rounded-lg">
@@ -47,6 +46,7 @@
         </div>
 
         <div class="bg-white rounded-lg shadow">
+            <h3 class="p-4 text-lg font-semibold">Live Classes</h3>
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -64,9 +64,69 @@
                     </TableRow>
                 </TableHeader>
                 <TableBody v-if="status === 'success'">
-                    <TableRow v-for="lesson, i in data" :key="lesson.id">
+                    <TableRow v-for="lesson, i in liveLessons" :key="lesson.id">
                         <TableCell>
-                            <Checkbox :checked="lesson.selected" @click="data[i].selected = !data[i].selected" />
+                            <Checkbox :checked="lesson.selected" @click="liveLessons[i].selected = !liveLessons[i].selected" />
+                        </TableCell>
+                        <TableCell>{{ lesson.title }}</TableCell>
+                        <TableCell>{{ lesson.subject.name }}</TableCell>
+                        <TableCell>{{ lesson.chapter.name }}</TableCell>
+                        <TableCell>
+                            <Badge>
+                                {{ lesson.source.toUpperCase() }}
+                            </Badge>
+                        </TableCell>
+                        <TableCell>
+                            <Button @click="viewContent(lesson.content)">
+                                <Icon name="tabler:eye" />
+                            </Button>
+                        </TableCell>
+                        <TableCell>
+                            <div class="flex flex-wrap gap-1">
+                                <Badge v-for="course in lesson.courses" :key="course.id" variant="secondary">
+                                    {{ course.name }}
+                                </Badge>
+                            </div>
+                        </TableCell>
+                        <TableCell>{{ new Date(lesson.createdAt).toLocaleDateString() }}</TableCell>
+                        <TableCell>
+                            <div class="flex gap-2">
+                                <Button @click="editLesson(lesson)" variant="outline">
+                                    <Icon name="tabler:edit" />
+                                </Button>
+                                <Button @click="deleteLesson(lesson.id)" variant="destructive">
+                                    <Icon name="tabler:trash" />
+                                </Button>
+                            </div>
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
+                <div v-if="status === 'pending'" class="flex items-center justify-center p-4">
+                    <AppLoader />
+                </div>
+            </Table>
+
+            <h3 class="p-4 text-lg font-semibold">Archived Classes</h3>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead class="w-[50px]">
+                            <Checkbox :checked="selectAll" @click="toggleSelectAll" />
+                        </TableHead>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Subject</TableHead>
+                        <TableHead>Chapter</TableHead>
+                        <TableHead>Source</TableHead>
+                        <TableHead>Content</TableHead>
+                        <TableHead>Assigned Courses</TableHead>
+                        <TableHead>Created At</TableHead>
+                        <TableHead>Actions</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody v-if="status === 'success'">
+                    <TableRow v-for="lesson, i in archivedLessons" :key="lesson.id">
+                        <TableCell>
+                            <Checkbox :checked="lesson.selected" @click="archivedLessons[i].selected = !archivedLessons[i].selected" />
                         </TableCell>
                         <TableCell>{{ lesson.title }}</TableCell>
                         <TableCell>{{ lesson.subject.name }}</TableCell>
@@ -165,8 +225,6 @@ watchDebounced(search, () => {
     refresh()
 }, { debounce: 300 })
 
-
-
 const fetchLessons = () => {
     currentPage.value = 1 // Reset to first page on filter change
     refresh()
@@ -262,6 +320,9 @@ const assignLessonsToCourses = async () => {
         })
     }
 }
+
+const liveLessons = computed(() => data.value.filter(lesson => !lesson.is_archive))
+const archivedLessons = computed(() => data.value.filter(lesson => lesson.is_archive))
 
 watch([currentPage, itemsPerPage], () => {
     refresh()

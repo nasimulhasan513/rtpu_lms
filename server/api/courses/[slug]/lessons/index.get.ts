@@ -8,6 +8,8 @@ export default defineEventHandler(async (event) => {
   try {
     const { slug } = paramsSchema.parse(event.context.params);
 
+    const is_archive = getQuery(event).is_archive === "true";
+
     // const cacheKey = `courses:${slug}:lessons`;
 
     // const cachedCourse = await getCache(cacheKey);
@@ -22,6 +24,11 @@ export default defineEventHandler(async (event) => {
       },
       include: {
         lessons: {
+          where: {
+            lesson: {
+              is_archive,
+            },
+          },
           include: {
             lesson: {
               include: {

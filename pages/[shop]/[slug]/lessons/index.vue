@@ -6,14 +6,22 @@
         </p>
     </div>
     <div class="space-y-6" v-if="status === 'success' && data.lessons.length > 0">
-
-        <!-- Breadcrumb -->
+        <div class="flex items-center space-x-2">
+            <Button :variant="isArchive ? 'outline' : 'default'" size="sm" @click="isArchive = false">
+                লাইভ ক্লাস
+            </Button>
+            <Button :variant="isArchive ? 'default' : 'outline'" size="sm" @click="isArchive = true">
+                আর্কাইভ ক্লাস
+            </Button>
+        </div>
         <div class="flex items-center space-x-2">
 
             <Button variant="outline" size="sm"
                 @click="navigateTo(`/${route.params.shop}/${route.params.slug}/lessons`)">
                 বিষয়সমূহ
             </Button>
+
+
             <div v-if="currentView !== 'subjects'" class="flex items-center">
                 <ChevronRightIcon class="w-4 h-4" />
                 <Button variant="outline" size="sm" @click="selectSubject(selectedSubject)">
@@ -66,19 +74,19 @@
             </div>
         </div>
 
-       
 
-      
+
+
     </div>
     <Alert v-if="error" variant="destructive">
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-                {{ error.message }}
-            </AlertDescription>
-        </Alert>
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>
+            {{ error.message }}
+        </AlertDescription>
+    </Alert>
     <div v-if="status === 'pending'" class="flex items-center justify-center h-64">
-            <Spinner />
-        </div>
+        <Spinner />
+    </div>
 
 </template>
 
@@ -92,10 +100,12 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const nuxtApp = useNuxtApp()
+const isArchive = ref(false)
+
 const { data, status, error, refresh } = await useFetch(`/api/courses/${route.params.slug}/lessons`, {
 
     query: {
-        is_archive: false
+        is_archive: isArchive
     },
 
     transform(input) {
