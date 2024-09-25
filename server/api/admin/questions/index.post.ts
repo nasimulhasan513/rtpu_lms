@@ -1,7 +1,16 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
-  const { question, options, subjectId, chapterId, difficulty, explain, examId } = body;
+  const {
+    question,
+    options,
+    subjectId,
+    chapterId,
+    difficulty,
+    explain,
+    examId,
+    serial,
+  } = body;
 
   if (!question || !options || !subjectId || !chapterId) {
     return {
@@ -16,6 +25,7 @@ export default defineEventHandler(async (event) => {
     await db.question.create({
       data: {
         question,
+        serial: serial || 0,
         subject: {
           connect: {
             id: subjectId,

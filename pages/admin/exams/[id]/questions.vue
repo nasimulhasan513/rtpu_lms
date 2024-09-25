@@ -4,7 +4,7 @@
         <div class="flex justify-between print:hidden">
             <h1 class="text-2xl font-semibold">Questions</h1>
             <div class="flex gap-2">
-                <QuestionImport />
+                <QuestionImport :examId="route.params.id" />
                 <Button @click="onOpen(route.params.id)">
                     <Icon name="bx:bx-plus" />
                     Add Question
