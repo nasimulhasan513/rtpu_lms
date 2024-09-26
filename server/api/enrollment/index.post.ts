@@ -48,36 +48,16 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Verify the unique ID with the 3rd party API
-    const response = await ASG_SHOP(uniqueId, null, null);
+    // @ts-ignore
+    const response: ASG_SHOP_RESPONSE | boolean = await ASG_SHOP(
+      uniqueId,
+      slug
+    );
 
-    if (response === "Error fetching data") {
+    if (!response) {
       throw createError({
         statusCode: 500,
         statusMessage: "Error verifying unique ID",
-      });
-    }
-
-    const verificationResponse: ASG_SHOP_RESPONSE = response;
-
-    if (
-      !verificationResponse ||
-      Object.keys(verificationResponse).length === 0
-    ) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: "Invalid unique ID",
-      });
-    }
-
-    if (
-      verificationResponse &&
-      !verificationResponse.courses.includes(slug) &&
-      !verificationResponse.courses.includes("banjon")
-    ) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: "Invalid unique ID",
       });
     }
 
@@ -96,9 +76,9 @@ export default defineEventHandler(async (event) => {
         id: userId,
       },
       data: {
-        institute: verificationResponse.institution,
-        hsc_batch: verificationResponse.hsc_batch,
-        phone: verificationResponse.phone,
+        institute: response.institution,
+        hsc_batch: response.hsc_batch,
+        phone: response.phone,
       },
     });
 

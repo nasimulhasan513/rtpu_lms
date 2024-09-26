@@ -32,9 +32,10 @@
             </FormField>
 
             <FormField v-slot="{ field }" name="subjectId">
+
                 <FormItem>
                     <FormLabel>Subject</FormLabel>
-                    <Select v-bind="field">
+                    <Select v-bind="field" v-model="form.values.subjectId">
                         <FormControl>
                             <SelectTrigger class="bg-white dark:bg-slate-800">
                                 <SelectValue placeholder="Select a subject" />

@@ -22,6 +22,9 @@ export default defineEventHandler(async (event) => {
           slug: slug,
         },
       },
+      orderBy: {
+        order: "asc",
+      },
     });
 
     if (!courses) {

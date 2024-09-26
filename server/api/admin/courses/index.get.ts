@@ -16,7 +16,11 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  const courses = await db.course.findMany({});
+  const courses = await db.course.findMany({
+    orderBy: {
+      order: "asc",
+    },
+  });
 
   return {
     statusCode: 200,

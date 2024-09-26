@@ -14,19 +14,10 @@ export const CourseSchema = z.object({
     .regex(/^[a-f\d]{24}$/i, "Invalid category ID"),
   image: z.string().url("Image must be a valid URL"),
   promo_video: z.string().url("Promo video must be a valid URL").optional(),
-  sale_price: z
-    .number()
-    .int()
-    .min(0, "Sale price must be a non-negative integer"),
-  regular_price: z
-    .number()
-    .int()
-    .min(0, "Regular price must be a non-negative integer"),
+  productCode: z.string().min(3, "Product code is required"),
   status: z
     .enum(["published", "draft", "prebooking", "archieve"])
     .default("draft"),
-  duration: z.number().int().min(0, "Duration must be a non-negative integer"),
-  enrolled: z.number().int().min(0, "Enrolled must be a non-negative integer"),
   fb_group: z.string().url("Facebook group must be a valid URL").optional(),
   tg_group: z.string().url("Telegram group must be a valid URL").optional(),
   keywords: z

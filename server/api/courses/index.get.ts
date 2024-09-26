@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     const courses = await db.course.findMany({
       where: featured ? { status: "published" } : {},
       take: limit,
-      //   orderBy: { createdAt: "desc" },
+      orderBy: { order: "asc" },
       include: {
         category: true,
       },
