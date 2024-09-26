@@ -59,6 +59,11 @@
                                     {{ millisecToTime(rank.duration, examDuration) }}
                                 </span>
                             </TableCell>
+                            <TableCell class="text-right print:hidden">
+                                <Button variant="destructive" size="sm" @click="deleteRanker(rank.id)">
+                                    Delete
+                                </Button>
+                            </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
@@ -165,6 +170,30 @@ debouncedWatch(presearch, (value) => {
 
 const printLeaderboard = () => {
     window.print()
+}
+
+
+const deleteRanker = async (id) => {
+    try {
+        const { data } = await useFetch(`/api/question/${route.params.id}/leaderboard/${id}`, {
+            method: 'DELETE'
+        })
+        if (data.value) {
+            leaderboard.value = leaderboard.value.filter(ranker => ranker.id !== id)
+        }
+        toast({
+            title: 'Success',
+            description: 'Ranker deleted successfully',
+            variant: 'default'
+        })
+    } catch (error) {
+        console.error('Error deleting ranker:', error)
+        toast({
+            title: 'Error',
+            description: 'Error deleting ranker',
+            variant: 'destructive'
+        })
+    }
 }
 
 

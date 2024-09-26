@@ -25,33 +25,36 @@
         </header>
 
         <!-- New summary section -->
-        <div v-if="isSubmitted" class="max-w-2xl p-4 mx-auto mt-4 bg-gray-100 rounded-lg shadow">
-            <h2 class="mb-2 text-xl font-semibold">Summary</h2>
+        <div v-if="isSubmitted" class="max-w-2xl p-4 mx-auto mt-4 bg-white border rounded-lg shadow">
+            <h2 class="mb-4 text-2xl font-semibold text-center">Summary</h2>
             <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div class="flex items-center">
-                    <Badge class="mr-2 bg-green-500">Correct</Badge>
-                    <span>{{ correctCount }}</span>
+                <div class="p-4 bg-green-100 rounded-lg shadow">
+                    <h3 class="mb-2 text-lg font-semibold text-green-700">Correct</h3>
+                    <p class="text-2xl font-bold text-green-700">{{ correctCount }}</p>
                 </div>
-                <div class="flex items-center">
-                    <Badge class="mr-2 bg-red-500">Wrong</Badge>
-                    <span>{{ wrongCount }}</span>
+                <div class="p-4 bg-red-100 rounded-lg shadow">
+                    <h3 class="mb-2 text-lg font-semibold text-red-700">Wrong</h3>
+                    <p class="text-2xl font-bold text-red-700">{{ wrongCount }}</p>
                 </div>
-                <div class="flex items-center">
-                    <Badge class="mr-2 bg-gray-500">Not Answered</Badge>
-                    <span>{{ notAnsweredCount }}</span>
+                <div class="p-4 bg-gray-100 rounded-lg shadow">
+                    <h3 class="mb-2 text-lg font-semibold text-gray-700">Not Answered</h3>
+                    <p class="text-2xl font-bold text-gray-700">{{ notAnsweredCount }}</p>
                 </div>
-                <div class="flex items-center">
-                    <Badge class="mr-2 bg-orange-500">Accuracy</Badge>
-                    <span>{{ (correctCount / data.questions.length * 100).toFixed(2) }}%</span>
+                <div class="p-4 bg-orange-100 rounded-lg shadow">
+                    <h3 class="mb-2 text-lg font-semibold text-orange-700">Accuracy</h3>
+                    <p class="text-2xl font-bold text-orange-700">{{ (correctCount / (correctCount +
+                        wrongCount) * 100).toFixed(2) }}%</p>
                 </div>
             </div>
 
             <!-- Subject-based score counts -->
-            <div v-if="subjectScores.length > 1" class="mt-4">
-                <h3 class="mb-2 text-lg font-semibold">Subject Based Score:</h3>
-                <div v-for="subject in subjectScores" :key="subject.name" class="flex justify-between mb-2">
-                    <span>{{ subject.name }}:</span>
-                    <span>{{ subject.score }} / {{ subject.total }}</span>
+            <div v-if="subjectScores.length > 1" class="mt-6">
+                <h3 class="mb-4 text-xl font-semibold text-center">Subject Based Score:</h3>
+                <div v-for="subject in subjectScores" :key="subject.name" class="p-4 mb-4 bg-white rounded-lg shadow">
+                    <div class="flex justify-between">
+                        <span class="text-lg font-semibold">{{ subject.name }}:</span>
+                        <span class="text-lg font-semibold">{{ subject.score }} / {{ subject.total }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,7 +120,7 @@
                 </div>
                 <DialogFooter class="flex justify-center space-x-4">
                     <Button @click="retryExam" class="bg-gray-500 hover:bg-gray-600">Retry Exam</Button>
-                    <Button @click="showResultDialog = false" class=" bg-primary hover:bg-primary-dark">View
+                    <Button @click="showDetails" class=" bg-primary hover:bg-primary-dark">View
                         Details</Button>
 
                 </DialogFooter>
@@ -283,6 +286,15 @@ const subjectScores = computed(() => {
         total: scores.total
     }))
 })
+
+const showDetails = () => {
+    showResultDialog.value = false
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })
+}
 
 </script>
 

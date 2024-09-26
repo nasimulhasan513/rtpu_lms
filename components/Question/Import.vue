@@ -16,9 +16,12 @@
                     <h1>Questions
                         <span class="text-sm text-gray-500">({{ questions.length }})</span>
                     </h1>
-                    <div>
+                    <div class="flex gap-2">
                         <AppButton @click="importQuestions" :loading="importloading" label="Import"
                             icon="lucide:download" />
+                        <Button @click="sampleQuestions" variant="outline">
+                            Sample
+                        </Button>
                     </div>
                 </div>
 
@@ -128,6 +131,10 @@ const importQuestions = async () => {
 
 
 
+}
+
+const sampleQuestions = () => {
+    window.open('https://docs.google.com/spreadsheets/d/1CH-DssTBoaztz3sBIGQg2n7-SqopNRk8yBjBFqLzk9Q/edit?usp=sharing', '_blank')
 }
 
 
