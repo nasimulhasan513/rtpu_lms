@@ -2,8 +2,8 @@
     <AppContainer>
         <div class="max-w-3xl mx-auto">
             <div class="text-center">
-                <h1 class="text-3xl font-bold text-primary"> {{ courseName }} </h1>
-                <h2 class="text-2xl font-bold text-primary">Leaderboard</h2>
+                <h1 class="text-3xl font-bold text-primary"> {{ course.name }} </h1>
+                <h2 class="text-2xl font-bold">Leaderboard</h2>
                 <p class="text-lg text-gray-500"> {{ examTitle }} </p>
             </div>
             <div v-if="leaderboard.length > 0" class="pt-2 mt-12 mb-8">
@@ -23,7 +23,7 @@
                 <Button variant="outline" aria-label="Home" @click="printLeaderboard">
                     Export PDF
                 </Button>
-              
+
             </div>
 
             <div v-if="leaderboard.length > 0"
@@ -74,7 +74,7 @@
                             </TableCell>
                             <TableCell>
                                 <div class="flex items-center">
-                                    <Avatar class="w-8 h-8 mr-2 print:hidden">
+                                    <Avatar class="w-8 h-8 mr-2">
                                         <AvatarImage :src="rank.user.image" :alt="rank.user.name" />
                                         <AvatarFallback>
                                             {{ rank.user.name.split(' ').map(n => n[0]).join('') }}
@@ -148,26 +148,18 @@ const examDuration = ref(0)
 const hasMorePages = ref(false)
 const loading = ref(true)
 
-const { data: leaderboardData, pending, error } = useFetch(`/api/question/${route.params.id}/leaderboard`, {
+const { data } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
     query: {
         search: search.value,
         page: page.value,
         pageSize
     },
-});
-
-
+})
 
 const fetchLeaderboard = async () => {
     loading.value = true
     try {
-        const { data } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
-            query: {
-                search: search.value,
-                page: page.value,
-                pageSize
-            },
-        })
+
         if (data.value) {
             leaderboard.value = data.value.leaderboard
             examTitle.value = data.value.examData.title
@@ -228,6 +220,11 @@ debouncedWatch(presearch, (value) => {
 const printLeaderboard = () => {
     window.print()
 }
+
+
+const { course, fetchCourse } = useCourse()
+
+fetchCourse(route.params.slug)
 
 
 </script>

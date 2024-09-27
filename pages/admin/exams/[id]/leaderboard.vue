@@ -1,9 +1,10 @@
 <template>
     <AppContainer>
+
         <div class="max-w-3xl mx-auto print:w-screen print:scale-95">
             <div class="text-center">
                 <h1 class="text-3xl font-bold text-primary"> {{ courseName }} </h1>
-                <h2 class="text-2xl font-bold text-primary">Leaderboard</h2>
+                <h2 class="text-2xl font-bold">Leaderboard</h2>
                 <p class="text-lg text-gray-500"> {{ examTitle }} </p>
             </div>
             <div v-if="leaderboard.length > 0" class="pt-2 mt-12 mb-8">
@@ -73,7 +74,7 @@
                             </TableCell>
                             <TableCell>
                                 <div class="flex items-center">
-                                    <Avatar class="w-8 h-8 mr-2 print:hidden">
+                                    <Avatar class="w-8 h-8 mr-2">
                                         <AvatarImage :src="rank.user.image" :alt="rank.user.name" />
                                         <AvatarFallback>
                                             {{ rank.user.name.split(' ').map(n => n[0]).join('') }}
@@ -119,7 +120,7 @@
             </div>
 
             <div class="my-5">
-                <AppLoader v-if="loading" />
+                <AppLoader v-if="loading || status === 'pending'" />
                 <AppEmptyState v-if="!loading && leaderboard.length === 0" />
             </div>
 
@@ -152,22 +153,22 @@ const examDuration = ref(0)
 const hasMorePages = ref(false)
 const loading = ref(true)
 const toast = useToast()
-
+const { data, refresh, status } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
+    query: {
+        search: search.value,
+        page: page.value,
+        pageSize
+    },
+})
 const fetchLeaderboard = async () => {
     loading.value = true
     try {
-        const { data } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
-            query: {
-                search: search.value,
-                page: page.value,
-                pageSize
-            },
-        })
+
 
         if (data.value) {
             leaderboard.value = data.value.leaderboard
             examTitle.value = data.value.examData.title
-            courseName.value = data.value.examData.courseExams[0].course.name
+            courseName.value = data.value.examData.courseExams.map(course => course.course.name).join(', ')
             examDuration.value = data.value.examData.duration
             hasMorePages.value = data.value.pagination.currentPage < data.value.pagination.totalPages
         }
@@ -257,6 +258,7 @@ const recalcualteResults = async () => {
         const { data } = await useFetch(`/api/admin/exams/${route.params.id}/recalculate`, {
             method: 'POST'
         })
+        await fetchLeaderboard()
     } catch (error) {
         console.error('Error recalculating results:', error)
         toast({
@@ -266,6 +268,7 @@ const recalcualteResults = async () => {
         })
     } finally {
         recalculating.value = false
+
     }
 }
 

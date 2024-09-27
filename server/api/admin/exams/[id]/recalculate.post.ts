@@ -65,7 +65,6 @@ export default defineEventHandler(async (event) => {
       const correct = marks;
       const wrong = optionIds.length - marks;
       const skipped = exam.totalMarks - (correct + wrong);
-      console.log(correct, wrong, skipped, marks, negMarks);
 
       await db.submission.update({
         where: {

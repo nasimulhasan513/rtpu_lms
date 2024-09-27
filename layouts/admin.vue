@@ -49,7 +49,7 @@ defineShortcuts({
         <LayoutSidebar :navMenu="rbacMenus" :navMenuBottom="navMenuBottom" />
         <div flex="~ col">
             <LayoutHeader />
-            <main class="flex-1 min-h-[calc(100vh-53px)] p-4 lg:p-6 print:p-0 "
+            <main class="flex-1 min-h-[calc(100vh-53px)] p-4 lg:p-6 print:p-0 print:bg-white "
                 :class="isBgWhite ? 'bg-background' : 'bg-muted dark:bg-muted/20'">
 
 
