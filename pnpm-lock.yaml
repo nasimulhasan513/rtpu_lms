@@ -101,6 +101,9 @@ dependencies:
   katex:
     specifier: ^0.16.11
     version: 0.16.11
+  katex-vue3:
+    specifier: ^0.0.6
+    version: 0.0.6
   lucia:
     specifier: ^3.2.0
     version: 3.2.0
@@ -7329,6 +7332,10 @@ packages:
     dependencies:
       jwa: 2.0.0
       safe-buffer: 5.2.1
+    dev: false
+
+  /katex-vue3@0.0.6:
+    resolution: {integrity: sha512-L25lZd3pKHpcLa145kYIpFV5OM1hKTKELPT2Ct9zPOn+sruyzD3wfQH+hL/qNQ1A05hbh29LXhUuHFi+wVBcyA==}
     dev: false
 
   /katex@0.16.11:
