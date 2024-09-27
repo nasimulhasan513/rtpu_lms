@@ -210,7 +210,7 @@ debouncedWatch(presearch, (value) => {
                                                         Make Contributor
                                                     </DropdownMenuItem>
 
-                                                    <DropdownMenuItem>Delete</DropdownMenuItem>
+
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </ClientOnly>

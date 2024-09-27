@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <Button @click="isOpen = true">
+        <Button @click="isOpen = true" variant="outline">
             <Icon name="bx:bx-plus" />
             Import Questions
         </Button>
@@ -9,7 +9,41 @@
         <AppModal :isOpen="isOpen" size="sm:min-w-3xl" title="Import Questions" @onClose="onClose">
             <div class="flex gap-2">
                 <Input type="text" v-model="url" placeholder="Enter the URL of the questions" />
-                <AppButton @click="fetchQuestions" :loading="loading" label="Fetch Questions" />
+                <AppButton @click="fetchQuestions" :loading="loading" label="Load Questions" />
+                <Button @click="sampleQuestions" variant="destructive">
+                    <Icon name="lucide:sheet" class="mr-2" />
+                    Sample
+                </Button>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+
+                <!-- Subject Select -->
+                <Select v-model="subjectId">
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup v-for="s in subjects" :key="s.id">
+                            <SelectItem :value="s.id">
+                                {{ s.name }}
+                            </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+
+                <!-- Chapter Select -->
+                <Select v-model="chapterId">
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select chapter" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup v-for="c in chapters" :key="c.id">
+                            <SelectItem :value="c.id">
+                                {{ c.name }}
+                            </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
             </div>
             <div>
                 <div class="flex justify-between">
@@ -19,9 +53,7 @@
                     <div class="flex gap-2">
                         <AppButton @click="importQuestions" :loading="importloading" label="Import"
                             icon="lucide:download" />
-                        <Button @click="sampleQuestions" variant="outline">
-                            Sample
-                        </Button>
+
                     </div>
                 </div>
 
@@ -54,14 +86,19 @@
 
 <script setup>
 import { questionSchema } from '@/schema/question.schema';
+import { useToast } from '@/components/ui/toast';
+
+const { toast } = useToast()
 const props = defineProps({
     examId: {
         type: String,
         required: true
     }
 })
-
-
+const subjectId = ref('')
+const chapterId = ref('')
+const chapters = ref([])
+const { subjects } = useSubject()
 const isOpen = ref(false)
 
 const onClose = () => {
@@ -96,6 +133,10 @@ const fetchQuestions = async () => {
 
 const importloading = ref(false)
 const importQuestions = async () => {
+    if (!subjectId.value || !chapterId.value) {
+        toast({ title: 'Please select subject and chapter', variant: 'destructive' })
+        return
+    }
     try {
         importloading.value = true
 
@@ -111,8 +152,8 @@ const importQuestions = async () => {
                 explain: q.explain,
                 serial: sl + 1,
                 examId: props.examId,
-                subjectId: "66ebf61bca459bcfaa556de1",
-                chapterId: "66ebf65f67ee1ee80121758f",
+                subjectId: subjectId.value,
+                chapterId: chapterId.value,
                 difficulty: "Medium",
             }
             const validatedData = questionSchema.parse(question);
@@ -136,6 +177,12 @@ const importQuestions = async () => {
 const sampleQuestions = () => {
     window.open('https://docs.google.com/spreadsheets/d/1CH-DssTBoaztz3sBIGQg2n7-SqopNRk8yBjBFqLzk9Q/edit?usp=sharing', '_blank')
 }
+watch(() => subjectId.value, (subjectId) => {
+    if (subjectId) {
+        const selectedSubject = subjects.value.find((s) => s.id === subjectId);
+        chapters.value = selectedSubject ? selectedSubject.chapters : [];
+    }
+});
 
 
 </script>

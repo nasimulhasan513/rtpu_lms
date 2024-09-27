@@ -258,7 +258,7 @@ const recalcualteResults = async () => {
         const { data } = await useFetch(`/api/admin/exams/${route.params.id}/recalculate`, {
             method: 'POST'
         })
-        await fetchLeaderboard()
+        refresh()
     } catch (error) {
         console.error('Error recalculating results:', error)
         toast({

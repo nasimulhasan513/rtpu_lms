@@ -29,23 +29,44 @@
                         <TableHead>Title</TableHead>
                         <TableHead>Courses</TableHead>
                         <TableHead>Subject</TableHead>
-                        <TableHead>Start Time</TableHead>
-                        <TableHead>End Time</TableHead>
-                        <TableHead>Negative Marking</TableHead>
+                        <TableHead>Time</TableHead>
+                        <TableHead>Options</TableHead>
+
+                        <TableHead>Total Marks</TableHead>
                         <TableHead>Duration</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>Submissions</TableHead>
+                        <TableHead class="text-center">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     <TableRow v-for="exam in data.body" :key="exam.id">
                         <TableCell>{{ exam.title }}</TableCell>
-                        <TableCell>{{ exam.courseExams?.map(course => course.course.name).join(', ') }}</TableCell>
-                        <TableCell>{{ exam.subject.name }}</TableCell>
-                        <TableCell>{{ formatDate(exam.startTime) }}</TableCell>
-                        <TableCell>{{ formatDate(exam.endTime) }}</TableCell>
-                        <TableCell>{{ exam.negativeMarking ? 'Yes' : 'No' }}</TableCell>
-                        <TableCell>{{ exam.duration }} minutes</TableCell>
-                        <TableCell>
+                        <TableCell>{{ exam.courseExams?.map(course =>
+                    course.course.name).join(', ') }}</TableCell>
+                        <TableCell class="whitespace-nowrap">{{ exam.subject.name }}</TableCell>
+                        <TableCell class="whitespace-nowrap">
+                            <div class="flex flex-col">
+                                <span>{{ formatDate(exam.startTime) }}</span>
+                                <span>{{ formatDate(exam.endTime) }}</span>
+                            </div>
+                        </TableCell>
+                        <TableCell class="whitespace-nowrap">
+                            <div class="flex flex-col items-center space-y-1">
+                                <Badge v-if="exam.negativeMarking" variant="destructive">
+                                    Negative Marking
+                                </Badge>
+                                <Badge v-if="exam.shuffleQuestion">
+                                    Shuffle Questions
+                                </Badge>
+                                <Badge v-if="exam.instantResult">
+                                    Instant Results
+                                </Badge>
+                            </div>
+                        </TableCell>
+                        <TableCell class="whitespace-nowrap">{{ exam.totalMarks }}</TableCell>
+                        <TableCell class="whitespace-nowrap">{{ exam.duration }}m</TableCell>
+                        <TableCell class="text-center">{{ exam.submissionsCount }}</TableCell>
+                        <TableCell class="flex flex-col items-center justify-center gap-2">
                             <div class="flex items-center space-x-2">
                                 <Button @click="viewQuestions(exam.id)" variant="outline" size="sm">
                                     <Icon name="lucide:list" />
@@ -53,6 +74,9 @@
                                 <Button @click="viewLeaderboard(exam.id)" variant="outline" size="sm">
                                     <Icon name="lucide:trophy" />
                                 </Button>
+
+                            </div>
+                            <div class="flex items-center space-x-2">
                                 <Button @click="editExam(exam.id)" variant="outline" size="sm">
                                     <Icon name="lucide:edit" />
                                 </Button>
@@ -87,10 +111,10 @@ const selectedCourse = ref('');
 const selectedSubject = ref('');
 
 const { data, status, refresh: refreshExams } = useFetch('/api/admin/exams', {
-    query: computed(() => ({
-        courseId: selectedCourse.value,
-        subjectId: selectedSubject.value,
-    })),
+    query: {
+        courseId: selectedCourse,
+        subjectId: selectedSubject,
+    },
 });
 
 const { courses, fetchCourses } = useCourse();

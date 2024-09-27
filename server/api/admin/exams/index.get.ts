@@ -1,5 +1,43 @@
+import { Exam } from "@prisma/client";
+const examsWithSubmissionsCount = async (exams: Exam[]) => {
+  const examsWithSubmissions = await Promise.all(
+    exams.map(async (exam) => {
+      const submissions = await db.submission.aggregate({
+        where: {
+          examId: exam.id,
+          status: "submitted",
+        },
+        _count: {
+          id: true,
+        },
+      });
+
+      return {
+        ...exam,
+        submissionsCount: submissions._count.id,
+      };
+    })
+  );
+
+  return examsWithSubmissions;
+};
 export default defineEventHandler(async (event) => {
   try {
+    const { courseId, subjectId } = getQuery(event);
+
+    const filters = {};
+
+    if (courseId) {
+      filters.courseExams = {
+        some: {
+          courseId: courseId,
+        },
+      };
+    }
+
+    if (subjectId && subjectId !== "all") {
+      filters.subjectId = subjectId;
+    }
 
     if (event.context.user?.role === "contributor") {
       const courses = await db.contributor.findMany({
@@ -37,15 +75,21 @@ export default defineEventHandler(async (event) => {
             },
           },
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
+
+      const examsWithSubmissions = await examsWithSubmissionsCount(exams);
 
       return {
         statusCode: 200,
-        body: exams,
+        body: examsWithSubmissions,
       };
     }
 
     const exams = await db.exam.findMany({
+      where: filters,
       include: {
         courseExams: {
           include: {
@@ -62,11 +106,16 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
+
+    const examsWithSubmissions = await examsWithSubmissionsCount(exams);
 
     return {
       statusCode: 200,
-      body: exams,
+      body: examsWithSubmissions,
     };
   } catch (error) {
     console.error("Error fetching exams:", error);
