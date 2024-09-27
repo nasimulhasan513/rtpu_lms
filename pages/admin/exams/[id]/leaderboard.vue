@@ -17,9 +17,8 @@
                     <Icon name="lucide:search"
                         class="absolute text-gray-400 transform -translate-y-1/2 dark:text-gray-300 left-3 top-1/2"
                         size="20" />
-
                 </div>
-
+                <AppButton :loading="recalculating" label="Recalculate" variant="outline" @click="recalcualteResults" />
                 <Button variant="outline" aria-label="Home" @click="printLeaderboard">
                     Export PDF
                 </Button>
@@ -248,6 +247,29 @@ const deleteRanker = async (id) => {
         })
     }
 }
+
+
+const recalculating = ref(false)
+
+const recalcualteResults = async () => {
+    recalculating.value = true
+    try {
+        const { data } = await useFetch(`/api/admin/exams/${route.params.id}/recalculate`, {
+            method: 'POST'
+        })
+    } catch (error) {
+        console.error('Error recalculating results:', error)
+        toast({
+            title: 'Error',
+            description: 'Error recalculating results',
+            variant: 'destructive'
+        })
+    } finally {
+        recalculating.value = false
+    }
+}
+
+
 
 </script>
 

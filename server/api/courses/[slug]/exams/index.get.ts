@@ -30,6 +30,7 @@ export default defineEventHandler(async (event) => {
   const examsWithStatus = await Promise.all(
     exams.map(async (exam) => {
       let status = "";
+      let resultPublished = false;
       let avgMarks = 0;
 
       if (currentDate < new Date(exam.startTime)) {
@@ -39,8 +40,16 @@ export default defineEventHandler(async (event) => {
         currentDate <= new Date(exam.endTime)
       ) {
         status = "ongoing";
-      } else if (currentDate > new Date(exam.startTime)) {
+      } else if (currentDate > new Date(exam.endTime)) {
         status = "past";
+
+        if (
+          exam.resultPublishTime &&
+          currentDate > new Date(exam.resultPublishTime)
+        ) {
+          resultPublished = true;
+        }
+
         let avgData = await db.submission.aggregate({
           where: {
             examId: exam.id,
@@ -57,6 +66,7 @@ export default defineEventHandler(async (event) => {
         status,
         submission: exam.submissions?.[0],
         avgMarks,
+        resultPublished,
       };
     })
   );

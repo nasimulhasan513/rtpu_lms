@@ -23,6 +23,7 @@
                 <Button variant="outline" aria-label="Home" @click="printLeaderboard">
                     Export PDF
                 </Button>
+              
             </div>
 
             <div v-if="leaderboard.length > 0"

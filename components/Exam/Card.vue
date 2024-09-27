@@ -73,7 +73,7 @@
             </p>
 
             <template
-                v-else-if="exam.status === 'past' || (exam.instantResult && (!exam.submission || exam.submission.status === 'submitted'))">
+                v-else-if="exam.resultPublished || (exam.instantResult && (!exam.submission || exam.submission.status === 'submitted'))">
 
                 <Button @click="navigateTo(`mcq/${exam.id}/practice`)" variant="outline" class="flex-1">
                     <Icon name="lucide:book-open" class="w-4 h-4 mr-2" />
@@ -88,6 +88,12 @@
                     Leaderboard
                 </Button>
             </template>
+
+            <div v-else-if="exam.status === 'past' && !exam.resultPublished" class="text-center text-emerald-500">
+                Result will be published at {{ formatDate(exam.resultPublishTime) }}
+            </div>
+
+
         </CardFooter>
     </Card>
 </template>
