@@ -49,6 +49,9 @@
                                     <Badge class="bg-orange-500 print:hidden">
                                         {{ q.creator?.name }}
                                     </Badge>
+                                    <Badge class="bg-orange-500 print:hidden">
+                                        {{ formatDate(q.createdAt) }}
+                                    </Badge>
                                 </div>
                                 <div class="flex items-center gap-3 mt-3 print:hidden">
                                     <Button @click="onEdit(q)" variant="outline">
@@ -162,6 +165,10 @@ watch(() => data.value, () => {
 
 const saveQuestionOrder = async () => {
     try {
+
+        questions.value = questions.value.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+
+
         const updatedQuestions = questions.value.map((q, index) => ({
             id: q.id,
             serial: index + 1,

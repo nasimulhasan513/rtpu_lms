@@ -64,14 +64,14 @@ export default defineNuxtConfig({
     name: "ACS Courses",
     description: "ACS Courses",
     defaultLocale: "en",
-
   },
   sitemap: {
     exclude: ["/admin/**", "/api/**"],
   },
   icon: {
+    mode: "svg",
     serverBundle: {
-      collections: ['lucide'] // <!--- this
-    }
-  }
+      collections: ["lucide"], // <!--- this
+    },
+  },
 });

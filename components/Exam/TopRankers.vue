@@ -11,8 +11,12 @@
       index === 0 ? 'w-28 h-28 text-3xl' : 'w-24 h-24 text-2xl',
       index === 0 ? 'bg-yellow-400' : index === 1 ? 'bg-gray-400' : 'bg-amber-600'
     ]">
-        <img :src="ranker.user.image" :alt="ranker.user.name"
-          class="absolute inset-0 object-cover w-full h-full rounded-full" />
+        <Avatar class="absolute inset-0 w-full h-full">
+          <AvatarImage :src="ranker.user.image" :alt="ranker.user.name" />
+          <AvatarFallback class="text-black uppercase">
+            {{ ranker.user.name.split(' ').map(n => n[0]).join('') }}
+          </AvatarFallback>
+        </Avatar>
 
       </div>
       <div class="mb-1 text-lg font-semibold">{{ ranker.user.name }}</div>

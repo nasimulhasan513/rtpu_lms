@@ -2,7 +2,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+ * {
+    -webkit-print-color-adjust: exact !important;   /* Chrome, Safari 6 – 15.3, Edge */
+    color-adjust: exact !important;                 /* Firefox 48 – 96 */
+    print-color-adjust: exact !important;           /* Firefox 97+, Safari 15.4+ */
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -133,3 +137,7 @@ body {
 .multiselect__input {
     color: white;
 }
+
+
+
+

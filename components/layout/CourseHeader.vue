@@ -32,7 +32,7 @@ const { shop } = useShop()
 </script>
 
 <template>
-  <header class="sticky top-0 z-10 h-[53px] flex items-center gap-4 border-b bg-background px-4 md:px-6">
+  <header class="sticky top-0 z-10 h-[53px] flex items-center gap-4 border-b bg-background px-4 md:px-6 print:hidden">
     <div class="flex items-center w-full gap-4">
       <Sheet>
         <SheetTrigger as-child>

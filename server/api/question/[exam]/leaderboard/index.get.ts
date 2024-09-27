@@ -35,11 +35,6 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  
- 
-
-
-
   // Fetch the leaderboard data with search, pagination, and sorting
   const leaderboard = await db.submission.findMany({
     where: {
@@ -69,6 +64,9 @@ export default defineEventHandler(async (event) => {
         },
       },
       marks: true,
+      correct: true,
+      wrong: true,
+      skipped: true,
       duration: true,
       submittedAt: true,
     },
