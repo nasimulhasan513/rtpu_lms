@@ -47,8 +47,10 @@
                         v-if="a.correct" />
                     <Icon name="lucide:circle-x" size="24" class="absolute bg-red-500 text-white-500 right-3"
                         v-if="wrongAnswer(a.id) && !a.correct" />
-                    <AppMath v-model="a.option_text">
-                    </AppMath>
+                    <ClientOnly>
+                        <div v-katex="a.option_text">
+                        </div>
+                    </ClientOnly>
                 </div>
             </div>
 

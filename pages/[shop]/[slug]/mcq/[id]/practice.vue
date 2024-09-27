@@ -93,8 +93,10 @@
                     }" @click="!isSubmitted && selectOption(i, a.id)">
 
 
-                        <AppMath v-model="a.option_text">
-                        </AppMath>
+                        <ClientOnly>
+                            <div v-katex="a.option_text">
+                            </div>
+                        </ClientOnly>
                     </div>
                 </div>
                 <p class="flex items-center mt-4 text-green-600" v-if="q.selected && !isSubmitted">
