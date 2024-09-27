@@ -4,7 +4,9 @@
 
     <form @submit.prevent="onSubmit">
       <div class="space-y-6">
+       
         <div class="grid grid-cols-2 gap-6">
+
           <!-- Subject Select -->
           <Select v-model="model.subjectId">
             <SelectTrigger>
@@ -212,6 +214,7 @@ const onSubmit = async () => {
     if (initialQuestion.value?.id) {
       await $fetch(`/api/admin/questions/${model.value.id}`, { method: 'PUT', body: model.value });
     } else {
+
       const validatedData = questionSchema.parse(model.value);
       await $fetch('/api/admin/questions', { method: 'POST', body: validatedData });
     }
