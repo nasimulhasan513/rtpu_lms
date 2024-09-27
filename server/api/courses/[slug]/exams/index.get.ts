@@ -23,6 +23,9 @@ export default defineEventHandler(async (event) => {
       courseExams: true,
       subject: true,
     },
+    orderBy: {
+      startTime: "desc",
+    },
   });
 
   const currentDate = new Date();

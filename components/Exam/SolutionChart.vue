@@ -21,7 +21,7 @@
             <ExamStatCard title="Correct" :value="correct" color="bg-green-100 text-green-800" />
             <ExamStatCard title="Wrong" :value="wrong" color="bg-red-100 text-red-800" />
             <ExamStatCard title="Skipped" :value="skipped" color="bg-yellow-100 text-yellow-800" />
-            <ExamStatCard title="Accuracy" :value="((correct / (correct + wrong)) * 100).toFixed(2)" suffix="%"
+            <ExamStatCard title="Accuracy" :value="accuracy === 'NaN' ? '0' : accuracy" suffix="%"
                 color="bg-blue-100 text-blue-800" />
         </div>
 
@@ -66,4 +66,14 @@ const props = defineProps({
         default: () => ({})
     }
 })
+
+
+
+const accuracy = computed(() => {
+    return ((props.correct / (props.correct + props.wrong)) * 100).toFixed(2)
+})
+
+
+
+
 </script>

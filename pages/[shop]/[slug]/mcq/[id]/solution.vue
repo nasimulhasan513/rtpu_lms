@@ -41,11 +41,11 @@
                 <div v-for="(a, j) in q.options" :key="j"
                     class="relative flex items-center p-3 space-x-2 text-gray-900 transition-colors border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
                     :class="{ 'border-green-500': a.correct, 'border-red-500': wrongAnswer(a.id) && !a.correct }">
-                    <Icon name="lucide:check-circle-2" size="24" class="absolute bg-green-500 text-white-500 right-3"
+                    <Icon name="lucide:check-circle-2" size="24" class="absolute text-green-500 right-3"
                         v-if="a.correct" />
-                    <Icon name="lucide:check-circle-2" size="24" class="absolute bg-green-500 text-white-500 right-3"
+                    <Icon name="lucide:check-circle-2" size="24" class="absolute text-green-500 right-3"
                         v-if="a.correct" />
-                    <Icon name="lucide:circle-x" size="24" class="absolute bg-red-500 text-white-500 right-3"
+                    <Icon name="lucide:circle-x" size="24" class="absolute text-red-500 right-3"
                         v-if="wrongAnswer(a.id) && !a.correct" />
                     <ClientOnly>
                         <div v-katex="a.option_text">
