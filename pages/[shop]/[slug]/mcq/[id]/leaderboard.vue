@@ -132,7 +132,8 @@
 import { useInfiniteScroll } from '@vueuse/core'
 
 definePageMeta({
-    layout: 'course'
+    layout: 'course',
+    middleware: 'enrolled'
 })
 
 const route = useRoute()
