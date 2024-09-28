@@ -29,6 +29,10 @@ export default defineEventHandler(async (event) => {
     where: {
       examId: id,
     },
+    select: {
+      id: true,
+      answers: true,
+    },
   });
 
   if (!submissions || submissions.length === 0) {
@@ -37,6 +41,24 @@ export default defineEventHandler(async (event) => {
       statusMessage: "Submission not found",
     });
   }
+
+  const optionIds = submissions.flatMap(
+    (submission) => submission.answers?.map((a) => a.a) || []
+  );
+
+  const correctOptions = await db.option.findMany({
+    where: {
+      id: {
+        in: optionIds,
+      },
+      correct: true,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const correctOptionIds = new Set(correctOptions.map((option) => option.id));
 
   await Promise.all(
     submissions.map(async (submission) => {
@@ -47,25 +69,19 @@ export default defineEventHandler(async (event) => {
       )
         return;
 
-      const optionIds = submission?.answers.map((a) => a.a);
-
-      const marks = await db.option.count({
-        where: {
-          id: {
-            in: optionIds,
-          },
-          correct: true,
-        },
-      });
+      const submissionOptionIds = submission.answers.map((a) => a.a);
+      const marks = submissionOptionIds.filter((id) =>
+        correctOptionIds.has(id)
+      ).length;
 
       const negMarks = exam.negativeMarking
-        ? (optionIds.length - marks) * 0.25
+        ? (submissionOptionIds.length - marks) * 0.25
         : 0;
 
       const correct = marks;
-      const wrong = optionIds.length - marks;
+      const wrong = submissionOptionIds.length - marks;
       const skipped = exam.totalMarks - (correct + wrong);
-
+     
       await db.submission.update({
         where: {
           id: submission.id,

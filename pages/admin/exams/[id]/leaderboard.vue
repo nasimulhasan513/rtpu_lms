@@ -1,6 +1,7 @@
 <template>
     <AppContainer>
 
+     
         <div class="max-w-3xl mx-auto print:w-screen print:scale-95">
             <div class="text-center">
                 <h1 class="text-3xl font-bold text-primary"> {{ courseName }} </h1>
@@ -131,7 +132,6 @@
         </div>
     </AppContainer>
 </template>
-
 <script setup>
 import { useInfiniteScroll } from '@vueuse/core'
 import { useToast } from '~/components/ui/toast'
@@ -144,7 +144,7 @@ const route = useRoute()
 const search = ref('')
 const presearch = ref('')
 const page = ref(1)
-const pageSize = 500
+const pageSize = 25
 const leaderboard = ref([])
 const loadingMore = ref(false)
 const examTitle = ref('')
@@ -153,7 +153,7 @@ const examDuration = ref(0)
 const hasMorePages = ref(false)
 const loading = ref(true)
 const toast = useToast()
-const { data, refresh, status } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
+const { data } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
     query: {
         search: search.value,
         page: page.value,
@@ -164,13 +164,12 @@ const fetchLeaderboard = async () => {
     loading.value = true
     try {
 
-
         if (data.value) {
             leaderboard.value = data.value.leaderboard
             examTitle.value = data.value.examData.title
             courseName.value = data.value.examData.courseExams.map(course => course.course.name).join(', ')
             examDuration.value = data.value.examData.duration
-            hasMorePages.value = data.value.pagination.currentPage < data.value.pagination.totalPages
+            hasMorePages.value = page.value < data.value.pagination.totalPages
         }
     } catch (error) {
         console.error('Error fetching leaderboard:', error)
@@ -196,7 +195,7 @@ const loadMoreLeaderboard = async () => {
 
         if (data.value) {
             leaderboard.value = [...leaderboard.value, ...data.value.leaderboard]
-            hasMorePages.value = data.value.pagination.currentPage < data.value.pagination.totalPages
+            hasMorePages.value = page.value < data.value.pagination.totalPages
         }
     } catch (error) {
         console.error('Error loading more leaderboard data:', error)
@@ -215,12 +214,12 @@ useInfiniteScroll(
     { distance: 100 }
 )
 
-debouncedWatch(presearch, (value) => {
+watch(presearch, (value) => {
     search.value = value
     page.value = 1
     leaderboard.value = []
     fetchLeaderboard()
-}, { debounce: 500 })
+})
 
 const printLeaderboard = () => {
     window.print()

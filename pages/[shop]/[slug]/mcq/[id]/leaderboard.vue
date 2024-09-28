@@ -6,11 +6,11 @@
                 <h2 class="text-2xl font-bold">Leaderboard</h2>
                 <p class="text-lg text-gray-500"> {{ examTitle }} </p>
             </div>
-            <div v-if="leaderboard.length > 0" class="pt-2 mt-12 mb-8">
+            <div v-if="leaderboard.length > 0 && !search" class="pt-2 mt-12 mb-8">
                 <ExamTopRankers :rankers="leaderboard.slice(0, 3)" />
             </div>
 
-            <div class="flex gap-3 print:hidden">
+            <div class="flex gap-3 mt-2 print:">
                 <div class="relative flex-1 mb-4">
                     <Input type="text" placeholder="Search by name or institute..."
                         class="pl-10 dark:bg-gray-800 dark:text-white" v-model="presearch" />
@@ -69,7 +69,7 @@
                     <TableBody>
                         <TableRow v-for="(rank, i) in leaderboard" :key="i"
                             class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <TableCell class="font-medium dark:text-gray-300">
+                            <TableCell class="font-medium dark:text-gray-300" v-if="!search">
                                 {{ i + 1 }}
                             </TableCell>
                             <TableCell>
@@ -140,7 +140,7 @@ const route = useRoute()
 const search = ref('')
 const presearch = ref('')
 const page = ref(1)
-const pageSize = 500
+const pageSize = 25
 const leaderboard = ref([])
 const loadingMore = ref(false)
 const examTitle = ref('')
@@ -151,11 +151,12 @@ const loading = ref(true)
 
 const { data } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
     query: {
-        search: search.value,
-        page: page.value,
-        pageSize
+        search: search,
+
     },
 })
+
+
 
 const fetchLeaderboard = async () => {
     loading.value = true
@@ -166,7 +167,7 @@ const fetchLeaderboard = async () => {
             examTitle.value = data.value.examData.title
             courseName.value = data.value.examData.courseExams[0].course.name
             examDuration.value = data.value.examData.duration
-            hasMorePages.value = data.value.pagination.currentPage < data.value.pagination.totalPages
+            hasMorePages.value = page.value < data.value.pagination.totalPages
         }
     } catch (error) {
         console.error('Error fetching leaderboard:', error)
@@ -176,7 +177,9 @@ const fetchLeaderboard = async () => {
 }
 
 onMounted(fetchLeaderboard)
-
+watch(data, (newData) => {
+    fetchLeaderboard()
+})
 const loadMoreLeaderboard = async () => {
     if (loadingMore.value || !hasMorePages.value) return
     loadingMore.value = true
@@ -189,10 +192,9 @@ const loadMoreLeaderboard = async () => {
                 pageSize
             },
         })
-        console.log(data.value)
         if (data.value) {
             leaderboard.value = [...leaderboard.value, ...data.value.leaderboard]
-            hasMorePages.value = data.value.pagination.currentPage < data.value.pagination.totalPages
+            hasMorePages.value = page.value < data.value.pagination.totalPages
         }
     } catch (error) {
         console.error('Error loading more leaderboard data:', error)

@@ -23,6 +23,13 @@ export default defineNuxtConfig({
       exclude: ["vee-validate"],
     },
   },
+   nitro: {
+    vercel: {
+      functions: {
+        maxDuration: 300,
+      }
+    },
+  },
   colorMode: {
     classSuffix: "",
     preference: "light",
