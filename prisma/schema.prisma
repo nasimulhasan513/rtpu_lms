@@ -108,6 +108,12 @@ model Course {
   enrolled          Int
   fb_group          String?
   tg_group          String?
+  asg_shop_id       String?
+  shop_charge       Float?
+  sms_charge        Float?
+  is_class          Boolean  @default(false)
+  is_mcq            Boolean  @default(false)
+  is_cq             Boolean  @default(false)
   keywords          String[]
   order             Int      @default(0)
   createdAt         DateTime @default(now())

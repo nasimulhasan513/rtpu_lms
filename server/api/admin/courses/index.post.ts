@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
       statusMessage: error,
     };
   }
-
+ 
   await db.course.create({
     data: {
       slug: data.slug,
@@ -30,6 +30,12 @@ export default defineEventHandler(async (event) => {
       order: data.order,
       categoryId: data.categoryId,
       teachers: { create: data.teachers.map((id) => ({ teacherId: id })) },
+      asg_shop_id: data.asg_shop_id,
+      shop_charge: data.shop_charge,
+      sms_charge: data.sms_charge,
+      is_class: data.is_class,
+      is_mcq: data.is_mcq,
+      is_cq: data.is_cq,
     },
   });
 

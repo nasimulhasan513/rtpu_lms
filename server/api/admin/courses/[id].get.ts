@@ -12,11 +12,7 @@ export default defineEventHandler(async (event) => {
     const course = await db.course.findUnique({
       where: { id: courseId },
       include: {
-        teachers: {
-          include: {
-            teacher: true,
-          },
-        },
+        teachers: true,
         category: true,
       },
     });
@@ -28,13 +24,7 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    return {
-      status: 200,
-      body: {
-        ...course,
-        teachers: course.teachers.map(ct => ct.teacher),
-      },
-    };
+    return course;
   } catch (error) {
     console.error("Error fetching course:", error);
     return {

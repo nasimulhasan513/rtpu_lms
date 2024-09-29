@@ -23,28 +23,28 @@ defineShortcuts({
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
-const { shop, fetchShop } = useShop()
+const { course, fetchCourse } = useCourse()
 onMounted(async () => {
-    await fetchShop()
+    await fetchCourse(slug.value)
 })
 
 const menus = computed(() => {
     let initMenus: any = []
-    if (shop.value) {
+    if (course.value) {
         courseMenu.forEach((item) => {
-            if (item.type === "is_class" && shop.value.is_class) {
+            if (item.type === "is_class" && course.value.is_class) {
                 initMenus.push({
                     ...item,
                     link: `/${route.params.shop}/${slug.value}/${item.link}`,
                 })
             }
-            if (item.type === "is_mcq" && shop.value.is_mcq) {
+            if (item.type === "is_mcq" && course.value.is_mcq) {
                 initMenus.push({
                     ...item,
                     link: `/${route.params.shop}/${slug.value}/${item.link}`,
                 })
             }
-            if (item.type === "is_cq" && shop.value.is_cq) {
+            if (item.type === "is_cq" && course.value.is_cq) {
                 initMenus.push({
                     ...item,
                     link: `/${route.params.shop}/${slug.value}/${item.link}`,
@@ -57,7 +57,7 @@ const menus = computed(() => {
                 })
             }
 
-            if (item.type === 'all' && shop.value?.is_class) {
+            if (item.type === 'all' && course.value?.is_class) {
                 initMenus.push({
                     ...item,
                     link: `/${route.params.shop}/${slug.value}/${item.link}`,

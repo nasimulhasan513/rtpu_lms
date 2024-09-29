@@ -3,8 +3,7 @@ import { z } from "zod";
 export const CourseSchema = z.object({
   slug: z
     .string()
-    .min(1, "Slug is required")
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be a valid URL slug"),
+    .min(1, "Slug is required"),
   name: z.string().min(1, "Course name is required"),
   short_description: z.string().min(1, "Short description is required"),
   description: z.string().min(1, "Description is required"),
@@ -13,11 +12,19 @@ export const CourseSchema = z.object({
     .min(1, "Category  is required")
     .regex(/^[a-f\d]{24}$/i, "Invalid category ID"),
   image: z.string().url("Image must be a valid URL"),
-  promo_video: z.string().url("Promo video must be a valid URL").optional(),
-  productCode: z.string().min(3, "Product code is required"),
+  promo_video: z
+    .string()
+    .url("Promo video must be a valid URL")
+    .optional()
+    .nullable(),
   status: z
     .enum(["published", "draft", "prebooking", "archieve"])
     .default("draft"),
+  duration: z.number().min(1, "Duration is required"),
+  enrolled: z
+    .number()
+    .min(0, "Enrolled must be a non-negative number")
+    .default(0),
   fb_group: z.string().url("Facebook group must be a valid URL").optional(),
   tg_group: z.string().url("Telegram group must be a valid URL").optional(),
   keywords: z
@@ -36,6 +43,16 @@ export const CourseSchema = z.object({
         .regex(/^[a-f\d]{24}$/i, "Invalid teacher ID")
     )
     .nonempty("At least one teacher is required"),
+  asg_shop_id: z.string().optional(),
+  shop_charge: z.number().optional(),
+  sms_charge: z.number().optional(),
+  is_class: z.boolean().optional(),
+  is_mcq: z.boolean().optional(),
+  is_cq: z.boolean().optional(),
+  sale_price: z.number().min(0, "Sale price must be a non-negative number"),
+  regular_price: z
+    .number()
+    .min(0, "Regular price must be a non-negative number"),
 });
 
 export const createCourseSchema = CourseSchema;

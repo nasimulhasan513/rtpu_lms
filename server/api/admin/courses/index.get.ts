@@ -17,10 +17,19 @@ export default defineEventHandler(async (event) => {
   }
 
   const courses = await db.course.findMany({
+    include: {
+      _count: {
+        select: {
+          enrollments: true,
+        },
+      },
+    },
     orderBy: {
       order: "asc",
     },
   });
+
+ 
 
   return {
     statusCode: 200,

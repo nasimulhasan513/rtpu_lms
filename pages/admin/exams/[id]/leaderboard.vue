@@ -155,10 +155,8 @@ const loading = ref(true)
 const toast = useToast()
 const { data } = await useFetch(`/api/question/${route.params.id}/leaderboard`, {
     query: {
-        search: search.value,
-        page: page.value,
-        pageSize
-    },
+        search: search
+    }
 })
 const fetchLeaderboard = async () => {
     loading.value = true

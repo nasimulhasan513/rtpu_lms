@@ -1,7 +1,7 @@
 <template>
     <div>
         <AppHeading title="Create new course" subtitle="Fill up the form to create a new course" />
-
+     
 
 
         <div class="space-y-6">
@@ -28,7 +28,7 @@
 
                                         <Select v-bind="componentField">
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger class="bg-white">
                                                     <SelectValue placeholder="Select a category" />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -110,14 +110,12 @@
                         <h2 class="text-2xl font-semibold">
                             Select Teachers
                         </h2>
-                        <div class="grid mt-3 md:grid-cols-2">
+                        <div class="grid gap-3 mt-3 md:grid-cols-2">
                             <div v-for="a in teachers" @click="a.selected = !a.selected"
                                 :class="{ 'border border-primary rounded-md': a.selected }">
                                 <TeacherCard :name="a.name" :image="a.image" :biography="a.designation" />
                             </div>
                         </div>
-
-
                     </div>
 
 
@@ -214,6 +212,77 @@
                         </FormField>
 
                     </div>
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <FormField v-slot="{ componentField }" name="asg_shop_id">
+                            <FormItem>
+                                <FormLabel>Asg Shop</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Asg Shop ID (optional)" v-bind="componentField" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        </FormField>
+                        <FormField v-slot="{ componentField }" name="shop_charge">
+                            <FormItem>
+                                <FormLabel>Shop Charge</FormLabel>
+                                <FormControl>
+                                    <Input type="number" placeholder="Shop Charge" v-bind="componentField" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        </FormField>
+
+
+                    </div>
+                    <div class="grid grid-cols-2 gap-6">
+
+                        <FormField v-slot="{ componentField }" name="sms_charge" class="col-span-3">
+                            <FormItem>
+                                <FormLabel>SMS Charge</FormLabel>
+                                <FormControl>
+                                    <Input type="number" placeholder="SMS Charge" v-bind="componentField" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        </FormField>
+
+
+                        <div class="flex items-end gap-6 mb-3">
+                            <FormField v-slot="{ componentField }" name="is_class">
+                                <FormItem class="flex flex-row items-start space-x-3 space-y-0">
+                                    <FormControl>
+                                        <Checkbox :checked="form.values.is_class"
+                                            @update:checked="form.setFieldValue('is_class', !form.values.is_class)" />
+                                    </FormControl>
+                                    <FormLabel class="font-normal">
+                                        Class
+                                    </FormLabel>
+                                </FormItem>
+                            </FormField>
+                            <FormField v-slot="{ componentField }" name="is_mcq">
+                                <FormItem class="flex flex-row items-start space-x-3 space-y-0">
+                                    <FormControl>
+                                        <Checkbox :checked="form.values.is_mcq"
+                                            @update:checked="form.setFieldValue('is_mcq', !form.values.is_mcq)" />
+                                    </FormControl>
+                                    <FormLabel class="font-normal">
+                                        MCQ Exam
+                                    </FormLabel>
+                                </FormItem>
+                            </FormField>
+                            <FormField v-slot="{ componentField }" name="is_cq">
+                                <FormItem class="flex flex-row items-start space-x-3 space-y-0">
+                                    <FormControl>
+                                        <Checkbox :checked="form.values.is_cq"
+                                            @update:checked="form.setFieldValue('is_cq', !form.values.is_cq)" />
+                                    </FormControl>
+                                    <FormLabel class="font-normal">
+                                        CQ Exam
+                                    </FormLabel>
+                                </FormItem>
+                            </FormField>
+                        </div>
+                    </div>
                     <FormField v-slot="{ value }" name="keywords">
                         <FormItem>
                             <FormLabel>Keywords</FormLabel>
@@ -277,6 +346,12 @@ const form = useForm({
         enrolled: "",
         fb_group: "",
         tg_group: "",
+        asg_shop_id: "",
+        shop_charge: "",
+        sms_charge: "",
+        is_class: false,
+        is_mcq: false,
+        is_cq: false,
         categoryId: "",
         teachers: [],
         keywords: [],
@@ -287,6 +362,7 @@ const form = useForm({
 const isLoading = ref(false)
 const { toast } = useToast()
 const onSubmit = form.handleSubmit(async () => {
+    console.log(form.values);
     try {
         isLoading.value = true
         const { data, error } = await useAsyncData(() => $fetch('/api/admin/courses', {
@@ -307,6 +383,7 @@ const onSubmit = form.handleSubmit(async () => {
         navigateTo('/admin/courses')
         return;
     } catch (error) {
+        console.log(error);
         return toast({
             title: error.toString(),
             variant: 'destructive'

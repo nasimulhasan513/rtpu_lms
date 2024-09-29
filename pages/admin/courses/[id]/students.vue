@@ -161,7 +161,6 @@ debouncedWatch(presearch, (value) => {
                                     <TableHead>Email</TableHead>
                                     <TableHead>Institute</TableHead>
                                     <TableHead>Enrolled At</TableHead>
-
                                     <TableHead>Lesson Progress</TableHead>
                                     <TableHead>
                                         <span class="sr-only">Actions</span>

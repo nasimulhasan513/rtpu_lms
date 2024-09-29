@@ -73,7 +73,8 @@
             </p>
 
             <template
-                v-else-if="exam.resultPublished || (exam.instantResult && (!exam.submission || exam.submission.status === 'submitted'))">
+                v-else-if="exam.resultPublished || (exam.instantResult
+                && (!exam.submission || exam.submission.status === 'submitted')) && exam.status !== 'upcoming'">
 
                 <Button @click="navigateTo(`mcq/${exam.id}/practice`)" variant="outline" class="flex-1">
                     <Icon name="lucide:book-open" class="w-4 h-4 mr-2" />
