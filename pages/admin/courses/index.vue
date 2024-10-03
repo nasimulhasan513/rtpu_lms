@@ -62,13 +62,13 @@
                         <div>
                             <p class="text-sm font-medium text-muted-foreground">Enrollments</p>
                             <p class="text-lg font-semibold text-red-500">
-                                {{ c._count.enrollments }}
+                                {{ c._count.enrollments+c.enrolled }}
                             </p>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-muted-foreground">Total Shop Charge</p>
                             <p class="text-lg font-semibold text-red-500">
-                                {{ c._count.enrollments * c.shop_charge }}
+                                {{ (c._count.enrollments+c.enrolled) * c.shop_charge }}
                             </p>
                         </div>
                     </div>
@@ -140,7 +140,7 @@ const handleDeleteCourse = async (courseId) => {
 
 const totalRevenue = computed(() => {
     return data.value.body.reduce((acc, course) => {
-        return acc + (course._count.enrollments * course.shop_charge)
+        return acc + ((course._count.enrollments + course.enrolled) * course.shop_charge)
     }, 0)
 })
 

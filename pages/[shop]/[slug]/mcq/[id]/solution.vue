@@ -3,7 +3,7 @@
 
 
     <div class="max-w-2xl py-5 mx-auto space-y-3" v-if="status === 'success'">
-
+        
         <div>
 
             <h2 class="text-2xl font-semibold text-center ">

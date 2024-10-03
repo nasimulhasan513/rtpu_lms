@@ -11,7 +11,7 @@ export const examSchema = z.object({
   totalMarks: z.number(),
   instantResult: z.boolean(),
   resultPublishTime: z.string().optional(),
-  solutionPublishTime: z.string().optional(),
+  passMarks: z.number(),
   negativeMarking: z.boolean(),
   shuffleQuestion: z.boolean(),
 });

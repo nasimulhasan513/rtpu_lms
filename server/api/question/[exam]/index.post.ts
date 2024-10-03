@@ -19,6 +19,7 @@ export default defineEventHandler(async (event) => {
     select: {
       negativeMarking: true,
       totalMarks: true,
+      passMarks: true,
     },
   });
 
@@ -48,23 +49,77 @@ export default defineEventHandler(async (event) => {
 
   let duration =
     new Date().getTime() - new Date(submission?.createdAt).getTime();
-
   const optionIds = answers.map((a) => a.a);
+  const subjectBasedTotalMarks = await db.question.groupBy({
+    by: ['subjectId'],
+    where: {
+      examId: id,
+    },
+    _count: {
+      id: true,
+    },
+  });
 
-  const marks = await db.option.count({
+
+
+  const subjectNames = await db.subject.findMany({
+    where: {
+      id: {
+        in: subjectBasedTotalMarks.map((s) => s.subjectId),
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+
+
+  const correctOptions = await db.option.findMany({
     where: {
       id: {
         in: optionIds,
       },
       correct: true,
     },
+    select: {
+      id: true,
+    },
   });
 
-  const negMarks = exam.negativeMarking ? (optionIds.length - marks) * 0.25 : 0;
 
-  const correct = marks;
-  const wrong = optionIds.length - marks;
-  const skipped = exam.totalMarks - (correct + wrong);
+  const subjectMarks = subjectBasedTotalMarks.map((s:any) => {
+    const correct = answers.filter((a) => a.s === s.subjectId && correctOptions.find((o) => o.id === a.a)).length;
+    const wrong = answers.filter((a) => a.s === s.subjectId && !correctOptions.find((o) => o.id === a.a)).length;
+    // @ts-ignore
+    const skipped = subjectBasedTotalMarks.find((sbm) => sbm.subjectId === s.subjectId)?._count.id - (correct + wrong);
+    const marks = exam.negativeMarking ? correct - (wrong * 0.25) : correct
+
+    const isPassed = marks >= ((correct+wrong+skipped) * ((exam.passMarks || 33) / 100));
+
+    return {
+      subjectId: s.subjectId,
+      subjectName: subjectNames.find((sbm) => sbm.id === s.subjectId)?.name,
+      correct,
+      wrong,
+      skipped,
+      negativeMarks: exam.negativeMarking ? wrong * 0.25 : 0,
+      marks,
+      isPassed,
+    };
+  });
+
+
+  const negMarks = subjectMarks.reduce((acc, curr) => acc + curr.negativeMarks, 0);
+
+  const correct = subjectMarks.reduce((acc, curr) => acc + curr.correct, 0);
+  const wrong = subjectMarks.reduce((acc, curr) => acc + curr.wrong, 0);
+  const skipped = subjectMarks.reduce((acc, curr) => acc + curr.skipped, 0);
+  const marks = subjectMarks.reduce((acc, curr) => acc + curr.marks, 0);
+
+  const isPassed = subjectMarks.every((s) => s.isPassed);
+
 
   await db.submission.update({
     where: {
@@ -76,9 +131,11 @@ export default defineEventHandler(async (event) => {
       skipped,
       answers,
       duration,
+      subjectBreakDown: subjectMarks,
       submittedAt: new Date(),
       marks: marks - negMarks,
       status: "submitted",
+      passed: Boolean(isPassed),
     },
   });
 

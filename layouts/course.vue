@@ -24,8 +24,10 @@ defineShortcuts({
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 const { course, fetchCourse } = useCourse()
-onMounted(async () => {
-    await fetchCourse(slug.value)
+onMounted(() => {
+    if (route.params.slug) {
+        fetchCourse(route.params.slug as string)
+    }
 })
 
 const menus = computed(() => {
@@ -69,7 +71,6 @@ const menus = computed(() => {
     }
     return initMenus
 })
-
 
 
 </script>

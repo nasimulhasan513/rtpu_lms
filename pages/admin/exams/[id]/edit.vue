@@ -121,15 +121,14 @@
                     </FormItem>
                 </FormField>
 
-                <FormField v-slot="{ field }" name="solutionPublishTime">
+                <FormField v-slot="{ field }" name="passMarks">
                     <FormItem>
-                        <FormLabel>Solution Publish Time</FormLabel>
+                        <FormLabel>Pass Marks</FormLabel>
                         <FormControl>
-                            <Input v-bind="field" type="datetime-local" :disabled="form.values.instantResult" />
+                            <Input v-bind="field" type="number" min="1" placeholder="Enter pass marks" />
                         </FormControl>
                         <FormDescription>
-                            {{ form.values.instantResult ? 'Set to End Time when Instant Result is enabled' :
-            'Automatically set to End Time + Duration' }}
+                            The pass marks will be calculated for each subject based on the total marks of that subject.
                         </FormDescription>
                         <FormMessage />
                     </FormItem>
@@ -226,8 +225,8 @@ const form = useForm({
         endTime: '',
         duration: 0,
         totalMarks: 0,
+        passMarks: 0,
         resultPublishTime: '',
-        solutionPublishTime: '',
         instantResult: false,
         negativeMarking: false,
         shuffleQuestion: false,
@@ -249,7 +248,6 @@ const fetchExamData = async () => {
             startTime: inputFormat(exam.startTime),
             endTime: inputFormat(exam.endTime),
             resultPublishTime: inputFormat(exam.resultPublishTime),
-            solutionPublishTime: inputFormat(exam.solutionPublishTime),
             instantResult: exam.instantResult,
             negativeMarking: exam.negativeMarking,
         });

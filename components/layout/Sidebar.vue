@@ -10,8 +10,6 @@ defineProps<{
 
 
 const { shop, fetchShop } = useShop()
-const { course, fetchCourse } = useCourse()
-
 const store = useNavbar()
 const { toggle } = store
 
@@ -30,7 +28,7 @@ function resolveNavItemComponent(item: NavLink | NavGroup | NavSectionTitle) {
 const route = useRoute()
 
 fetchShop()
-fetchCourse(route.params.slug as string)
+
 </script>
 
 <template>

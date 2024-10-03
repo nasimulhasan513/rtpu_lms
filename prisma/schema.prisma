@@ -313,7 +313,7 @@ model Exam {
   shuffleQuestion Boolean  @default(false)
 
   resultPublishTime   DateTime?
-  solutionPublishTime DateTime?
+  passMarks           Int?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
@@ -343,6 +343,8 @@ model Submission {
   answers     Json?
   attempt     Int       @default(1)
   marks       Float     @default(0)
+  subjectBreakDown Json?
+  passed      Boolean   @default(false)
   correct     Int?      @default(0)
   wrong       Int?      @default(0)
   skipped     Int?      @default(0)

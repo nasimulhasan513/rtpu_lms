@@ -27,10 +27,10 @@ export default defineEventHandler(async (event) => {
         negativeMarking: examData.negativeMarking,
         instantResult: examData.instantResult,
         shuffleQuestion: examData.shuffleQuestion,
+        passMarks: examData.passMarks,
         startTime: formatDate(examData.startTime),
         endTime: formatDate(examData.endTime),
         resultPublishTime: formatDate(examData.resultPublishTime),
-        solutionPublishTime: formatDate(examData.solutionPublishTime),
         courseExams: {
           deleteMany: {},
           create: examData.courses.map((courseId) => ({

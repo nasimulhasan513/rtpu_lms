@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
       correct: true,
       wrong: true,
       skipped: true,
+      subjectBreakDown: true,
     },
   });
 
@@ -67,5 +68,6 @@ export default defineEventHandler(async (event) => {
     },
     questions,
     submission,
+    subjectBreakDown: submissionData?.subjectBreakDown,
   };
 });

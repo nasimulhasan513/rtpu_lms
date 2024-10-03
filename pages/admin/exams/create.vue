@@ -119,14 +119,14 @@
                     </FormItem>
                 </FormField>
 
-                <FormField v-slot="{ field }" name="solutionPublishTime">
+                <FormField v-slot="{ field }" name="passMarks">
                     <FormItem>
-                        <FormLabel>Solution Publish Time</FormLabel>
+                        <FormLabel>Pass Marks</FormLabel>
                         <FormControl>
-                            <Input v-bind="field" type="datetime-local" :disabled="true" />
+                            <Input v-bind="field" type="number" min="1" placeholder="Enter pass marks" />
                         </FormControl>
                         <FormDescription>
-                            Automatically set to End Time + Duration
+                            The pass marks will be calculated for each subject based on the total marks of that subject.
                         </FormDescription>
                         <FormMessage />
                     </FormItem>
@@ -225,7 +225,7 @@ const form = useForm({
         duration: 0,
         totalMarks: 0,
         resultPublishTime: '',
-        solutionPublishTime: '',
+        passMarks: 33,
         instantResult: false,
         negativeMarking: false,
         shuffleQuestion: false,

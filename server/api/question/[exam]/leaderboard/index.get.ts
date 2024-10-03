@@ -69,6 +69,8 @@ export default defineEventHandler(async (event) => {
       skipped: true,
       duration: true,
       submittedAt: true,
+      subjectBreakDown: true,
+      passed: true,
     },
     skip: skip, // Skip the records for pagination
     take: pageSize, // Limit the number of records

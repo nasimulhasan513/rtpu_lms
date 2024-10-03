@@ -55,6 +55,16 @@ export default defineEventHandler(async (event) => {
     },
     select: {
       id: true,
+      question: {
+        select: {
+          subject: {
+            select: {
+              id: true,
+              name: true,
+            }
+          },
+        },
+      },
     },
   });
 
@@ -70,6 +80,9 @@ export default defineEventHandler(async (event) => {
         return;
 
       const submissionOptionIds = submission.answers.map((a) => a.a);
+
+      
+
       const marks = submissionOptionIds.filter((id) =>
         correctOptionIds.has(id)
       ).length;

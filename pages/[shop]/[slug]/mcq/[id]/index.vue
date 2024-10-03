@@ -86,9 +86,11 @@ const submitAns = async () => {
     try {
         const answers = data.value.questions.filter(q => q.selected).map(q => ({
             q: q.id,
-            a: q.selected
+            a: q.selected,
+            s: q.subjectId
         }))
         await $fetch('/api/question/' + route.params.id, { method: 'POST', body: { answers } })
+
         clearTimeout(timer.value)
         timer.value = null
 
