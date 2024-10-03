@@ -92,8 +92,9 @@
                                    <div class="flex items-center justify-center"> <span class="text-lg font-semibold">{{ rank.marks }}</span>
                                     <Popover>
                                         <PopoverTrigger>
-                                            <Button variant="ghost" size="icon" :class="rank.passed ? 'text-green-500' : 'text-red-500'" >
-                                               {{ rank.passed ? 'Passed' : 'Failed' }} <Icon name="lucide:info" class="w-4 h-4" />
+                                            <Button variant="ghost" class="gap-1 p-0 ml-1"  :class="rank.passed ? 'text-green-500' : 'text-red-500'" >
+                                               ({{ rank.passed ? 'Passed' : 'Failed' }}) 
+                                               <Icon name="lucide:info" class="w-4 h-4" />
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent>

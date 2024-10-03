@@ -19,9 +19,8 @@ export default defineEventHandler(async (event) => {
         duration: examData.duration,
         totalMarks: examData.totalMarks,
         instantResult: examData.instantResult,
-        resultPublishTime: examData.resultPublishTime ? formatDate(examData.resultPublishTime) : undefined,
-        solutionPublishTime: examData.solutionPublishTime ? formatDate(examData.solutionPublishTime) : undefined,
         negativeMarking: examData.negativeMarking,
+        passMarks: examData.passMarks,
         shuffleQuestion: examData.shuffleQuestion,
         subject: {
           connect: { id: examData.subjectId }

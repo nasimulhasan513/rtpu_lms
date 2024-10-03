@@ -13,16 +13,20 @@ export default defineEventHandler(async (event) => {
   const questions = updateQuestionSchema.parse(body);
 
   try {
-    const updatedQuestions = await db.$transaction(
-      questions.map(({ id, serial }) =>
-        db.question.update({
+  
+    await Promise.all(
+      questions.map(async ({ id, serial }) => {
+        await db.question.update({
           where: { id },
           data: { serial: serial || 0 },
-        })
-      )
+        });
+      })
     );
 
-    return updatedQuestions;
+    return {
+      statusCode: 200,
+      body: "Questions updated successfully",
+    };
   } catch (error) {
     console.error("Error updating question serials:", error);
     throw createError({

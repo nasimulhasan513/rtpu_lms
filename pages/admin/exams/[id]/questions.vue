@@ -4,6 +4,10 @@
         <div class="flex justify-between print:hidden">
             <h1 class="text-2xl font-semibold">Questions</h1>
             <div class="flex gap-2">
+                <Button @click="saveQuestionOrder(true)" :disabled="orderChanged" variant="outline">
+                    <Icon name="lucide:save" class="mr-2" />
+                    Save Serial
+                </Button>
                 <QuestionImport :examId="route.params.id" />
                 <Button @click="onOpen(route.params.id)">
                     <Icon name="bx:bx-plus" />
@@ -37,8 +41,8 @@
                                     <Badge color="amber">
                                         Q. {{ index + 1 }}
                                     </Badge>
-                                    <Badge v-if="q.serial" class="bg-red-500 print:hidden">
-                                        Serial: {{ q.serial }}
+                                    <Badge  class="bg-red-500 print:hidden">
+                                        Serial: <input v-model="questions[index].serial" type="number" class="w-10 px-1 bg-transparent border-b border-red-300 focus:outline-none focus:border-red-500" @change="updateSerial(q)" />
                                     </Badge>
                                     <Badge class="bg-blue-500">
                                         {{ q.subject.name }}
@@ -139,21 +143,6 @@ const deleteMCQ = async (id) => {
 
 }
 
-const updateQuestionSerial = async (questionId, newSerial) => {
-    try {
-        await $fetch('/api/admin/questions', {
-            method: 'PATCH',
-            body: { id: questionId, serial: newSerial },
-        })
-        // Refresh questions list or update local state
-        await fetchQuestions()
-        useToast().success('Question order updated successfully')
-    } catch (error) {
-        console.error('Error updating question serial:', error)
-        useToast().error('Failed to update question order')
-    }
-}
-
 const questions = ref([])
 const orderChanged = ref(false)
 
@@ -163,16 +152,24 @@ watch(() => data.value, () => {
     }
 }, { immediate: true })
 
-const saveQuestionOrder = async () => {
+const saveQuestionOrder = async (fromdata = false) => {
     try {
-
-        questions.value = questions.value.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-
-
-        const updatedQuestions = questions.value.map((q, index) => ({
+        
+        let updatedQuestions =[]
+        
+        if(fromdata){
+            updatedQuestions =questions.value.map((q) => ({
+                id: q.id,
+                serial: q.serial
+            }))
+        }else{
+            updatedQuestions = questions.value.map((q, index) => ({
             id: q.id,
             serial: index + 1,
         }))
+        }
+        
+       
 
         await $fetch('/api/admin/questions', {
             method: 'PATCH',
@@ -180,9 +177,14 @@ const saveQuestionOrder = async () => {
         })
 
         orderChanged.value = false
+
         toast({
             title: 'Question order updated successfully'
         })
+
+        refresh()
+
+
     } catch (error) {
         console.error('Error updating question order:', error)
         toast({
