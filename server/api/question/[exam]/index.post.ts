@@ -11,7 +11,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-
   const exam = await db.exam.findUnique({
     where: {
       id: id,
@@ -29,8 +28,6 @@ export default defineEventHandler(async (event) => {
       statusMessage: "Exam not found",
     });
   }
-
-
 
   let submission = await db.submission.findFirst({
     where: {
@@ -51,7 +48,7 @@ export default defineEventHandler(async (event) => {
     new Date().getTime() - new Date(submission?.createdAt).getTime();
   const optionIds = answers.map((a) => a.a);
   const subjectBasedTotalMarks = await db.question.groupBy({
-    by: ['subjectId'],
+    by: ["subjectId"],
     where: {
       examId: id,
     },
@@ -59,8 +56,6 @@ export default defineEventHandler(async (event) => {
       id: true,
     },
   });
-
-
 
   const subjectNames = await db.subject.findMany({
     where: {
@@ -74,8 +69,6 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-
-
   const correctOptions = await db.option.findMany({
     where: {
       id: {
@@ -88,15 +81,22 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-
-  const subjectMarks = subjectBasedTotalMarks.map((s:any) => {
-    const correct = answers.filter((a) => a.s === s.subjectId && correctOptions.find((o) => o.id === a.a)).length;
-    const wrong = answers.filter((a) => a.s === s.subjectId && !correctOptions.find((o) => o.id === a.a)).length;
+  const subjectMarks = subjectBasedTotalMarks.map((s: any) => {
+    const correct = answers.filter(
+      (a) => a.s === s.subjectId && correctOptions.find((o) => o.id === a.a)
+    ).length;
+    const wrong = answers.filter(
+      (a) => a.s === s.subjectId && !correctOptions.find((o) => o.id === a.a)
+    ).length;
     // @ts-ignore
-    const skipped = subjectBasedTotalMarks.find((sbm) => sbm.subjectId === s.subjectId)?._count.id - (correct + wrong);
-    const marks = exam.negativeMarking ? correct - (wrong * 0.25) : correct
+    const skipped =
+      subjectBasedTotalMarks.find((sbm) => sbm.subjectId === s.subjectId)
+        ?._count.id -
+      (correct + wrong);
+    const marks = exam.negativeMarking ? correct - wrong * 0.25 : correct;
 
-    const isPassed = marks >= ((correct+wrong+skipped) * ((exam.passMarks || 33) / 100));
+    const isPassed =
+      marks >= (correct + wrong + skipped) * ((exam.passMarks || 33) / 100);
 
     return {
       subjectId: s.subjectId,
@@ -110,8 +110,10 @@ export default defineEventHandler(async (event) => {
     };
   });
 
-
-  const negMarks = subjectMarks.reduce((acc, curr) => acc + curr.negativeMarks, 0);
+  const negMarks = subjectMarks.reduce(
+    (acc, curr) => acc + curr.negativeMarks,
+    0
+  );
 
   const correct = subjectMarks.reduce((acc, curr) => acc + curr.correct, 0);
   const wrong = subjectMarks.reduce((acc, curr) => acc + curr.wrong, 0);
@@ -119,7 +121,6 @@ export default defineEventHandler(async (event) => {
   const marks = subjectMarks.reduce((acc, curr) => acc + curr.marks, 0);
 
   const isPassed = subjectMarks.every((s) => s.isPassed);
-
 
   await db.submission.update({
     where: {
@@ -133,12 +134,11 @@ export default defineEventHandler(async (event) => {
       duration,
       subjectBreakDown: subjectMarks,
       submittedAt: new Date(),
-      marks: marks - negMarks,
+      marks: marks,
       status: "submitted",
       passed: Boolean(isPassed),
     },
   });
-
 
   return {
     statusCode: 200,
