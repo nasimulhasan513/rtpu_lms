@@ -14,7 +14,7 @@
 
     </div>
     <div v-else-if="error" class="text-center text-red-500">
-        {{ error }}
+        কোন পরীক্ষায় অংশগ্রহণ না করায় প্রোগ্রেস রিপোর্ট দেখা যাবে না 
     </div>
     <div v-else class="text-center">
         <p> প্রোগ্রেস রিপোর্ট লোড হচ্ছে...</p>
