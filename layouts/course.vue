@@ -30,6 +30,10 @@ onMounted(() => {
     }
 })
 
+watch(slug, (newSlug) => {
+    fetchCourse(newSlug as string)
+})
+
 const menus = computed(() => {
     let initMenus: any = []
     if (course.value) {
