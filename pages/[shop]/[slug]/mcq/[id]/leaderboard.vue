@@ -86,42 +86,55 @@
                             <TableCell class="dark:text-gray-300">{{ rank.user.institute }}</TableCell>
                             <TableCell class="font-semibold text-right dark:text-gray-300">
                                 <div class="flex flex-col items-center">
-                                    <div class="flex items-center justify-center"> <span class="text-lg font-semibold">{{ rank.marks }}</span>
-                                    <Popover>
-                                        <PopoverTrigger>
-                                            <Button variant="ghost" class="gap-1 p-0 ml-1"  :class="rank.passed ? 'text-green-500' : 'text-red-500'" >
-                                               ({{ rank.passed ? 'Passed' : 'Failed' }}) 
-                                               <Icon name="lucide:info" class="w-4 h-4" />
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent>
-                                            <div class="space-y-2">
-                                                <h4 class="font-semibold">Subject Breakdown</h4>
+                                    <div class="flex items-center justify-center"> <span
+                                            class="text-lg font-semibold">{{ rank.marks }}</span>
+                                        <Popover v-if="rank.subjectBreakDown && rank.subjectBreakDown.length > 1">
+                                            <PopoverTrigger>
+                                                <Button variant="ghost" class="gap-1 p-0 ml-1"
+                                                    :class="rank.passed ? 'text-green-500' : 'text-red-500'">
+                                                    ({{ rank.passed ? 'Passed' : 'Failed' }})
+                                                    <Icon name="lucide:info" class="w-4 h-4" />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent>
                                                 <div class="space-y-2">
-                                                    <div v-for="subject in rank.subjectBreakDown" :key="subject.subjectId" class="flex justify-between text-sm">
-                                                        <span class="font-medium">{{ subject.subjectName }}</span>
-                                                        <div class="flex items-center space-x-2 text-xs">
-                                                            <span class="flex items-center text-green-500">
-                                                                <Icon name="lucide:circle-check" class="mr-1" size="14" />
-                                                                {{ subject.correct }}
-                                                            </span> 
-                                                            <span class="flex items-center text-red-500">
-                                                                <Icon name="lucide:circle-x" class="mr-1" size="14" />
-                                                                {{ subject.wrong }}
-                                                            </span> 
-                                                            <span class="flex items-center text-gray-500">
-                                                                <Icon name="lucide:circle-minus" class="mr-1" size="14" />
-                                                                {{ subject.skipped }}
-                                                            </span> 
-                                                            <span class="flex items-center font-semibold text-primary">
-<Icon name="lucide:award" class="mr-1" size="14" />
-                                                                {{ subject.marks.toFixed(2) }}</span>
+                                                    <h4 class="font-semibold">Subject Breakdown</h4>
+                                                    <div class="space-y-2">
+                                                        <div v-for="subject in rank.subjectBreakDown"
+                                                            :key="subject.subjectId"
+                                                            class="flex justify-between text-sm">
+                                                            <span class="font-medium">{{ subject.subjectName }}</span>
+                                                            <div class="flex items-center space-x-2 text-xs">
+                                                                <span class="flex items-center text-green-500">
+                                                                    <Icon name="lucide:circle-check" class="mr-1"
+                                                                        size="14" />
+                                                                    {{ subject.correct }}
+                                                                </span>
+                                                                <span class="flex items-center text-red-500">
+                                                                    <Icon name="lucide:circle-x" class="mr-1"
+                                                                        size="14" />
+                                                                    {{ subject.wrong }}
+                                                                </span>
+                                                                <span class="flex items-center text-gray-500">
+                                                                    <Icon name="lucide:circle-minus" class="mr-1"
+                                                                        size="14" />
+                                                                    {{ subject.skipped }}
+                                                                </span>
+                                                                <span
+                                                                    class="flex items-center font-semibold text-primary">
+                                                                    <Icon name="lucide:award" class="mr-1" size="14" />
+                                                                    {{ subject.marks.toFixed(2) }}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
+                                            </PopoverContent>
+                                        </Popover>
+                                        <Button v-else-if="rank.subjectBreakDown" variant="ghost" class="gap-1 p-0 ml-1"
+                                            :class="rank.passed ? 'text-green-500' : 'text-red-500'">
+                                            {{ rank.passed ? '' : '(Failed)' }}
+                                        </Button>
                                     </div>
                                     <div class="flex items-center space-x-2 text-xs">
                                         <span class="flex items-center text-green-500">
