@@ -64,7 +64,12 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <Button id="radix-vue-dropdown-menu-trigger-1" variant="secondary" size="icon" class="rounded-full">
-              <CircleUser class="w-5 h-5" />
+              <Avatar>
+                <AvatarImage :src="user.image" :alt="user.name" />
+                <AvatarFallback>
+                  {{ user.name?.charAt(0) }}
+                </AvatarFallback>
+              </Avatar>
               <span class="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
