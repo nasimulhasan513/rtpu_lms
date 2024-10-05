@@ -24,6 +24,9 @@
                 <Button variant="outline" aria-label="Home" @click="printLeaderboard">
                     Export PDF
                 </Button>
+                <Button variant="outline" aria-label="Home" @click="exportCSV">
+                    Export CSV
+                </Button>
             </div>
 
 
@@ -49,7 +52,7 @@
                                 {{ i + 1 }}
                             </TableCell>
                             <TableCell>
-                                <div class="flex items-center">
+                                <div class="flex items-center" @click="navigateTo(`/admin/users/${rank.user.id}`)">
                                     <Avatar class="w-8 h-8 mr-2">
                                         <AvatarImage :src="rank.user.image" :alt="rank.user.name" />
                                         <AvatarFallback>
@@ -250,7 +253,37 @@ const recalcualteResults = async () => {
     }
 }
 
-
+const exportCSV = () => {
+    const headers = ['Rank', 'Name', 'Phone', 'Email', 'Institute', 'Marks', 'Duration', 'Correct', 'Wrong', 'Skipped', 'Passed'];
+    const csv = [
+        headers,
+        ...leaderboard.value.map((rank, k) => [
+            k + 1,
+            rank.user.name,
+            rank.user.phone,
+            rank.user.email,
+            rank.user.institute,
+            rank.marks,
+            millisecToTime(rank.duration),
+            rank.correct,
+            rank.wrong,
+            rank.skipped,
+            rank.passed ? 'Yes' : 'No'
+        ])
+    ];
+    const csvContent = csv.map(row => row.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `leaderboard_${route.params.id}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
 
 </script>
 

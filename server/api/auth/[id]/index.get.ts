@@ -1,11 +1,5 @@
-import { z } from "zod";
-
-const paramSchema = z.object({
-  slug: z.string().nonempty(),
-});
-
 export default defineEventHandler(async (event) => {
-  const userId = event.context.user?.id;
+  const userId = event.context.params?.id;
 
   if (!userId) {
     throw createError({
@@ -14,7 +8,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { slug } = paramSchema.parse(event.context.params);
+  const slug = event.context.query?.slug;
 
   try {
     const enrollment = await db.enrollment.findFirst({
@@ -46,13 +40,6 @@ export default defineEventHandler(async (event) => {
               orderBy: { order: "asc" },
             },
             exams: {
-              where: {
-                exam: {
-                  resultPublishTime: {
-                    lte: new Date(),
-                  },
-                },
-              },
               select: {
                 exam: {
                   select: {

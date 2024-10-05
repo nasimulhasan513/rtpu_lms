@@ -1,6 +1,8 @@
 export default defineEventHandler(async (event) => {
   const exam = event.context.params?.exam;
 
+  const role = event.context.user?.role;
+
   if (!exam) {
     throw createError({
       statusCode: 400,
@@ -61,6 +63,7 @@ export default defineEventHandler(async (event) => {
           name: true,
           institute: true,
           image: true,
+          ...(role !== "user" ? { id: true, phone: true, email: true } : {}),
         },
       },
       marks: true,
