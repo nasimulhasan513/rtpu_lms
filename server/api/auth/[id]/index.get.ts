@@ -8,55 +8,64 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const slug = event.context.query?.slug;
+  const { slug } = getQuery(event);
+  if (!slug) {
+    throw createError({
+      statusCode: 400,
+      message: "Course is required",
+    });
+  }
 
   try {
-    const enrollment = await db.enrollment.findFirst({
+    const course = await db.course.findFirst({
       where: {
-        userId,
-        course: { slug },
-        status: "active",
+        slug: slug as string,
       },
       select: {
-        courseId: true,
-        course: {
+        id: true,
+        name: true,
+        slug: true,
+        lessons: {
           select: {
-            id: true,
-            name: true,
-            slug: true,
-            lessons: {
+            lesson: {
               select: {
-                lesson: {
-                  select: {
-                    id: true,
-                    is_archive: true,
-                    LessonProgress: {
-                      where: { userId },
-                      select: { completed: true },
-                    },
-                  },
+                id: true,
+                is_archive: true,
+                LessonProgress: {
+                  where: { userId },
+                  select: { completed: true },
                 },
               },
-              orderBy: { order: "asc" },
             },
-            exams: {
+          },
+          orderBy: { order: "asc" },
+        },
+        exams: {
+          where: {
+            exam: {
+              resultPublishTime: {
+                lte: new Date(),
+              },
+            },
+          },
+          select: {
+            exam: {
               select: {
-                exam: {
+                id: true,
+                title: true,
+                totalMarks: true,
+                duration: true,
+                passMarks: true,
+                submissions: {
+                  where: { userId, status: "submitted" },
                   select: {
                     id: true,
-                    title: true,
-                    totalMarks: true,
+                    marks: true,
+                    correct: true,
+                    wrong: true,
                     duration: true,
-                    submissions: {
-                      where: { userId, status: "submitted" },
-                      select: {
-                        id: true,
-                        marks: true,
-                        correct: true,
-                        wrong: true,
-                        duration: true,
-                      },
-                    },
+                    subjectBreakDown: true,
+                    passed: true,
                   },
                 },
               },
@@ -66,7 +75,7 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    if (!enrollment) {
+    if (!course) {
       throw createError({
         statusCode: 404,
         message: "Enrollment not found or not active",
@@ -78,46 +87,40 @@ export default defineEventHandler(async (event) => {
         db.submission.count({
           where: {
             userId,
-            exam: { courseExams: { some: { courseId: enrollment.courseId } } },
+            exam: { courseExams: { some: { courseId: course.id } } },
           },
         }),
         db.assignmentSubmission.count({
           where: {
             userId,
-            assignment: { courseId: enrollment.courseId },
+            assignment: { courseId: course.id },
           },
         }),
         db.assignment.count({
-          where: { courseId: enrollment.courseId },
+          where: { courseId: course.id },
         }),
       ]);
 
-    const liveLessons = enrollment.course.lessons.filter(
-      (l) => !l.lesson.is_archive
-    );
+    const liveLessons = course.lessons.filter((l) => !l.lesson.is_archive);
     const totalLessons = liveLessons.length;
     const completedLessons = liveLessons.filter(
       (l) => l.lesson.LessonProgress[0]?.completed
     ).length;
 
-    const archivedLessons = enrollment.course.lessons.filter(
-      (l) => l.lesson.is_archive
-    );
+    const archivedLessons = course.lessons.filter((l) => l.lesson.is_archive);
     const totalArchivedLessons = archivedLessons.length;
     const completedArchivedLessons = archivedLessons.filter(
       (l) => l.lesson.LessonProgress[0]?.completed
     ).length;
 
-    const exams = enrollment.course.exams.filter(
-      (e) => e.exam.submissions.length > 0
-    );
-    const totalExams = enrollment.course.exams;
+    const exams = course.exams.filter((e) => e.exam.submissions.length > 0);
+    const totalExams = course.exams;
 
     return {
       course: {
-        id: enrollment.course.id,
-        name: enrollment.course.name,
-        slug: enrollment.course.slug,
+        id: course.id,
+        name: course.name,
+        slug: course.slug,
       },
       progress: {
         liveLessons: {
@@ -147,6 +150,9 @@ export default defineEventHandler(async (event) => {
             correct: e.exam.submissions[0]?.correct || 0,
             wrong: e.exam.submissions[0]?.wrong || 0,
             duration: e.exam.submissions[0]?.duration || 0,
+            subjectBreakDown: e.exam.submissions[0]?.subjectBreakDown || [],
+            passed: e.exam.submissions[0]?.passed || false,
+            passMarks: e.exam.passMarks,
             totalDuration: e.exam.duration * 60 * 1000,
             percentage: e.exam.submissions[0]
               ? Math.round(

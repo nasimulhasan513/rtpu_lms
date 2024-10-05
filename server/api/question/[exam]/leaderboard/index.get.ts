@@ -30,6 +30,7 @@ export default defineEventHandler(async (event) => {
           course: {
             select: {
               name: true,
+              slug: true,
             },
           },
         },

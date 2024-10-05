@@ -166,16 +166,19 @@ const chartOptions = {
                                 <TableRow class="font-bold">
                                     <TableCell>Overall Progress</TableCell>
 
-                                    <TableCell class="text-center">{{ examProgress.submissions.reduce((acc, curr) => acc
+                                    <TableCell class="text-center">{{ (examProgress.submissions.reduce((acc, curr) =>
+                        acc
                         + curr.percentage,
-                        0) / examProgress.submissions.length }}%</TableCell>
-                                    <TableCell class="text-center">{{ examProgress.submissions.reduce((acc, curr) => acc
+                        0) / examProgress.submissions.length).toFixed(2) }}%</TableCell>
+                                    <TableCell class="text-center">{{ (examProgress.submissions.reduce((acc, curr) =>
+                        acc
                         + curr.accuracy, 0)
-                        / examProgress.submissions.length }}%</TableCell>
+                        / examProgress.submissions.length).toFixed(2) }}%</TableCell>
 
-                                    <TableCell class="text-center">{{ examProgress.submissions.reduce((acc, curr) => acc
+                                    <TableCell class="text-center">{{ (examProgress.submissions.reduce((acc, curr) =>
+                                        acc
                                         + curr.durationEfficiency, 0)
-                                        / examProgress.submissions.length }}%</TableCell>
+                                        / examProgress.submissions.length).toFixed(2) }}%</TableCell>
 
 
                                 </TableRow>

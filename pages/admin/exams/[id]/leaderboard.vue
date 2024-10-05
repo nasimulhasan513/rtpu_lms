@@ -59,7 +59,9 @@
                                             {{ rank.user.name.split(' ').map(n => n[0]).join('') }}
                                         </AvatarFallback>
                                     </Avatar>
-                                    <span class="dark:text-gray-300">{{ rank.user.name }}</span>
+                                    <span class="p-1 rounded-md cursor-pointer dark:text-gray-300 hover:text-primary "
+                                        @click="navigateTo(`/admin/users/${rank.user.id}?course=${courseSlug}`)">{{
+                    rank.user.name }}</span>
                                 </div>
                             </TableCell>
                             <TableCell class="dark:text-gray-300">{{ rank.user.institute }}</TableCell>
@@ -132,6 +134,7 @@ const leaderboard = ref([])
 const loadingMore = ref(false)
 const examTitle = ref('')
 const courseName = ref('')
+const courseSlug = ref('')
 const examDuration = ref(0)
 const passMark = ref(0)
 const hasMorePages = ref(false)
@@ -150,6 +153,7 @@ const fetchLeaderboard = async () => {
             leaderboard.value = data.value.leaderboard
             examTitle.value = data.value.examData.title
             courseName.value = data.value.examData.courseExams.map(course => course.course.name).join(', ')
+            courseSlug.value = data.value.examData.courseExams[0].course.slug
             examDuration.value = data.value.examData.duration
             passMark.value = data.value.examData.passMarks
             hasMorePages.value = page.value < data.value.pagination.totalPages
