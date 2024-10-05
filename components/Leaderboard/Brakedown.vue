@@ -14,7 +14,7 @@
             <DialogContent class="sm:max-w-[425px] overflow-y-scroll hide-scrollbar">
                 <DialogHeader>
                     <!-- User Info Section -->
-                    <div class="flex flex-col p-6 mt-4 space-y-4 bg-gray-100 rounded-lg shadow-md dark:bg-gray-800">
+                    <div class="flex flex-col p-6 mt-4 space-y-4 border rounded-lg dark:bg-gray-800">
                         <div class="flex items-center space-x-4">
                             <Avatar class="w-16 h-16 border-2 border-primary">
                                 <AvatarImage :src="rank.user.image" alt="User avatar" />
@@ -47,10 +47,10 @@
 
                     <!-- Subject Breakdown Section -->
                     <div v-for="subject in rank.subjectBreakDown" :key="subject.subjectId"
-                        class="p-4 mb-4 bg-gray-100 rounded-lg dark:bg-gray-800">
+                        class="p-4 mb-4 border rounded-lg dark:bg-gray-800">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-lg font-semibold">{{ subject.subjectName }}</span>
-                            <Badge :variant="subject.isPassed ? 'success' : 'destructive'">
+                            <Badge :variant="subject.isPassed ? 'default' : 'destructive'">
                                 {{ subject.isPassed ? 'Passed' : 'Failed' }}
                             </Badge>
                         </div>
@@ -85,9 +85,7 @@
                         </div>
                     </div>
                 </div>
-                <DialogFooter>
-                    <Button @click="closeModal">Close</Button>
-                </DialogFooter>
+
             </DialogContent>
         </Dialog>
     </div>

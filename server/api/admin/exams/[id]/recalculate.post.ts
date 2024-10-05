@@ -9,12 +9,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const exam = await db.exam.findUnique({
-    where: {
-      id: id,
-    },
+    where: { id },
     select: {
       negativeMarking: true,
       totalMarks: true,
+      passMarks: true,
     },
   });
 
@@ -25,85 +24,111 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  let submissions = await db.submission.findMany({
+  const submissions = await db.submission.findMany({
+    where: { examId: id },
+    select: {
+      id: true,
+      answers: true,
+    },
+    take: 10,
+  });
+
+  if (submissions.length === 0) {
+    return createError({
+      statusCode: 404,
+      statusMessage: "No submissions found",
+    });
+  }
+
+  const subjectBasedTotalMarks = await db.question.groupBy({
+    by: ["subjectId"],
+    where: { examId: id },
+    _count: { id: true },
+  });
+
+  const subjectNames = await db.subject.findMany({
+    where: {
+      id: { in: subjectBasedTotalMarks.map((s) => s.subjectId) },
+    },
+    select: { id: true, name: true },
+  });
+
+  const questions = await db.question.findMany({
     where: {
       examId: id,
     },
     select: {
       id: true,
-      answers: true,
-    },
-  });
-
-  if (!submissions || submissions.length === 0) {
-    return createError({
-      statusCode: 404,
-      statusMessage: "Submission not found",
-    });
-  }
-
-  const optionIds = submissions.flatMap(
-    (submission) => submission.answers?.map((a) => a.a) || []
-  );
-
-  const correctOptions = await db.option.findMany({
-    where: {
-      id: {
-        in: optionIds,
-      },
-      correct: true,
-    },
-    select: {
-      id: true,
-      question: {
+      options: {
+        where: {
+          correct: true,
+        },
         select: {
-          subject: {
-            select: {
-              id: true,
-              name: true,
-            }
-          },
+          id: true,
+          correct: true,
         },
       },
     },
   });
 
-  const correctOptionIds = new Set(correctOptions.map((option) => option.id));
+  const correctOptionIds = [
+    ...new Set(questions.map((q) => q.options.map((o) => o.id)).flat()),
+  ];
 
   await Promise.all(
     submissions.map(async (submission) => {
-      if (
-        !submission.answers ||
-        !Array.isArray(submission.answers) ||
-        submission.answers.length === 0
-      )
-        return;
+      const answers = submission?.answers;
 
-      const submissionOptionIds = submission.answers.map((a) => a.a);
+      const subjectMarks = subjectBasedTotalMarks.map((s) => {
+        const subjectAnswers = answers.filter((a) => a.s === s.subjectId);
 
-      
+        const correct = subjectAnswers.filter((a) =>
+          correctOptionIds.includes(a.a)
+        ).length;
+        const wrong = subjectAnswers.length - correct;
+        const skipped = s._count.id - (correct + wrong);
+        const marks = exam.negativeMarking ? correct - wrong * 0.25 : correct;
+        const isPassed = marks >= s._count.id * ((exam.passMarks || 33) / 100);
 
-      const marks = submissionOptionIds.filter((id) =>
-        correctOptionIds.has(id)
-      ).length;
-
-      const negMarks = exam.negativeMarking
-        ? (submissionOptionIds.length - marks) * 0.25
-        : 0;
-
-      const correct = marks;
-      const wrong = submissionOptionIds.length - marks;
-      const skipped = exam.totalMarks - (correct + wrong);
-     
-      await db.submission.update({
-        where: {
-          id: submission.id,
-        },
-        data: {
+        return {
+          subjectId: s.subjectId,
+          subjectName: subjectNames.find((sbm) => sbm.id === s.subjectId)?.name,
           correct,
           wrong,
           skipped,
-          marks: marks - negMarks,
+          negativeMarks: exam.negativeMarking ? wrong * 0.25 : 0,
+          marks,
+          isPassed,
+        };
+      });
+
+      const totalCorrect = subjectMarks.reduce(
+        (acc, curr) => acc + curr.correct,
+        0
+      );
+      const totalWrong = subjectMarks.reduce(
+        (acc, curr) => acc + curr.wrong,
+        0
+      );
+      const totalSkipped = subjectMarks.reduce(
+        (acc, curr) => acc + curr.skipped,
+        0
+      );
+      const totalMarks = subjectMarks.reduce(
+        (acc, curr) => acc + curr.marks,
+        0
+      );
+      const isPassed = subjectMarks.every((s) => s.isPassed);
+
+      await db.submission.update({
+        where: { id: submission.id },
+        data: {
+          correct: totalCorrect,
+          wrong: totalWrong,
+          skipped: totalSkipped,
+          subjectBreakDown: subjectMarks,
+          marks: totalMarks,
+          passed: isPassed,
         },
       });
     })
@@ -111,6 +136,6 @@ export default defineEventHandler(async (event) => {
 
   return {
     statusCode: 200,
-    statusMessage: "Submitted successfully",
+    statusMessage: "Recalculation completed successfully",
   };
 });

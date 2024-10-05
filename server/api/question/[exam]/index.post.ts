@@ -110,10 +110,7 @@ export default defineEventHandler(async (event) => {
     };
   });
 
-  const negMarks = subjectMarks.reduce(
-    (acc, curr) => acc + curr.negativeMarks,
-    0
-  );
+  
 
   const correct = subjectMarks.reduce((acc, curr) => acc + curr.correct, 0);
   const wrong = subjectMarks.reduce((acc, curr) => acc + curr.wrong, 0);
