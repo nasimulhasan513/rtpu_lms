@@ -4,17 +4,17 @@
 
         <!-- Progress Overview -->
         <div class="grid grid-cols-1 gap-6 mb-12 md:grid-cols-2">
-            <ProgressCard title="লাইভ ক্লাস সমূহ" :progress="dashboardData.progress.liveLessons" />
-            <ProgressCard title="আর্কাইভ ক্লাস সমূহ" :progress="dashboardData.progress.archivedLessons" />
+            <ProgressSummary title="লাইভ ক্লাস সমূহ" :progress="dashboardData.progress.liveLessons" />
+            <ProgressSummary title="আর্কাইভ ক্লাস সমূহ" :progress="dashboardData.progress.archivedLessons" />
         </div>
 
-        <ExamProgressReport :examProgress="dashboardData.progress.exams" />
+        <ProgressReport :examProgress="dashboardData.progress.exams" />
 
 
 
     </div>
     <div v-else-if="error" class="text-center text-red-500">
-        কোন পরীক্ষায় অংশগ্রহণ না করায় প্রোগ্রেস রিপোর্ট দেখা যাবে না 
+        কোন পরীক্ষায় অংশগ্রহণ না করায় প্রোগ্রেস রিপোর্ট দেখা যাবে না
     </div>
     <div v-else class="text-center">
         <p> প্রোগ্রেস রিপোর্ট লোড হচ্ছে...</p>

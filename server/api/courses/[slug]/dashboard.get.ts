@@ -60,6 +60,7 @@ export default defineEventHandler(async (event) => {
                     title: true,
                     totalMarks: true,
                     duration: true,
+                    passMarks: true,
                     submissions: {
                       where: { userId, status: "submitted" },
                       select: {
@@ -68,6 +69,8 @@ export default defineEventHandler(async (event) => {
                         correct: true,
                         wrong: true,
                         duration: true,
+                        subjectBreakDown: true,
+                        passed: true,
                       },
                     },
                   },
@@ -160,6 +163,9 @@ export default defineEventHandler(async (event) => {
             correct: e.exam.submissions[0]?.correct || 0,
             wrong: e.exam.submissions[0]?.wrong || 0,
             duration: e.exam.submissions[0]?.duration || 0,
+            subjectBreakDown: e.exam.submissions[0]?.subjectBreakDown || [],
+            passed: e.exam.submissions[0]?.passed || false,
+            passMarks: e.exam.passMarks,
             totalDuration: e.exam.duration * 60 * 1000,
             percentage: e.exam.submissions[0]
               ? Math.round(

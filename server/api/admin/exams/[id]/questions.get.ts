@@ -18,6 +18,9 @@ export default defineEventHandler(async (event) => {
     query.chapterId = chapter as string;
   }
 
+
+ 
+
   const questions = await db.question.findMany({
     where: {
       ...query,
@@ -45,6 +48,8 @@ export default defineEventHandler(async (event) => {
       serial: "desc",
     },
   });
+
+ 
   return {
     statusCode: 200,
     body: questions,

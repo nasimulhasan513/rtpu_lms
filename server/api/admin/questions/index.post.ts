@@ -57,6 +57,8 @@ export default defineEventHandler(async (event) => {
       },
     });
 
+    await deleteCache(`exam-questions-${examId}`);
+
     return {
       statusCode: 201,
       message: "Question created successfully",

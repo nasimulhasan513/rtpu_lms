@@ -92,6 +92,7 @@ const chartOptions = {
                                     <TableHead class="text-center">Score</TableHead>
                                     <TableHead class="text-center">Accuracy</TableHead>
                                     <TableHead class="text-center">Time Efficiency</TableHead>
+                                    <TableHead class="text-center">Status</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -156,6 +157,10 @@ const chartOptions = {
                                             </div>
                                         </div>
 
+                                    </TableCell>
+                                    <TableCell class="flex justify-center">
+                                        <ProgressDetails :subjectBreakDown="submission.subjectBreakDown"
+                                            :passMark="submission.passMarks" :isPassed="submission.passed" />
                                     </TableCell>
                                 </TableRow>
                                 <TableRow class="font-bold">

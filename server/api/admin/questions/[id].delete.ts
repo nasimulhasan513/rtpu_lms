@@ -7,9 +7,11 @@ export default defineEventHandler(async (event) => {
       where: { questionId: questionId },
     });
 
-    await db.question.delete({
+    const question = await db.question.findUnique({
       where: { id: questionId },
     });
+    const examId = question?.examId;
+    await deleteCache(`exam-questions-${examId}`);
 
     return {
       statusCode: 200,

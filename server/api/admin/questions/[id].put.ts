@@ -60,6 +60,7 @@ export default defineEventHandler(async (event) => {
   })
 );
    
+await deleteCache(`exam-questions-${examId}`);
 
     return {
       statusCode: 200,

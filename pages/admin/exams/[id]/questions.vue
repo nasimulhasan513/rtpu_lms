@@ -120,7 +120,7 @@ const { data, status, error, refresh } = await useLazyFetch('/api/admin/exams/' 
     key: 'exam-questions',
 })
 
-const { fetchSubjects, subjects } = useSubject()
+const { fetchSubjects } = useSubject()
 const { onOpen, onEdit } = useQuestion()
 
 const { toast } = useToast()
