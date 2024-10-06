@@ -51,6 +51,9 @@ export default defineEventHandler(async (event) => {
     },
     orderBy: [
       {
+        passed: "desc",
+      },
+      {
         marks: "desc",
       },
       {

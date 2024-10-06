@@ -266,7 +266,7 @@ const exportCSV = () => {
             rank.user.name,
             rank.user.phone,
             rank.user.email,
-            rank.user.institute,
+            rank.user.institute.replaceAll(',', ' '),
             rank.marks,
             millisecToTime(rank.duration),
             rank.correct,

@@ -169,10 +169,8 @@ export default defineEventHandler(async (event) => {
               : 0,
             durationEfficiency: e.exam.submissions[0]
               ? Math.round(
-                  ((e.exam.duration * 60 * 1000 -
-                    e.exam.submissions[0].duration) /
-                    (e.exam.duration * 60 * 1000)) *
-                    100
+                  100 -
+                    ((e.exam.duration * 60 * 10/e.exam.submissions[0].correct)) 
                 )
               : 0,
           })),

@@ -49,7 +49,7 @@ const chartData = computed(() => {
             },
             {
                 label: 'Time Efficiency (%)',
-                data: props.examProgress.submissions.map(s => s.durationEfficiency),
+                data: props.examProgress.submissions.map(s => calculateEfficiency(s)),
                 backgroundColor: '#f59e0b',
                 borderColor: '#f59e0b',
                 borderWidth: 1
@@ -73,7 +73,8 @@ const chartOptions = {
     <Card class="w-full">
         <CardHeader>
             <CardTitle>
-                <h3 class="text-lg font-semibold">Exam Scores and Accuracy</h3>
+                <h3 class="text-lg font-semibold">Exam Scores, Accuracy and Time Efficiency</h3>
+                <p class="text-xs text-muted-foreground">চার্টের যেকোনো বার-এর উপর টাচ করলে বিস্তারিত দেখতে পারবে এবং নিচের বাটনে ক্লিক করে নির্দিষ্ট মেট্রিকগুলো বাদ দিয়ে শুধুমাত্র একটি টার্মের বার দেখতে পারবে। </p>
             </CardTitle>
         </CardHeader>
         <CardContent>
@@ -92,7 +93,7 @@ const chartOptions = {
                                     <TableHead class="text-center">Score</TableHead>
                                     <TableHead class="text-center">Accuracy</TableHead>
                                     <TableHead class="text-center">Time Efficiency</TableHead>
-                                    <TableHead class="text-center">Status</TableHead>
+                                    <TableHead class="text-center">Details</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -107,7 +108,7 @@ const chartOptions = {
                                             <div class="mt-1">
                                                 <Badge
                                                     :variant="submission.percentage > 33 ? 'success' : 'destructive'">
-                                                    {{ submission.percentage > 33 ? '+' : '' }}{{ submission.percentage
+                                                  {{ submission.percentage
                                                     }}%
                                                 </Badge>
                                             </div>
@@ -131,7 +132,7 @@ const chartOptions = {
                                             </div>
 
                                             <Badge :variant="submission.accuracy > 0 ? 'success' : 'destructive'">
-                                                {{ submission.accuracy > 0 ? '+' : '' }}{{ submission.accuracy }}%
+                                               {{ submission.accuracy }}%
                                             </Badge>
                                         </div>
 
@@ -151,10 +152,14 @@ const chartOptions = {
                                             <div class="mt-1">
                                                 <Badge
                                                     :variant="submission.durationEfficiency > 0 ? 'success' : 'destructive'">
-                                                    {{ submission.durationEfficiency > 0 ? '+' : '' }}{{
-                        submission.durationEfficiency }}%
+                                               
+                       + {{ calculateEfficiency(submission) }}%
                                                 </Badge>
                                             </div>
+
+                                           
+
+
                                         </div>
 
                                     </TableCell>
@@ -175,9 +180,11 @@ const chartOptions = {
                         + curr.accuracy, 0)
                         / examProgress.submissions.length).toFixed(2) }}%</TableCell>
 
-                                    <TableCell class="text-center">{{ (examProgress.submissions.reduce((acc, curr) =>
+                                    <TableCell class="text-center">
+                                        
+                                        +{{ (examProgress.submissions.reduce((acc, curr) =>
                                         acc
-                                        + curr.durationEfficiency, 0)
+                                        + calculateEfficiency(curr), 0)
                                         / examProgress.submissions.length).toFixed(2) }}%</TableCell>
 
 
