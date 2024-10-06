@@ -14,5 +14,9 @@ export const calculateEfficiency = (submission: any) => {
     // Convert efficiency to percentage
     const efficiencyPercentage = efficiency * 100;
   
-    return -1*(100-efficiencyPercentage).toFixed(2); // Returning the value rounded to two decimal places
+    // return `attempted ${attemptedQuestions} questions in ${submission.duration} millisec and got ${submission.marks} marks out of ${submission.totalMarks} marks`
+
+
+
+    return (efficiencyPercentage).toFixed(2); // Returning the value rounded to two decimal places
   }

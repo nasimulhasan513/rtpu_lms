@@ -47,13 +47,13 @@ const chartData = computed(() => {
                 borderColor: '#10b981',
                 borderWidth: 1
             },
-            {
-                label: 'Time Efficiency (%)',
-                data: props.examProgress.submissions.map(s => calculateEfficiency(s)),
-                backgroundColor: '#f59e0b',
-                borderColor: '#f59e0b',
-                borderWidth: 1
-            }
+            // {
+            //     label: 'Time Efficiency (%)',
+            //     data: props.examProgress.submissions.map(s => calculateEfficiency(s)),
+            //     backgroundColor: '#f59e0b',
+            //     borderColor: '#f59e0b',
+            //     borderWidth: 1
+            // }
         ]
     }
 })
@@ -92,7 +92,7 @@ const chartOptions = {
                                     <TableHead>Exam Title</TableHead>
                                     <TableHead class="text-center">Score</TableHead>
                                     <TableHead class="text-center">Accuracy</TableHead>
-                                    <TableHead class="text-center">Time Efficiency</TableHead>
+                                    <!-- <TableHead class="text-center">Time Efficiency</TableHead> -->
                                     <TableHead class="text-center">Details</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -137,7 +137,7 @@ const chartOptions = {
                                         </div>
 
                                     </TableCell>
-                                    <TableCell class="text-center">
+                                    <!-- <TableCell class="text-center">
                                         <div class="flex flex-col items-center justify-center">
 
 
@@ -162,7 +162,7 @@ const chartOptions = {
 
                                         </div>
 
-                                    </TableCell>
+                                    </TableCell> -->
                                     <TableCell class="flex justify-center">
                                         <ProgressDetails :subjectBreakDown="submission.subjectBreakDown"
                                             :passMark="submission.passMarks" :isPassed="submission.passed" />
