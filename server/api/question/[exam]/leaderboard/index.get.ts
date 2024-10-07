@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
   const cachedLeaderboard = await getCache(cacheKey);
 
-  if (cachedLeaderboard) {
+  if (cachedLeaderboard && role === "user") {
     return cachedLeaderboard;
   }
 
@@ -111,7 +111,10 @@ export default defineEventHandler(async (event) => {
     },
   };
 
-  await setCache(cacheKey, data, 60 * 60 * 24 * 7);
+ 
+  if(role === "user"){
+    await setCache(cacheKey, data);
+  }
 
   return data;
 });
