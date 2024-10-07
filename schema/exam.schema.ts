@@ -10,7 +10,7 @@ export const examSchema = z.object({
   duration: z.number(),
   totalMarks: z.number(),
   instantResult: z.boolean(),
-  resultPublishTime: z.string().optional(),
+  resultPublishTime: z.string(),
   passMarks: z.number(),
   negativeMarking: z.boolean(),
   shuffleQuestion: z.boolean(),

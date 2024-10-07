@@ -247,7 +247,7 @@ const fetchExamData = async () => {
             courses: exam.courseExams.map(ce => ce.course.id),
             startTime: inputFormat(exam.startTime),
             endTime: inputFormat(exam.endTime),
-            resultPublishTime: inputFormat(exam.resultPublishTime),
+            resultPublishTime: inputFormat(exam.resultPublishTime || exam.endTime),
             instantResult: exam.instantResult,
             negativeMarking: exam.negativeMarking,
         });

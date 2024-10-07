@@ -1,3 +1,5 @@
+import { PRACTICE_QUESTIONS } from "~/server/utils/cachekeys";
+
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.exam;
   const userId = event.context.user?.id;
@@ -20,17 +22,13 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // const cacheKey = `practice-questions-${id}`;
+  const cacheKey = `${PRACTICE_QUESTIONS}:${id}`;
 
-  // const cachedQuestions = await getCache(cacheKey);
+  const cachedQuestions = await getCache(cacheKey);
 
-  // if (cachedQuestions) {
-  //   return {
-  //     statusCode: 200,
-  //     exam,
-  //     questions: cachedQuestions,
-  //   };
-  // }
+  if (cachedQuestions) {
+    return cachedQuestions;
+  }
 
   const questions = await db.question.findMany({
     where: { examId: id },
@@ -51,11 +49,14 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  // await setCache(cacheKey, questions);
-
-  return {
+  const data = {
     statusCode: 200,
     exam,
     questions,
   };
+
+  await setCache(cacheKey, data, 60 * 60 * 24 * 7);
+
+  return data;
 });
+

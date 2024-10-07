@@ -1,3 +1,5 @@
+import { EXAM_LEADERBOARD } from "~/server/utils/cachekeys";
+
 export default defineEventHandler(async (event) => {
   await validateRequest(event, ["admin", "contributor"]);
   const id = event.context.params?.id;
@@ -134,6 +136,9 @@ export default defineEventHandler(async (event) => {
       });
     })
   );
+
+  const cacheKey = `${EXAM_LEADERBOARD}:${id}*`;
+  await deleteCache(cacheKey);
 
   return {
     statusCode: 200,

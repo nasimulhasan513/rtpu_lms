@@ -254,7 +254,6 @@ watch([() => form.values.endTime, () => form.values.duration], ([newEndTime, new
         const publishDateTime = new Date(endDateTime.getTime() + newDuration * 60000);
         const formattedPublishTime = publishDateTime.toISOString().slice(0, 16);
         form.setFieldValue('resultPublishTime', formattedPublishTime);
-        form.setFieldValue('solutionPublishTime', formattedPublishTime);
     }
 });
 

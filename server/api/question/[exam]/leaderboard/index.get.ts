@@ -1,3 +1,5 @@
+import { EXAM_LEADERBOARD } from "~/server/utils/cachekeys";
+
 export default defineEventHandler(async (event) => {
   const exam = event.context.params?.exam;
 
@@ -19,6 +21,14 @@ export default defineEventHandler(async (event) => {
 
   // Calculate the offset
   const skip = (page - 1) * pageSize;
+
+  const cacheKey = `${EXAM_LEADERBOARD}:${exam}:${page}:${pageSize}:${search}`;
+
+  const cachedLeaderboard = await getCache(cacheKey);
+
+  if (cachedLeaderboard) {
+    return cachedLeaderboard;
+  }
 
   const examData = await db.exam.findUnique({
     where: {
@@ -90,7 +100,7 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  return {
+  const data = {
     examData,
     leaderboard,
     pagination: {
@@ -100,4 +110,8 @@ export default defineEventHandler(async (event) => {
       totalPages: Math.ceil(totalSubmissions / pageSize),
     },
   };
+
+  await setCache(cacheKey, data, 60 * 60 * 24 * 7);
+
+  return data;
 });
