@@ -205,17 +205,18 @@ export const courseMenu = [
     type: "is_cq",
   },
   {
-    title: "হোম ওয়ার্কস",
-    link: "homeworks",
-    icon: "lucide:home",
-    type: "general",
-  },
-  {
     title: "প্রোগ্রেস রিপোর্ট",
     link: "progress",
     icon: "lucide:bar-chart-3",
     type: "general",
   },
+  {
+    title: "হোম ওয়ার্কস",
+    link: "homeworks",
+    icon: "lucide:home",
+    type: "general",
+  },
+  
   {
     title: "নোটিস",
     link: "notice",

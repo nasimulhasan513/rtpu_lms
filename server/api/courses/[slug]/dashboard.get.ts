@@ -17,6 +17,16 @@ export default defineEventHandler(async (event) => {
   const { slug } = paramSchema.parse(event.context.params);
 
   try {
+
+
+    const cacheKey = `course-dashboard-${slug}-${userId}`;
+    const cachedData = await getCache(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
+
     const course = await db.course.findFirst({
       where: {
         slug,
@@ -115,75 +125,77 @@ export default defineEventHandler(async (event) => {
 
     const exams = course.exams.filter((e) => e.exam.submissions.length > 0);
     const totalExams = course.exams;
+const data = {
+  course: {
+    id: course.id,
+    name: course.name,
+    slug: course.slug,
+  },
+  progress: {
+    liveLessons: {
+      total: totalLessons,
+      completed: completedLessons,
+      percentage: Math.round((completedLessons / totalLessons) * 100),
+    },
+    archivedLessons: {
+      total: totalArchivedLessons,
+      completed: completedArchivedLessons,
+      percentage: Math.round(
+        (completedArchivedLessons / totalArchivedLessons) * 100
+      ),
+    },
+    exams: {
+      total: totalExams,
+      completed: exams.filter((e) => e.exam.submissions.length > 0).length,
+      percentage: Math.round(
+        (exams.filter((e) => e.exam.submissions.length > 0).length /
+          totalExams) *
+          100
+      ),
+      submissions: exams.map((e) => ({
+        title: e.exam.title,
+        totalMarks: e.exam.totalMarks,
+        marks: e.exam.submissions[0]?.marks || 0,
+        correct: e.exam.submissions[0]?.correct || 0,
+        wrong: e.exam.submissions[0]?.wrong || 0,
+        duration: e.exam.submissions[0]?.duration || 0,
+        subjectBreakDown: e.exam.submissions[0]?.subjectBreakDown || [],
+        passed: e.exam.submissions[0]?.passed || false,
+        passMarks: e.exam.passMarks,
+        totalDuration: e.exam.duration * 60 * 1000,
+        percentage: e.exam.submissions[0]
+          ? Math.round(
+              (e.exam.submissions[0].marks / e.exam.totalMarks) * 100
+            )
+          : 0,
+        accuracy: e.exam.submissions[0]
+          ? Math.round(
+              (e.exam.submissions[0].correct /
+                (e.exam.submissions[0].correct +
+                  e.exam.submissions[0].wrong)) *
+                100
+            )
+          : 0,
+        durationEfficiency: e.exam.submissions[0]
+          ? Math.round(
+              100 -
+                ((e.exam.duration * 60 * 10/e.exam.submissions[0].correct)) 
+            )
+          : 0,
+      })),
+    },
+    assignments: {
+      total: totalAssignments,
+      completed: assignmentSubmissionCount,
+      percentage: Math.round(
+        (assignmentSubmissionCount / totalAssignments) * 100
+      ),
+    },
+  },
+}
 
-    return {
-      course: {
-        id: course.id,
-        name: course.name,
-        slug: course.slug,
-      },
-      progress: {
-        liveLessons: {
-          total: totalLessons,
-          completed: completedLessons,
-          percentage: Math.round((completedLessons / totalLessons) * 100),
-        },
-        archivedLessons: {
-          total: totalArchivedLessons,
-          completed: completedArchivedLessons,
-          percentage: Math.round(
-            (completedArchivedLessons / totalArchivedLessons) * 100
-          ),
-        },
-        exams: {
-          total: totalExams,
-          completed: exams.filter((e) => e.exam.submissions.length > 0).length,
-          percentage: Math.round(
-            (exams.filter((e) => e.exam.submissions.length > 0).length /
-              totalExams) *
-              100
-          ),
-          submissions: exams.map((e) => ({
-            title: e.exam.title,
-            totalMarks: e.exam.totalMarks,
-            marks: e.exam.submissions[0]?.marks || 0,
-            correct: e.exam.submissions[0]?.correct || 0,
-            wrong: e.exam.submissions[0]?.wrong || 0,
-            duration: e.exam.submissions[0]?.duration || 0,
-            subjectBreakDown: e.exam.submissions[0]?.subjectBreakDown || [],
-            passed: e.exam.submissions[0]?.passed || false,
-            passMarks: e.exam.passMarks,
-            totalDuration: e.exam.duration * 60 * 1000,
-            percentage: e.exam.submissions[0]
-              ? Math.round(
-                  (e.exam.submissions[0].marks / e.exam.totalMarks) * 100
-                )
-              : 0,
-            accuracy: e.exam.submissions[0]
-              ? Math.round(
-                  (e.exam.submissions[0].correct /
-                    (e.exam.submissions[0].correct +
-                      e.exam.submissions[0].wrong)) *
-                    100
-                )
-              : 0,
-            durationEfficiency: e.exam.submissions[0]
-              ? Math.round(
-                  100 -
-                    ((e.exam.duration * 60 * 10/e.exam.submissions[0].correct)) 
-                )
-              : 0,
-          })),
-        },
-        assignments: {
-          total: totalAssignments,
-          completed: assignmentSubmissionCount,
-          percentage: Math.round(
-            (assignmentSubmissionCount / totalAssignments) * 100
-          ),
-        },
-      },
-    };
+await setCache(cacheKey, data);
+    return data;
   } catch (error) {
     console.error(error);
     throw createError({

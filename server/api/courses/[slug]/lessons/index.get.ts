@@ -10,13 +10,13 @@ export default defineEventHandler(async (event) => {
 
     const is_archive = getQuery(event).is_archive === "true";
 
-    // const cacheKey = `courses:${slug}:lessons`;
+    const cacheKey = `courses:${slug}:lessons:${is_archive}`;
 
-    // const cachedCourse = await getCache(cacheKey);
+    const cachedCourse = await getCache(cacheKey);
 
-    // if (cachedCourse) {
-    //   return cachedCourse;
-    // }
+    if (cachedCourse) {
+      return cachedCourse;
+    }
 
     const course = await db.course.findFirst({
       where: {
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // await setCache(cacheKey, course);
+    await setCache(cacheKey, course, 60 * 60 * 24 * 7);
 
     return course;
   } catch (error) {

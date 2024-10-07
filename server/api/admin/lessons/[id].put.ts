@@ -36,6 +36,7 @@ export default defineEventHandler(async (event) => {
       is_archive: lessonData.is_archive,
       is_downloadable: lessonData.is_downloadable,
     },
+    
   });
 
   if (courseIds) {
@@ -54,6 +55,27 @@ export default defineEventHandler(async (event) => {
       });
     }
   }
+
+
+  const courseSlugs = await db.course.findMany({
+    where: {
+      id: {
+        in: courseIds,
+      },
+    },
+    select: {
+      slug: true,
+    },
+  });
+
+  const cacheKeys = courseSlugs.map((course) => `courses:${course.slug}:lessons:${lessonData.is_archive}`);
+
+  for (const cacheKey of cacheKeys) {
+    await deleteCache(cacheKey);
+  }
+
+  const cacheKey = `lesson:${lessonId}`;
+  await deleteCache(cacheKey);
 
   return {
     statusCode: 200,

@@ -9,6 +9,14 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+
+    const cacheKey = `course-${slug}`;
+    const cachedData = await getCache(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
     const course = await db.course.findUnique({
       where: { slug },
       include: {
@@ -45,6 +53,8 @@ export default defineEventHandler(async (event) => {
         },
       ],
     };
+
+    await setCache(cacheKey, transformedCourse);
 
     return transformedCourse;
   } catch (error) {

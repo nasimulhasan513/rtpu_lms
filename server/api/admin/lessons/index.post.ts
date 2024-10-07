@@ -35,6 +35,19 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  const courseSlugs = await db.course.findMany({
+    where: {
+      id: {
+        in: data.courseIds,
+      },
+    },
+  });
+
+  const cacheKeys = courseSlugs.map((course) => `courses:${course.slug}:lessons:${data.is_archive}`);
+
+  for (const cacheKey of cacheKeys) {
+    await deleteCache(cacheKey);
+  }
   return {
     statusCode: 201,
     statusMessage: "Lesson created successfully",

@@ -9,53 +9,42 @@ export default defineEventHandler(async (event) => {
   try {
     const { slug, id } = paramsSchema.parse(event.context.params);
 
- 
-    const lesson = await db.courseLesson.findFirst({
-      where: {
-        lesson: {
-          id: id
-        },
-        course: {
-          slug: slug,
-        },
-      },
-      include: {
-        lesson: {
-          include: {
-            subject: true,
-            chapter: true,
-            teacher: true,
+    const cacheKey = `lesson:${id}`;
+    const cachedLesson = await getCache(cacheKey);
+
+    let lessonData:any;
+    if (cachedLesson) {
+      lessonData = cachedLesson;
+    }else{
+      const lesson = await db.courseLesson.findFirst({
+        where: {
+          lesson: {
+            id: id
+          },
+          course: {
+            slug: slug,
           },
         },
-      },
-    });
-
-    if (!lesson) {
-      throw createError({
-        statusCode: 404,
-        message: "Lesson not found",
-      });
-    }
-
-    let progress = await db.lessonProgress.findFirst({
-      where: {
-        lessonId: lesson.lesson.id,
-        userId: event.context.user?.id,
-      },
-    });
-
-    if (!progress) {
-      progress = await db.lessonProgress.create({
-        data: {
-          lessonId: lesson.lesson.id,
-          userId: event.context.user?.id,
-          completed: false,
+        include: {
+          lesson: {
+            include: {
+              subject: true,
+              chapter: true,
+              teacher: true,
+            },
+          },
         },
       });
-    }
-
-    return {
-      lesson: {
+  
+      if (!lesson) {
+        throw createError({
+          statusCode: 404,
+          message: "Lesson not found",
+        });
+      }
+  
+  
+      lessonData = {
         id: lesson.lesson.id,
         title: lesson.lesson.title,
         content: lesson.lesson.content,
@@ -71,7 +60,31 @@ export default defineEventHandler(async (event) => {
         teacherImage: lesson.lesson.teacher.image,
         teacherName: lesson.lesson.teacher.name,
         teacherDesignation: lesson.lesson.teacher.designation,
+      }
+
+      await setCache(cacheKey, lessonData, 60 * 60 * 24 * 7);
+    }
+
+    let progress = await db.lessonProgress.findFirst({
+      where: {
+        lessonId: lessonData.id,
+        userId: event.context.user?.id,
       },
+    });
+
+    if (!progress) {
+      progress = await db.lessonProgress.create({
+        data: {
+          lessonId: lesson.lesson.id,
+          userId: event.context.user?.id,
+          completed: false,
+        },
+      });
+    }
+
+
+    return {
+      lesson: lessonData,
       progress: progress,
     };
   } catch (error) {

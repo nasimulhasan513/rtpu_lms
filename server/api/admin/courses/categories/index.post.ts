@@ -1,5 +1,6 @@
 import { db } from "~/server/utils/auth";
 import { CategorySchema } from "~/schema/category.schema";
+import { COURSE_CATEGORIES } from "~/server/utils/cachekeys";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -18,6 +19,9 @@ export default defineEventHandler(async (event) => {
       is_cq: validatedData.is_cq,
     },
   });
+
+
+  await deleteCache(COURSE_CATEGORIES);
 
   return category;
 });

@@ -16,6 +16,13 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Find the category by slug
+    const cacheKey = `category-courses-${slug}`;
+    const cachedData = await getCache(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
     const courses = await db.course.findMany({
       where: {
         category: {
@@ -33,6 +40,8 @@ export default defineEventHandler(async (event) => {
         message: "Courses not found",
       });
     }
+
+    await setCache(cacheKey, courses, 60 * 60 * 24 * 7);
 
     return courses;
   } catch (error) {

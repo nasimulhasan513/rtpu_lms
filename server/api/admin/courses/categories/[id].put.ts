@@ -1,5 +1,6 @@
 import { zh } from "h3-zod";
 import { CategorySchema } from "~/schema/category.schema";
+import { COURSE_CATEGORIES } from "~/server/utils/cachekeys";
 
 export default defineEventHandler(async (event) => {
   const { data, error } = await zh.useSafeValidatedBody(event, CategorySchema);
@@ -29,6 +30,8 @@ export default defineEventHandler(async (event) => {
       is_cq: data.is_cq,
     },
   });
+
+  await deleteCache(COURSE_CATEGORIES);
 
   return {
     statusCode: 201,
