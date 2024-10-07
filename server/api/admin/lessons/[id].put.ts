@@ -4,6 +4,8 @@ import { LessonSchema } from "~/schema/lesson.schema";
 export default defineEventHandler(async (event) => {
   const { data, error } = await zh.useSafeValidatedBody(event, LessonSchema);
 
+  await validateRequest(event, ["admin", "contributor"]);
+
   if (error) {
     return {
       status: 400,

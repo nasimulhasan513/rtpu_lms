@@ -1,4 +1,5 @@
 export default defineEventHandler(async (event) => {
+  await validateRequest(event, ["admin", "contributor"]);
   const body = await readBody(event);
 
   const {

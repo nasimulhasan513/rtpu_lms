@@ -9,6 +9,8 @@ const AssignCoursesSchema = z.object({
 export default defineEventHandler(async (event) => {
   const { data, error } = await zh.useSafeValidatedBody(event, AssignCoursesSchema);
 
+  await validateRequest(event, ["admin", "contributor"]);
+
   if (error) {
     return {
       status: 400,

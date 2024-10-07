@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  // await validateRequest(event, ["admin"]);
+  await validateRequest(event, ["admin"]);
   const query = getQuery(event);
   const page = parseInt(query.page as string) || 1;
   const limit = parseInt(query.limit as string) || 10;

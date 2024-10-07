@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  // await validateRequest(event, ["ADMIN"]);
+  await validateRequest(event, ["admin", "contributor"]);
 
   const { subject, chapter } = getQuery(event);
 

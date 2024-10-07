@@ -6,6 +6,7 @@ const dashboardSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
+  await validateRequest(event, ["admin","contributor"]);
   const { startDate, endDate } = dashboardSchema.parse(getQuery(event));
 
   const dateFilter =

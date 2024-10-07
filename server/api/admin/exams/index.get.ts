@@ -23,6 +23,7 @@ const examsWithSubmissionsCount = async (exams: Exam[]) => {
 };
 export default defineEventHandler(async (event) => {
   try {
+    await validateRequest(event, ["admin", "contributor"]);
     const { courseId, subjectId } = getQuery(event);
 
     const filters = {};

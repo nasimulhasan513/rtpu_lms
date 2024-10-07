@@ -1,6 +1,7 @@
 import { contributorRoleSchema } from "~/schema/contributor-role.schema";
 
 export default defineEventHandler(async (event) => {
+  await validateRequest(event, ["admin"]);
   const body = await readBody(event);
 
   try {

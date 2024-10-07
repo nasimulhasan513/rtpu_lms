@@ -1,4 +1,6 @@
 export default defineEventHandler(async (event) => {
+  await validateRequest(event, ["admin", "contributor"]);
+
   const role = event.context.user?.role;
 
   if (role === "contributor" && event.context.user?.id) {

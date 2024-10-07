@@ -3,6 +3,8 @@ import { CategorySchema } from "~/schema/category.schema";
 import { COURSE_CATEGORIES } from "~/server/utils/cachekeys";
 
 export default defineEventHandler(async (event) => {
+  await validateRequest(event, ["admin"]);
+
   const { data, error } = await zh.useSafeValidatedBody(event, CategorySchema);
 
   if (error) {
