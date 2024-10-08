@@ -12,14 +12,14 @@ export default defineEventHandler(async (event) => {
     const cacheKey = `lesson:${id}`;
     const cachedLesson = await getCache(cacheKey);
 
-    let lessonData:any;
+    let lessonData: any;
     if (cachedLesson) {
       lessonData = cachedLesson;
-    }else{
+    } else {
       const lesson = await db.courseLesson.findFirst({
         where: {
           lesson: {
-            id: id
+            id: id,
           },
           course: {
             slug: slug,
@@ -35,15 +35,14 @@ export default defineEventHandler(async (event) => {
           },
         },
       });
-  
+
       if (!lesson) {
         throw createError({
           statusCode: 404,
           message: "Lesson not found",
         });
       }
-  
-  
+
       lessonData = {
         id: lesson.lesson.id,
         title: lesson.lesson.title,
@@ -60,32 +59,47 @@ export default defineEventHandler(async (event) => {
         teacherImage: lesson.lesson.teacher.image,
         teacherName: lesson.lesson.teacher.name,
         teacherDesignation: lesson.lesson.teacher.designation,
-      }
+      };
 
       await setCache(cacheKey, lessonData, 60 * 60 * 24 * 7);
     }
 
-    let progress = await db.lessonProgress.findFirst({
+    const progress = await db.lessonProgress.upsert({
       where: {
+        userId_lessonId: {
+          userId: event.context.user?.id as string,
+          lessonId: lessonData.id,
+        },
+      },
+      create: {
         lessonId: lessonData.id,
-        userId: event.context.user?.id,
+        userId: event.context.user?.id as string,
+        completed: false,
+        lastVisited: new Date(),
+      },
+      update: {
+        lastVisited: new Date(),
       },
     });
 
-    if (!progress) {
-      progress = await db.lessonProgress.create({
-        data: {
-          lessonId: lesson.lesson.id,
-          userId: event.context.user?.id,
-          completed: false,
+    // Count active users for this lesson within the last 30 minutes
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+    const activeUsersCount = await db.lessonProgress.count({
+      where: {
+        lessonId: lessonData.id,
+        lastVisited: {
+          gte: thirtyMinutesAgo,
         },
-      });
-    }
+      },
+    });
 
+    // Add the active users count to the response
+    lessonData.activeUsersCount = activeUsersCount;
 
     return {
       lesson: lessonData,
       progress: progress,
+      activeUsersCount,
     };
   } catch (error) {
     console.error("Error in lessons/[id].get.ts:", error);

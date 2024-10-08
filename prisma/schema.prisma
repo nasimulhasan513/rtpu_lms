@@ -237,14 +237,13 @@ model LessonProgress {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   userId String
 
-  lessonId     String   @db.ObjectId
-  completed    Boolean  @default(false)
-  bookmark     Boolean  @default(false)
-  note         String?
-  watchedTime  Float    @default(0)
-  lastPosition Float    @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  lessonId    String    @db.ObjectId
+  completed   Boolean   @default(false)
+  bookmark    Boolean   @default(false)
+  note        String?
+  lastVisited DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   user   User   @relation(fields: [userId], references: [id])
   lesson Lesson @relation(fields: [lessonId], references: [id])
@@ -312,10 +311,10 @@ model Exam {
   negativeMarking Boolean  @default(false)
   shuffleQuestion Boolean  @default(false)
 
-  resultPublishTime   DateTime?
-  passMarks           Int?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  resultPublishTime DateTime?
+  passMarks         Int?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   submissions Submission[]
   questions   Question[]
@@ -337,21 +336,21 @@ model CourseExam {
 }
 
 model Submission {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String
-  examId      String    @db.ObjectId
-  answers     Json?
-  attempt     Int       @default(1)
-  marks       Float     @default(0)
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String
+  examId           String    @db.ObjectId
+  answers          Json?
+  attempt          Int       @default(1)
+  marks            Float     @default(0)
   subjectBreakDown Json?
-  passed      Boolean   @default(false)
-  correct     Int?      @default(0)
-  wrong       Int?      @default(0)
-  skipped     Int?      @default(0)
-  duration    Int?
-  rank        Int?
-  status      String    @default("pending")
-  submittedAt DateTime?
+  passed           Boolean   @default(false)
+  correct          Int?      @default(0)
+  wrong            Int?      @default(0)
+  skipped          Int?      @default(0)
+  duration         Int?
+  rank             Int?
+  status           String    @default("pending")
+  submittedAt      DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -17,7 +17,6 @@ export const setCache = async (
 
 export const getCache = async (key: string) => {
   const data = await redis.get(key);
-  console.log(key);
   return data ? data : null;
 };
 

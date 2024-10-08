@@ -5,7 +5,7 @@
             <div class="w-full mx-auto overflow-hidden rounded-md aspect-video">
                 <LessonVideoPlayer :src="lesson.content" class="w-full h-full" />
             </div>
-          
+
 
             <div v-if="lesson.pdf">
                 <div class="lg:hidden">
@@ -110,7 +110,16 @@
                                 <span class="font-medium">অধ্যায়:</span>
                                 <span class="ml-2">{{ lesson.chapterName }}</span>
                             </div>
-
+                            <div class="flex items-center">
+                                <AlarmClockCheckIcon class="w-5 h-5 mr-2 text-primary" />
+                                <span class="font-medium">সর্বশেষ দেখেছিলে:</span>
+                                <span class="ml-2">{{ formatLastVisited(progress.lastVisited) }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <UsersIcon class="w-5 h-5 mr-2 text-primary" />
+                                <span class="font-medium">বর্তমানে দেখছেন:</span>
+                                <span class="ml-2">{{ formatNumber(data.activeUsersCount) }} জন</span>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -184,7 +193,7 @@
 </template>
 
 <script setup>
-import { BookOpenIcon, BookmarkIcon, BookIcon } from 'lucide-vue-next'
+import { BookOpenIcon, BookmarkIcon, BookIcon, AlarmClockCheckIcon, UsersIcon } from 'lucide-vue-next'
 import { useToast } from '~/components/ui/toast'
 
 const VuePdfEmbed = shallowRef(null)
