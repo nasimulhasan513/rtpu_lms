@@ -110,11 +110,7 @@
                                 <span class="font-medium">অধ্যায়:</span>
                                 <span class="ml-2">{{ lesson.chapterName }}</span>
                             </div>
-                            <div class="flex items-center">
-                                <AlarmClockCheckIcon class="w-5 h-5 mr-2 text-primary" />
-                                <span class="font-medium">সর্বশেষ দেখেছিলে:</span>
-                                <span class="ml-2">{{ formatLastVisited(progress.lastVisited) }}</span>
-                            </div>
+                           
                             <div class="flex items-center">
                                 <UsersIcon class="w-5 h-5 mr-2 text-primary" />
                                 <span class="font-medium">বর্তমানে দেখছেন:</span>
