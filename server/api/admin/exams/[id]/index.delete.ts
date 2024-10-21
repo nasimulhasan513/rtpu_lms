@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
 
 
-  await validateRequest(event, ["admin", "contributor"]);
+  await validateRequest(event, ["ADMIN", "contributor"]);
   const id = event.context.params?.id;
 
   if (!id) {

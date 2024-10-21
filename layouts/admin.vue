@@ -16,7 +16,7 @@ useServerHead({
 const user = useUser()
 
 const rbacMenus = computed(() => {
-    if (user.value?.role === 'admin') {
+    if (user.value?.role === 'ADMIN') {
         return navMenu
     }
     return navMenu.filter(menu => {

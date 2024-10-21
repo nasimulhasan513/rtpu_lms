@@ -3,7 +3,7 @@ import { examSchema } from "~/schema/exam.schema";
 import { formatDate } from "~/server/utils/format";
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["admin", "contributor"]);
+  await validateRequest(event, ["ADMIN", "contributor"]);
   const id = event.context.params?.id;
   const body = await readBody(event);
 

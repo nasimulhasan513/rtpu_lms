@@ -10,7 +10,7 @@ const querySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["admin", "contributor"]);
+  await validateRequest(event, ["ADMIN", "contributor"]);
 
   try {
     const query = getQuery(event);

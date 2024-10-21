@@ -12,7 +12,7 @@ const querySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  // await validateRequest(event, ["admin"]);
+  // await validateRequest(event, ["ADMIN"]);
   const query = getQuery(event);
   const { page, limit } = querySchema.parse(query);
   const skip = (page - 1) * limit;

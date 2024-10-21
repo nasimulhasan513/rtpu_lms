@@ -1,5 +1,4 @@
 import { OAuth2Client } from "google-auth-library";
-
 import { OAuth2RequestError } from "arctic";
 import { generateIdFromEntropySize } from "lucia";
 import { db } from "~/server/utils/auth";
@@ -22,7 +21,7 @@ export default defineEventHandler(async (event) => {
     });
 
     const googleUser = googleUserResponse.getPayload();
-  
+
     if (!googleUser) {
       throw createError({
         status: 400,
@@ -42,7 +41,6 @@ export default defineEventHandler(async (event) => {
           },
           data: {
             image: googleUser.picture,
-            
           },
         });
       }
@@ -89,6 +87,7 @@ export default defineEventHandler(async (event) => {
 
     return true;
   } catch (e) {
+    console.log(e);
     // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
       // invalid code

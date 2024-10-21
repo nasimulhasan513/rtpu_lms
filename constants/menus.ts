@@ -32,29 +32,29 @@ export const navMenu: NavMenuItems = [
         title: "Add Course",
         link: "/admin/courses/create",
         icon: "lucide:plus-circle",
-        role: "admin",
+        role: "ADMIN",
       },
       {
         title: "Categories",
         link: "/admin/courses/categories",
         icon: "lucide:layers",
-        role: "admin",
+        role: "ADMIN",
       },
       {
         title: "Teachers",
         link: "/admin/courses/teachers",
         icon: "game-icons:teacher",
-        role: "admin",
+        role: "ADMIN",
       },
     ],
   },
 
-  {
-    title: "Notifications",
-    icon: "lucide:bell",
-    link: "/admin/notifications",
-    role: "contributor",
-  },
+  // {
+  //   title: "Notifications",
+  //   icon: "lucide:bell",
+  //   link: "/admin/notifications",
+  //   role: "contributor",
+  // },
   {
     title: "Exams",
     icon: "i-lucide-clipboard-list",
@@ -74,48 +74,20 @@ export const navMenu: NavMenuItems = [
       },
     ],
   },
-  {
-    title: "Assignments",
-    icon: "i-lucide-file-text",
-    children: [
-      {
-        title: "All Assignments",
-        link: "/admin/assignments",
-        icon: "lucide:clipboard-list",
-        role: "contributor",
-      },
-      {
-        title: "Add Assignment",
-        link: "/admin/assignments/create",
-        icon: "lucide:plus-circle",
-        role: "contributor",
-      },
-      {
-        title: "Submissions",
-        link: "/admin/assignments/submissions",
-        icon: "lucide:inbox",
-        role: "contributor",
-      },
-    ],
-  },
 
+ 
   {
     title: "Subjects",
     icon: "i-lucide-book-open",
     link: "/admin/subjects",
-    role: "admin",
+    role: "ADMIN",
   },
-  {
-    title: "Contributors",
-    icon: "i-lucide-users",
-    link: "/admin/users/contributors",
-    role: "admin",
-  },
+
   {
     title: "Students",
     icon: "i-lucide-users",
     link: "/admin/users",
-    role: "admin",
+    role: "ADMIN",
   },
 ];
 

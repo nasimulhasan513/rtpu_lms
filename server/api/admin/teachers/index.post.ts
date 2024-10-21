@@ -2,7 +2,7 @@ import { zh } from "h3-zod";
 import { createTeacherSchema } from "~/schema/teacher.schema";
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["admin"]);
+  await validateRequest(event, ["ADMIN"]);
   const { data, error } = await zh.useSafeValidatedBody(
     event,
     createTeacherSchema
@@ -17,11 +17,10 @@ export default defineEventHandler(async (event) => {
 
   const newTeacher = await db.teacher.create({
     data: {
+      id: 'jsahdashdj',
       name: data.name,
       image: data.image,
-      biography: data.biography,
       designation: data.designation,
-      short_designation: data.short_designation,
     },
   });
 

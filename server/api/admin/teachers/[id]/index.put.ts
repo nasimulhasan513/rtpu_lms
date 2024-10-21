@@ -17,9 +17,7 @@ export default defineEventHandler(async (event) => {
     data: {
       name: data.name,
       image: data.image,
-      biography: data.biography,
       designation: data.designation,
-      short_designation: data.short_designation,
     },
   });
 

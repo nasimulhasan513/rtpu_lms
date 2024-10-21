@@ -2,7 +2,7 @@ import { zh } from "h3-zod";
 import { CourseSchema } from "~/schema/course.schema";
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["admin"]);
+  await validateRequest(event, ["ADMIN"]);
 
   const { data, error } = await zh.useSafeValidatedBody(event, CourseSchema);
 

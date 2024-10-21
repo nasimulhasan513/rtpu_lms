@@ -53,23 +53,23 @@ export default defineNuxtConfig({
   css: ["~/assets/css/tailwind.css", "vue-plyr/dist/vue-plyr.css"],
   app: {
     head: {
-      title: "ACS Courses",
+      title: "RTPU",
       meta: [
         {
           name: "og:title",
-          content: "ACS Courses",
+          content: "Road to Public University",
         },
         {
           name: "og:description",
-          content: "ACS Courses",
+          content: "Road to Public University",
         },
       ],
     },
   },
   site: {
-    url: "https://courses.apars.tech",
-    name: "ACS Courses",
-    description: "ACS Courses",
+    url: "https://rtpu.shop",
+    name: "RTPU",
+    description: "Road to Public University",
     defaultLocale: "en",
   },
   sitemap: {

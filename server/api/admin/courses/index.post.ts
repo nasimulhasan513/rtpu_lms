@@ -3,7 +3,7 @@ import { CourseSchema } from "~/schema/course.schema";
 
 export default defineEventHandler(async (event) => {
 
-  await validateRequest(event, ["admin", "contributor"]);
+  await validateRequest(event, ["ADMIN", "contributor"]);
 
 
   const { data, error } = await zh.useSafeValidatedBody(event, CourseSchema);

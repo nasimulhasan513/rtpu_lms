@@ -9,7 +9,7 @@ const updateQuestionSchema = z.array(
 );
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["admin", "contributor"]);
+  await validateRequest(event, ["ADMIN", "contributor"]);
   const body = await readBody(event);
   const questions = updateQuestionSchema.parse(body);
 

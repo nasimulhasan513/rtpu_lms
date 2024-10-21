@@ -1,7 +1,7 @@
 import { EXAM_LEADERBOARD } from "~/server/utils/cachekeys";
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["admin", "contributor"]);
+  await validateRequest(event, ["ADMIN", "contributor"]);
   const id = event.context.params?.id;
 
   if (!id) {
