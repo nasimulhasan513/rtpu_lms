@@ -74,9 +74,10 @@
     "@nuxtjs/color-mode": "^3.4.2",
     "@nuxtjs/seo": "2.0.0-rc.21",
     "@nuxtjs/tailwindcss": "^6.12.1",
-    "@prisma/client": "^5.19.1",
+    "@prisma/client": "^5.21.1",
     "nuxt-vue3-google-signin": "^0.0.11",
-    "prisma": "^5.19.1",
+    "prisma": "^5.21.1",
+    "sass-embedded": "^1.80.3",
     "typescript": "^5.5.4"
   }
 }

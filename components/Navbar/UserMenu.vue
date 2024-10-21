@@ -57,7 +57,7 @@
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </template>
-                <Button v-else @click="onOpen">
+                <Button v-else @click="onOpen" class="text-white">
                     লগইন
                 </Button>
 

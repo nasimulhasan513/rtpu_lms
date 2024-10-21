@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
     const question = await db.question.findUnique({
       where: { id: questionId },
     });
+    
     const examId = question?.examId;
     await deleteCache(`exam-questions-${examId}`);
 

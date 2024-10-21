@@ -1,8 +1,8 @@
 import { Redis } from "@upstash/redis";
 
 const redis = new Redis({
-  url: "https://sound-asp-21212.upstash.io",
-  token: "AVLcAAIjcDFlZTAyMDc4NjRiNTY0NzhiOWRhOGYzZmVlNTM2ZWFmZHAxMA",
+  url: "https://big-mongrel-21113.upstash.io",
+  token: "AVJ5AAIjcDExNGY4NWNkYzcyNDA0NWFkOTVlNTYxMzM5ZTYxMTBkNXAxMA",
 });
 
 const DEFAULT_EXPIRATION = 60 * 60 * 1; // 1 hour

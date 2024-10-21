@@ -179,9 +179,10 @@ export const navMenuBottom: NavMenuItems = [
 ];
 
 export const mainMenu = [
-  { name: "Home", path: "/", icon: "lucide:home" },
-  { name: "Courses", path: "/courses", icon: "lucide:book-open" },
-  { name: "Categories", path: "/categories", icon: "lucide:layers" },
+  { name: "হোম", path: "/", icon: "lucide:home" },
+  { name: "কোর্স সমূহ", path: "/courses", icon: "lucide:graduation-cap" },
+  { name: "বই সমূহ", path: "/categories", icon: "lucide:book" },
+  { name: "আমাদের সম্পর্কে", path: "/about", icon: "lucide:info" },
 ];
 
 export const courseMenu = [
@@ -216,7 +217,7 @@ export const courseMenu = [
     icon: "lucide:home",
     type: "general",
   },
-  
+
   {
     title: "নোটিস",
     link: "notice",

@@ -1,18 +1,18 @@
 <template>
     <div @click="navigateTo('/')" class="flex items-center gap-2 cursor-pointer">
-        <img :src="route.params.shop ? shop?.logo : defaultLogo" :alt="shop?.name" class="h-10" />
-
-        <span v-if="!route.params.shop" class="hidden text-xl font-bold md:block text-primary ">কোর্স</span>
+        <img :src="isHomePage ? darkLogo : whiteLogo" alt="RTPU" class="h-10" />
     </div>
 
 </template>
 
 <script setup>
-import defaultLogo from '~/assets/logo.png'
-const { shop } = useShop()
+import whiteLogo from '~/assets/image/white_logo.png'
+import darkLogo from '~/assets/image/dark_logo.png'
 
 
 const route = useRoute()
+
+const isHomePage = computed(() => route.path === '/')
 
 
 </script>
