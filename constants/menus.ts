@@ -1,5 +1,15 @@
 import type { NavMenuItems } from "~/types/nav";
 
+
+export const mainMenu = [
+  { name: "হোম", path: "/", icon: "lucide:home" },
+  { name: "কোর্স সমূহ", path: "/courses", icon: "lucide:graduation-cap" },
+  { name: "বই সমূহ", path: "/books", icon: "lucide:book" },
+  { name: "আমাদের সম্পর্কে", path: "/about", icon: "lucide:info" },
+];
+
+
+
 export const navMenu: NavMenuItems = [
   {
     title: "Dashboard",
@@ -178,12 +188,6 @@ export const navMenuBottom: NavMenuItems = [
   },
 ];
 
-export const mainMenu = [
-  { name: "হোম", path: "/", icon: "lucide:home" },
-  { name: "কোর্স সমূহ", path: "/courses", icon: "lucide:graduation-cap" },
-  { name: "বই সমূহ", path: "/categories", icon: "lucide:book" },
-  { name: "আমাদের সম্পর্কে", path: "/about", icon: "lucide:info" },
-];
 
 export const courseMenu = [
   {
