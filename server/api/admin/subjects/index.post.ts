@@ -1,6 +1,5 @@
 import { zh } from "h3-zod";
 import { SubjectSchema } from "~/schema/subject.schema";
-
 export default defineEventHandler(async (event) => {
   const { data, error } = await zh.useSafeValidatedBody(event, SubjectSchema);
 
@@ -14,6 +13,7 @@ export default defineEventHandler(async (event) => {
   await db.subject.create({
     data: {
       name: data.name,
+     
     },
   });
 

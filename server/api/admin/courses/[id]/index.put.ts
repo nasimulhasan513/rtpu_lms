@@ -1,3 +1,4 @@
+import { CourseStatus } from "@prisma/client";
 import { zh } from "h3-zod";
 import { CourseSchema } from "~/schema/course.schema";
 
@@ -35,23 +36,17 @@ export default defineEventHandler(async (event) => {
       promo_video: data.promo_video,
       sale_price: data.sale_price,
       regular_price: data.regular_price,
-      status: data.status,
+      status: data.status as CourseStatus,
       duration: data.duration,
       enrolled: data.enrolled,
       fb_group: data.fb_group,
       tg_group: data.tg_group,
       keywords: { set: data.keywords },
       order: data.order,
-      categoryId: data.categoryId,
-      asg_shop_id: data.asg_shop_id,
-      shop_charge: data.shop_charge,
-      sms_charge: data.sms_charge,
-      is_class: data.is_class,
-      is_mcq: data.is_mcq,
-      is_cq: data.is_cq,
+      category_id: data.category_id,
       teachers: {
         deleteMany: {},
-        create: data.teachers.map((id) => ({ teacherId: id })),
+        create: data.teachers.map((id) => ({ teacher_id: id })),
       },
     },
   });

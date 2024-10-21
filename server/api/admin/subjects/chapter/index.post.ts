@@ -1,6 +1,5 @@
 import { zh } from "h3-zod";
 import { ChapterSchema } from "~/schema/subject.schema";
-
 export default defineEventHandler(async (event) => {
   const { data, error } = await zh.useSafeValidatedBody(event, ChapterSchema);
 
@@ -14,7 +13,7 @@ export default defineEventHandler(async (event) => {
   await db.chapter.create({
     data: {
       name: data.name,
-      subjectId: data.subjectId,
+      subject_id: data.subjectId,
     },
   });
 

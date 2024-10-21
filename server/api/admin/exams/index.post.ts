@@ -5,7 +5,7 @@ import { formatDate } from "~/server/utils/format";
 
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["ADMIN", "contributor"]);
+  await validateRequest(event, ["ADMIN", "MODERATOR"]);
 
   const body = await readBody(event);
 
@@ -16,20 +16,20 @@ export default defineEventHandler(async (event) => {
       data: {
         title: examData.title,
         description: examData.description,
-        startTime: formatDate(examData.startTime),
-        endTime: formatDate(examData.endTime),
+        start_time: formatDate(examData.start_time),
+        end_time: formatDate(examData.end_time),
         duration: examData.duration,
-        totalMarks: examData.totalMarks,
-        instantResult: examData.instantResult,
-        resultPublishTime: formatDate(examData.resultPublishTime),
-        negativeMarking: examData.negativeMarking,
-        passMarks: examData.passMarks,
-        shuffleQuestion: examData.shuffleQuestion,
+        total_marks: examData.total_marks,
+        instant_result: examData.instant_result,
+        result_publish_time: formatDate(examData.result_publish_time),
+        negative_marking: examData.negative_marking,
+        pass_marks: examData.pass_marks,
+        shuffle_question: examData.shuffle_question,
         subject: {
-          connect: { id: examData.subjectId }
+          connect: { id: examData.subject_id }
         },
-        courseExams: {
-          create: examData.courses.map((courseId) => ({ courseId }))
+        course_exams: {
+            create: examData.courses.map((courseId) => ({ course_id: courseId }))
         }
       },
     });

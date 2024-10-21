@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["ADMIN", "contributor"]);
+  await validateRequest(event, ["ADMIN", "MODERATOR"]);
 
   const { subject, chapter } = getQuery(event);
 
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const questions = await db.question.findMany({
     where: {
       ...query,
-      examId: examId as string,
+      exam_id: examId as string,
     },
     include: {
       options: true,

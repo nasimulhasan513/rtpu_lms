@@ -3,7 +3,7 @@ import { examSchema } from "~/schema/exam.schema";
 import { formatDate } from "~/server/utils/format";
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["ADMIN", "contributor"]);
+  await validateRequest(event, ["ADMIN", "MODERATOR"]);
   const id = event.context.params?.id;
   const body = await readBody(event);
 
@@ -22,20 +22,20 @@ export default defineEventHandler(async (event) => {
       data: {
         title: examData.title,
         description: examData.description,
-        subjectId: examData.subjectId,
+        subject_id: examData.subject_id,
         duration: examData.duration,
-        totalMarks: examData.totalMarks,
-        negativeMarking: examData.negativeMarking,
-        instantResult: examData.instantResult,
-        shuffleQuestion: examData.shuffleQuestion,
-        passMarks: examData.passMarks,
-        startTime: formatDate(examData.startTime),
-        endTime: formatDate(examData.endTime),
-        resultPublishTime: formatDate(examData.resultPublishTime),
-        courseExams: {
+        total_marks: examData.total_marks,
+        negative_marking: examData.negative_marking,
+        instant_result: examData.instant_result,
+        shuffle_question: examData.shuffle_question,
+        pass_marks: examData.pass_marks,
+        start_time: formatDate(examData.start_time),
+        end_time: formatDate(examData.end_time),
+        result_publish_time: formatDate(examData.result_publish_time),
+        course_exams: {
           deleteMany: {},
           create: examData.courses.map((courseId) => ({
-            courseId,
+            course_id: courseId,
           })),
         },
       },

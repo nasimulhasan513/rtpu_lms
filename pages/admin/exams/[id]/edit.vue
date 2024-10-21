@@ -18,9 +18,20 @@
           <FormLabel>Select Courses</FormLabel>
           <FormControl>
             <div class="grid grid-cols-3 gap-3 p-3 bg-white border rounded-md">
-              <div v-for="(course, index) in courseOptions" :key="course.value" class="flex items-center space-x-2">
-                <Checkbox :id="course.value" :checked="course.selected" @click="chooseCourse(index)" />
-                <label :for="course.value" class="text-sm font-medium cursor-pointer">
+              <div
+                v-for="(course, index) in courseOptions"
+                :key="course.value"
+                class="flex items-center space-x-2"
+              >
+                <Checkbox
+                  :id="course.value"
+                  :checked="course.selected"
+                  @click="chooseCourse(index)"
+                />
+                <label
+                  :for="course.value"
+                  class="text-sm font-medium cursor-pointer"
+                >
                   {{ course.label }}
                 </label>
               </div>
@@ -41,7 +52,11 @@
             </FormControl>
             <SelectContent>
               <SelectGroup>
-                <SelectItem v-for="subject in subjects" :key="subject.id" :value="subject.id">
+                <SelectItem
+                  v-for="subject in subjects"
+                  :key="subject.id"
+                  :value="subject.id"
+                >
                   {{ subject.name }}
                 </SelectItem>
               </SelectGroup>
@@ -54,7 +69,10 @@
         <FormItem>
           <FormLabel>Description</FormLabel>
           <FormControl>
-            <Textarea v-bind="field" placeholder="Enter exam description/instructions/syllabus" />
+            <Textarea
+              v-bind="field"
+              placeholder="Enter exam description/instructions/syllabus"
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -65,17 +83,27 @@
           <FormItem>
             <FormLabel>Duration (minutes)</FormLabel>
             <FormControl>
-              <Input v-bind="field" type="number" min="1" placeholder="Enter duration" />
+              <Input
+                v-bind="field"
+                type="number"
+                min="1"
+                placeholder="Enter duration"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ field }" name="totalMarks">
+        <FormField v-slot="{ field }" name="total_marks">
           <FormItem>
             <FormLabel>Total Marks</FormLabel>
             <FormControl>
-              <Input v-bind="field" type="number" min="1" placeholder="Enter total marks" />
+              <Input
+                v-bind="field"
+                type="number"
+                min="1"
+                placeholder="Enter total marks"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -83,7 +111,7 @@
       </div>
 
       <div class="grid grid-cols-2 gap-4">
-        <FormField v-slot="{ field }" name="startTime">
+        <FormField v-slot="{ field }" name="start_time">
           <FormItem>
             <FormLabel>Start Time</FormLabel>
             <FormControl>
@@ -93,7 +121,7 @@
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ field }" name="endTime">
+        <FormField v-slot="{ field }" name="end_time">
           <FormItem>
             <FormLabel>End Time</FormLabel>
             <FormControl>
@@ -105,11 +133,15 @@
       </div>
 
       <div class="grid grid-cols-2 gap-4">
-        <FormField v-slot="{ field }" name="resultPublishTime">
+        <FormField v-slot="{ field }" name="result_publish_time">
           <FormItem>
             <FormLabel>Result Publish Time</FormLabel>
             <FormControl>
-              <Input v-bind="field" type="datetime-local" :disabled="form.values.instantResult" />
+              <Input
+                v-bind="field"
+                type="datetime-local"
+                :disabled="form.values.instantResult"
+              />
             </FormControl>
             <FormDescription>
               {{
@@ -122,11 +154,16 @@
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ field }" name="passMarks">
+        <FormField v-slot="{ field }" name="pass_marks">
           <FormItem>
             <FormLabel>Pass Marks</FormLabel>
             <FormControl>
-              <Input v-bind="field" type="number" min="1" placeholder="Enter pass marks" />
+              <Input
+                v-bind="field"
+                type="number"
+                min="1"
+                placeholder="Enter pass marks"
+              />
             </FormControl>
             <FormDescription>
               The pass marks will be calculated for each subject based on the
@@ -138,16 +175,20 @@
       </div>
 
       <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <FormField v-slot="{ field }" name="instantResult">
+        <FormField v-slot="{ field }" name="instant_result">
           <FormItem
-            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
+            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800"
+          >
             <FormControl>
-              <Checkbox :checked="form.values.instantResult" @click="
-                form.setFieldValue(
-                  'instantResult',
-                  !form.values.instantResult
-                )
-                " />
+              <Checkbox
+                :checked="form.values.instantResult"
+                @click="
+                  form.setFieldValue(
+                    'instantResult',
+                    !form.values.instantResult
+                  )
+                "
+              />
             </FormControl>
             <div class="space-y-1 leading-none">
               <FormLabel> Instant Result </FormLabel>
@@ -157,16 +198,20 @@
             </div>
           </FormItem>
         </FormField>
-        <FormField v-slot="{ field }" name="negativeMarking">
+        <FormField v-slot="{ field }" name="negative_marking">
           <FormItem
-            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
+            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800"
+          >
             <FormControl>
-              <Checkbox :checked="form.values.negativeMarking" @click="
-                form.setFieldValue(
-                  'negativeMarking',
-                  !form.values.negativeMarking
-                )
-                " />
+              <Checkbox
+                :checked="form.values.negativeMarking"
+                @click="
+                  form.setFieldValue(
+                    'negativeMarking',
+                    !form.values.negativeMarking
+                  )
+                "
+              />
             </FormControl>
             <div class="space-y-1 leading-none">
               <FormLabel> Negative Marking </FormLabel>
@@ -176,16 +221,20 @@
             </div>
           </FormItem>
         </FormField>
-        <FormField v-slot="{ field }" name="shuffleQuestion">
+        <FormField v-slot="{ field }" name="shuffle_question">
           <FormItem
-            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
+            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800"
+          >
             <FormControl>
-              <Checkbox :checked="form.values.shuffleQuestion" @click="
-                form.setFieldValue(
-                  'shuffleQuestion',
-                  !form.values.shuffleQuestion
-                )
-                " />
+              <Checkbox
+                :checked="form.values.shuffleQuestion"
+                @click="
+                  form.setFieldValue(
+                    'shuffleQuestion',
+                    !form.values.shuffleQuestion
+                  )
+                "
+              />
             </FormControl>
             <div class="space-y-1 leading-none">
               <FormLabel> Shuffle Question </FormLabel>
@@ -227,17 +276,17 @@ const form = useForm({
   initialValues: {
     title: "",
     courses: [],
-    subjectId: "",
+    subject_id: "",
     description: "",
-    startTime: "",
-    endTime: "",
+    start_time: "",
+    end_time: "",
     duration: 0,
-    totalMarks: 0,
-    passMarks: 0,
-    resultPublishTime: "",
-    instantResult: false,
-    negativeMarking: false,
-    shuffleQuestion: false,
+    total_marks: 0,
+    pass_marks: 0,
+    result_publish_time: "",
+    instant_result: false,
+    negative_marking: false,
+    shuffle_question: false,
   },
 });
 
@@ -250,11 +299,13 @@ const fetchExamData = async () => {
       ...exam,
       description: exam.description || "",
       courses: exam.courseExams.map((ce) => ce.course.id),
-      startTime: inputFormat(exam.startTime),
-      endTime: inputFormat(exam.endTime),
-      resultPublishTime: inputFormat(exam.resultPublishTime || exam.endTime),
-      instantResult: exam.instantResult,
-      negativeMarking: exam.negativeMarking,
+      start_time: inputFormat(exam.start_time),
+      end_time: inputFormat(exam.end_time),
+      result_publish_time: inputFormat(
+        exam.result_publish_time || exam.end_time
+      ),
+      instant_result: exam.instant_result,
+      negative_marking: exam.negative_marking,
     });
 
     courseOptions.value = courseOptions.value.map((course) => ({
@@ -291,9 +342,9 @@ onMounted(async () => {
 // Add watch for endTime, duration, and instantResult
 watch(
   [
-    () => form.values.endTime,
+    () => form.values.end_time,
     () => form.values.duration,
-    () => form.values.instantResult,
+    () => form.values.instant_result,
   ],
   ([newEndTime, newDuration, newInstantResult]) => {
     if (newEndTime) {
@@ -309,8 +360,7 @@ watch(
       }
 
       const formattedPublishTime = inputFormat(publishDateTime);
-      form.setFieldValue("resultPublishTime", formattedPublishTime);
-      form.setFieldValue("solutionPublishTime", formattedPublishTime);
+      form.setFieldValue("result_publish_time", formattedPublishTime);
     }
   }
 );

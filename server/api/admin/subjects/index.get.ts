@@ -1,11 +1,11 @@
 export default defineEventHandler(async (event) => {
-  const cachedSubjects = await getCache("subjects");
-  if (cachedSubjects) {
-    return {
-      statusCode: 200,
-      body: cachedSubjects,
-    };
-  }
+  // const cachedSubjects = await getCache("subjects");
+  // if (cachedSubjects) {
+  //   return {
+  //     statusCode: 200,
+  //     body: cachedSubjects,
+  //   };
+  // }
   const subjects = await db.subject.findMany({
     include: {
       chapters: true,
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  await setCache("subjects", subjects);
+  // await setCache("subjects", subjects);
 
   return {
     statusCode: 200,

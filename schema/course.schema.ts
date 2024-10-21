@@ -7,7 +7,7 @@ export const CourseSchema = z.object({
   name: z.string().min(1, "Course name is required"),
   short_description: z.string().min(1, "Short description is required"),
   description: z.string().min(1, "Description is required"),
-  categoryId: z
+  category_id: z
     .string()
     .min(1, "Category  is required")
     .regex(/^[a-f\d]{24}$/i, "Invalid category ID"),
@@ -43,12 +43,7 @@ export const CourseSchema = z.object({
         .regex(/^[a-f\d]{24}$/i, "Invalid teacher ID")
     )
     .nonempty("At least one teacher is required"),
-  asg_shop_id: z.string().optional(),
-  shop_charge: z.number().optional(),
-  sms_charge: z.number().optional(),
-  is_class: z.boolean().optional(),
-  is_mcq: z.boolean().optional(),
-  is_cq: z.boolean().optional(),
+ 
   sale_price: z.number().min(0, "Sale price must be a non-negative number"),
   regular_price: z
     .number()

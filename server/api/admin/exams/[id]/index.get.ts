@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["ADMIN", "contributor"]);
+  await validateRequest(event, ["ADMIN", "MODERATOR"]);
   const id = event.context.params?.id;
 
   if (!id) {
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     const exam = await db.exam.findUnique({
       where: { id },
       include: {
-        courseExams: {
+        course_exams: {
           include: {
             course: {
               select: {
