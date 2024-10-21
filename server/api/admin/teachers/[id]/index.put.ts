@@ -1,8 +1,5 @@
 import { zh } from "h3-zod";
-import {
-  createTeacherSchema,
-  updateTeacherSchema,
-} from "~/schema/teacher.schema";
+import { createTeacherSchema } from "~/schema/teacher.schema";
 
 export default defineEventHandler(async (event) => {
   const { id } = event.context.params;
@@ -10,6 +7,14 @@ export default defineEventHandler(async (event) => {
     event,
     createTeacherSchema
   );
+
+  if (error) {
+    return {
+      status: 400,
+      statusMessage: error,
+    };
+  }
+
   const updatedTeacher = await db.teacher.update({
     where: {
       id,

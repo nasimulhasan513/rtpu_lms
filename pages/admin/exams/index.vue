@@ -12,11 +12,7 @@
             <SelectGroup>
               <SelectLabel>Select Course</SelectLabel>
               <SelectItem value="all">All Courses</SelectItem>
-              <SelectItem
-                v-for="course in courses"
-                :key="course.id"
-                :value="course.id"
-              >
+              <SelectItem v-for="course in courses" :key="course.id" :value="course.id">
                 {{ course.name }}
               </SelectItem>
             </SelectGroup>
@@ -45,10 +41,10 @@
             <TableCell>{{ exam.title }}</TableCell>
             <TableCell>{{
               exam.courseExams?.map((course) => course.course.name).join(", ")
-            }}</TableCell>
+              }}</TableCell>
             <TableCell class="whitespace-nowrap">{{
               exam.subject.name
-            }}</TableCell>
+              }}</TableCell>
             <TableCell class="whitespace-nowrap">
               <div class="flex flex-col">
                 <span>{{ formatDate(exam.startTime) }}</span>
@@ -66,27 +62,17 @@
             </TableCell>
             <TableCell class="whitespace-nowrap">{{
               exam.totalMarks
-            }}</TableCell>
-            <TableCell class="whitespace-nowrap"
-              >{{ exam.duration }}m</TableCell
-            >
+              }}</TableCell>
+            <TableCell class="whitespace-nowrap">{{ exam.duration }}m</TableCell>
             <TableCell class="text-center">{{
               exam.submissionsCount
-            }}</TableCell>
+              }}</TableCell>
             <TableCell class="flex flex-col items-center justify-center gap-2">
               <div class="flex items-center space-x-2">
-                <Button
-                  @click="viewQuestions(exam.id)"
-                  variant="outline"
-                  size="sm"
-                >
+                <Button @click="viewQuestions(exam.id)" variant="outline" size="sm">
                   <Icon name="lucide:list" />
                 </Button>
-                <Button
-                  @click="viewLeaderboard(exam.id)"
-                  variant="outline"
-                  size="sm"
-                >
+                <Button @click="viewLeaderboard(exam.id)" variant="outline" size="sm">
                   <Icon name="lucide:trophy" />
                 </Button>
               </div>
@@ -94,11 +80,7 @@
                 <Button @click="editExam(exam.id)" variant="outline" size="sm">
                   <Icon name="lucide:edit" />
                 </Button>
-                <Button
-                  @click="deleteExam(exam.id)"
-                  variant="destructive"
-                  size="sm"
-                >
+                <Button @click="deleteExam(exam.id)" variant="destructive" size="sm">
                   <Icon name="lucide:trash-2" />
                 </Button>
               </div>
@@ -121,7 +103,7 @@ import { ref, computed } from "vue";
 import { useToast } from "~/components/ui/toast/use-toast";
 
 definePageMeta({
-  layout: "ADMIN",
+  layout: "admin",
 });
 
 const { toast } = useToast();

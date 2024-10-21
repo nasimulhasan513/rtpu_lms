@@ -17,7 +17,6 @@ export default defineEventHandler(async (event) => {
 
   const newTeacher = await db.teacher.create({
     data: {
-      id: 'jsahdashdj',
       name: data.name,
       image: data.image,
       designation: data.designation,

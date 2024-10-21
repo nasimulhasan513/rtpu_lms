@@ -18,20 +18,9 @@
           <FormLabel>Select Courses</FormLabel>
           <FormControl>
             <div class="grid grid-cols-3 gap-3 p-3 bg-white border rounded-md">
-              <div
-                v-for="(course, index) in courseOptions"
-                :key="course.value"
-                class="flex items-center space-x-2"
-              >
-                <Checkbox
-                  :id="course.value"
-                  :checked="course.selected"
-                  @click="chooseCourse(index)"
-                />
-                <label
-                  :for="course.value"
-                  class="text-sm font-medium cursor-pointer"
-                >
+              <div v-for="(course, index) in courseOptions" :key="course.value" class="flex items-center space-x-2">
+                <Checkbox :id="course.value" :checked="course.selected" @click="chooseCourse(index)" />
+                <label :for="course.value" class="text-sm font-medium cursor-pointer">
                   {{ course.label }}
                 </label>
               </div>
@@ -52,11 +41,7 @@
             </FormControl>
             <SelectContent>
               <SelectGroup>
-                <SelectItem
-                  v-for="subject in subjectOptions"
-                  :key="subject.value"
-                  :value="subject.value"
-                >
+                <SelectItem v-for="subject in subjectOptions" :key="subject.value" :value="subject.value">
                   {{ subject.label }}
                 </SelectItem>
               </SelectGroup>
@@ -69,10 +54,7 @@
         <FormItem>
           <FormLabel>Description</FormLabel>
           <FormControl>
-            <Textarea
-              v-bind="field"
-              placeholder="Enter exam description/instructions/syllabus"
-            />
+            <Textarea v-bind="field" placeholder="Enter exam description/instructions/syllabus" />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -82,12 +64,7 @@
           <FormItem>
             <FormLabel>Duration (minutes)</FormLabel>
             <FormControl>
-              <Input
-                v-bind="field"
-                type="number"
-                min="1"
-                placeholder="Enter duration"
-              />
+              <Input v-bind="field" type="number" min="1" placeholder="Enter duration" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -97,12 +74,7 @@
           <FormItem>
             <FormLabel>Total Marks</FormLabel>
             <FormControl>
-              <Input
-                v-bind="field"
-                type="number"
-                min="1"
-                placeholder="Enter total marks"
-              />
+              <Input v-bind="field" type="number" min="1" placeholder="Enter total marks" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -149,12 +121,7 @@
           <FormItem>
             <FormLabel>Pass Marks</FormLabel>
             <FormControl>
-              <Input
-                v-bind="field"
-                type="number"
-                min="1"
-                placeholder="Enter pass marks"
-              />
+              <Input v-bind="field" type="number" min="1" placeholder="Enter pass marks" />
             </FormControl>
             <FormDescription>
               The pass marks will be calculated for each subject based on the
@@ -168,18 +135,14 @@
       <div class="grid grid-cols-3 gap-5">
         <FormField v-slot="{ field }" name="instantResult">
           <FormItem
-            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800"
-          >
+            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
             <FormControl>
-              <Checkbox
-                :checked="form.values.instantResult"
-                @click="
-                  form.setFieldValue(
-                    'instantResult',
-                    !form.values.instantResult
-                  )
-                "
-              />
+              <Checkbox :checked="form.values.instantResult" @click="
+                form.setFieldValue(
+                  'instantResult',
+                  !form.values.instantResult
+                )
+                " />
             </FormControl>
             <div class="space-y-1 leading-none">
               <FormLabel> Instant Result </FormLabel>
@@ -191,18 +154,14 @@
         </FormField>
         <FormField v-slot="{ field }" name="negativeMarking">
           <FormItem
-            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800"
-          >
+            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
             <FormControl>
-              <Checkbox
-                :checked="form.values.negativeMarking"
-                @click="
-                  form.setFieldValue(
-                    'negativeMarking',
-                    !form.values.negativeMarking
-                  )
-                "
-              />
+              <Checkbox :checked="form.values.negativeMarking" @click="
+                form.setFieldValue(
+                  'negativeMarking',
+                  !form.values.negativeMarking
+                )
+                " />
             </FormControl>
             <div class="space-y-1 leading-none">
               <FormLabel> Negative Marking </FormLabel>
@@ -214,18 +173,14 @@
         </FormField>
         <FormField v-slot="{ field }" name="shuffleQuestion">
           <FormItem
-            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800"
-          >
+            class="flex flex-row items-start p-4 space-x-3 space-y-0 bg-white border rounded-md dark:bg-slate-800">
             <FormControl>
-              <Checkbox
-                :checked="form.values.shuffleQuestion"
-                @click="
-                  form.setFieldValue(
-                    'shuffleQuestion',
-                    !form.values.shuffleQuestion
-                  )
-                "
-              />
+              <Checkbox :checked="form.values.shuffleQuestion" @click="
+                form.setFieldValue(
+                  'shuffleQuestion',
+                  !form.values.shuffleQuestion
+                )
+                " />
             </FormControl>
             <div class="space-y-1 leading-none">
               <FormLabel> Shuffle Question </FormLabel>
@@ -251,7 +206,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { ref, watch } from "vue";
 
 definePageMeta({
-  layout: "ADMIN",
+  layout: "admin",
 });
 
 const { subjects, fetchSubjects } = useSubject();

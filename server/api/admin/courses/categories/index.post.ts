@@ -13,15 +13,8 @@ export default defineEventHandler(async (event) => {
       name: validatedData.name,
       slug: validatedData.slug,
       image: validatedData.image,
-      logo: validatedData.logo,
-      platformName: validatedData.platformName,
-      price: validatedData.price,
-      is_class: validatedData.is_class,
-      is_mcq: validatedData.is_mcq,
-      is_cq: validatedData.is_cq,
     },
   });
-
 
   await deleteCache(COURSE_CATEGORIES);
 

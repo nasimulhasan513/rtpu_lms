@@ -50,7 +50,7 @@ model Session {
 }
 
 model ResetToken {
-  id         String   @id @db.Uuid
+  id         String   @id @default(uuid()) @db.Uuid
   otp        String
   expires_at DateTime
   email      String?
@@ -61,7 +61,7 @@ model ResetToken {
 }
 
 model Teacher {
-  id          String    @id @db.Uuid
+  id          String    @id @default(uuid()) @db.Uuid
   name        String
   image       String
   designation String
@@ -74,7 +74,7 @@ model Teacher {
 }
 
 model Category {
-  id         String    @id @db.Uuid
+  id         String    @id @default(uuid()) @db.Uuid
   name       String
   slug       String    @unique
   image      String?
@@ -87,7 +87,7 @@ model Category {
 }
 
 model Course {
-  id                String       @id @db.Uuid
+  id                String       @id @default(uuid()) @db.Uuid
   slug              String       @unique
   name              String
   short_description String
@@ -144,7 +144,7 @@ model CourseTeacher {
 }
 
 model Coupon {
-  id              String    @id @db.Uuid
+  id              String    @id @default(uuid()) @db.Uuid
   code            String    @unique
   discount        Float
   max_usage_limit Int       @default(1)
@@ -173,7 +173,7 @@ model CouponCourse {
 }
 
 model CourseEnrollment {
-  id               String    @id @db.Uuid
+  id               String    @id @default(uuid()) @db.Uuid
   user_id          String
   course_id        String    @db.Uuid
   transaction_id   String    @unique
@@ -202,7 +202,7 @@ model CourseEnrollment {
 }
 
 model Subject {
-  id         String    @id @db.Uuid
+  id         String    @id @default(uuid()) @db.Uuid
   name       String
   order      Int       @default(0)
   deleted_at DateTime?
@@ -216,7 +216,7 @@ model Subject {
 }
 
 model Chapter {
-  id         String    @id @db.Uuid
+  id         String    @id @default(uuid()) @db.Uuid
   name       String
   subject_id String    @db.Uuid
   deleted_at DateTime?
@@ -230,7 +230,7 @@ model Chapter {
 }
 
 model Lesson {
-  id              String    @id @db.Uuid
+  id              String    @id @default(uuid()) @db.Uuid
   title           String
   subject_id      String    @db.Uuid
   chapter_id      String    @db.Uuid
@@ -261,7 +261,7 @@ model Lesson {
 }
 
 model LessonProgress {
-  id           String    @id @db.Uuid
+  id           String    @id @default(uuid()) @db.Uuid
   user_id      String
   lesson_id    String    @db.Uuid
   completed    Boolean   @default(false)
@@ -281,7 +281,7 @@ model LessonProgress {
 }
 
 model CourseLesson {
-  id        String @id @db.Uuid
+  id        String @id @default(uuid()) @db.Uuid
   course_id String @db.Uuid
   lesson_id String @db.Uuid
   order     Int    @default(0)
@@ -296,7 +296,7 @@ model CourseLesson {
 }
 
 model Option {
-  id          String  @id @db.Uuid
+  id          String  @id @default(uuid()) @db.Uuid
   option_text String
   correct     Boolean
   question_id String  @db.Uuid
@@ -308,7 +308,7 @@ model Option {
 }
 
 model Question {
-  id         String             @id @db.Uuid
+  id         String             @id @default(uuid()) @db.Uuid
   question   String
   difficulty QuestionDifficulty @default(MEDIUM)
   subject_id String             @db.Uuid
@@ -342,7 +342,7 @@ enum QuestionDifficulty {
 }
 
 model Exam {
-  id                  String    @id @db.Uuid
+  id                  String    @id @default(uuid()) @db.Uuid
   title               String
   description         String?
   start_time          DateTime
@@ -371,7 +371,7 @@ model Exam {
 }
 
 model CourseExam {
-  id        String @id @db.Uuid
+  id        String @id @default(uuid()) @db.Uuid
   course_id String @db.Uuid
   exam_id   String @db.Uuid
 
