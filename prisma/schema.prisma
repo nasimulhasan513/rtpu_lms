@@ -42,12 +42,11 @@ enum UserRole {
 }
 
 model Session {
-  id      String   @id @default(uuid())
-  user_id String
-  expires DateTime
-  user    User     @relation(fields: [user_id], references: [id])
+  id        String   @id @map("_id")
+  userId    String
+  expiresAt DateTime
 
-  @@map("sessions")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ResetToken {
@@ -186,6 +185,8 @@ model CourseEnrollment {
   coupon_id        String?   @db.Uuid
   category_id      String?   @db.Uuid
   enrolled_by      String?
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
   deleted_at       DateTime?
 
   user     User      @relation(fields: [user_id], references: [id], onDelete: Cascade)

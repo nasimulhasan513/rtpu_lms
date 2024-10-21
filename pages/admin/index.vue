@@ -95,8 +95,8 @@ const stats = computed(() => [
   { title: 'Total Users', value: dashboardData.value.totalUsers, icon: 'lucide:users' },
   { title: 'Total Courses', value: dashboardData.value.totalCourses, icon: 'lucide:book-open' },
   { title: 'Total Enrollments', value: dashboardData.value.totalEnrollments, icon: 'lucide:graduation-cap' },
-  { title: 'Total Assignments', value: dashboardData.value.totalAssignments, icon: 'lucide:clipboard-list' },
-  { title: 'Assignment Submissions', value: dashboardData.value.totalAssignmentSubmissions, icon: 'lucide:file-check' },
+
+
   { title: 'Total Exams', value: dashboardData.value.totalExams, icon: 'lucide:file-question' },
   { title: 'Exam Submissions', value: dashboardData.value.totalExamSubmissions, icon: 'lucide:pen-tool' },
 ])

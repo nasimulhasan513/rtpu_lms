@@ -1,8 +1,8 @@
 <template>
-    <footer class="text-gray-600 bg-gray-100 dark:bg-gray-900 dark:text-gray-300">
+    <footer class="bg-gradient-to-r from-primary to-primary-foreground">
         <AppContainer class="py-10">
 
-            <div class="border-gray-200 dark:border-gray-700">
+            <div class="text-white">
                 <div class="flex flex-col items-center justify-between md:flex-row">
                     <p>&copy; ২০২৪ সর্বস্বত্ব সংরক্ষিত।</p>
                     <div class="flex mt-4 space-x-4 md:mt-0">

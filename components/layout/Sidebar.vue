@@ -39,11 +39,11 @@ fetchShop()
       <div class="flex items-center gap-3"
         :class="cn('justify-center lg:justify-start', isOpen ? 'lg:justify-start' : 'lg:justify-center')">
         <Button variant="outline" size="icon" aria-label="Home">
-          <img src="~/assets/logo.png" alt="Admin" />
+          R
         </Button>
         <div>
           <span v-if="isOpen" class="hidden text-xl font-semibold lg:inline-block text-primary">
-            {{ route.params.shop ? shop?.platformName : "কোর্স অ্যাডমিন" }}
+            RTPU
           </span>
         </div>
       </div>

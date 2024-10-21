@@ -36,7 +36,7 @@ const isMediumScreen = useMediaQuery('(min-width: 768px)')
             <SheetTitle class="flex items-center gap-3">
 
               <Button variant="outline" size="icon" aria-label="Home">
-                <img src="~/assets/logo.png" alt="Admin" />
+                <img src="~/assets/image/white_logo.png" alt="Admin" />
               </Button>
               কোর্স অ্যাডমিন
 

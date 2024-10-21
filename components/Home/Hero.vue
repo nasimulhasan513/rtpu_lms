@@ -18,13 +18,24 @@
                         </Button>
                     </div>
                 </div>
-                <div class="relative">
-                    <img src="../../assets/image/hero.png" alt="Hero Image" class="object-cover w-full h-full " />
-                    <div
-                        class="absolute p-4 border rounded-lg shadow-md top-10 right-4 bg-white/10 backdrop-blur-sm border-white/30">
-                        <p class="font-semibold text-primary">১০০০০+ শিক্ষার্থী</p>
-                        <p class="text-sm text-white/80">আমাদের সাথে যুক্ত রয়েছে</p>
+                <div class="relative ">
+                    <div class="relative flex items-center justify-center h-full md:pt-16">
+                        <img src="../../assets/image/hero.png" alt="Hero Image" class="object-cover h-full w-86" />
+                        <div
+                            class="absolute w-56 p-4 border rounded-lg shadow-md top-10 right-4 bg-white/10 backdrop-blur-sm border-white/30">
+                            <p class="font-semibold text-primary">{{ banners[currentBanner].title }}</p>
+                            <p class="text-sm text-white/80">{{ banners[currentBanner].subtitle }}</p>
+                        </div>
+
+                        <div class="absolute flex space-x-2 transform -translate-x-1/2 bottom-4 left-1/2">
+                            <span class="w-2.5 h-2.5 bg-white rounded-full"></span>
+                            <span class="w-2.5 h-2.5 bg-white/50 rounded-full"></span>
+                            <span class="w-2.5 h-2.5 bg-white/50 rounded-full"></span>
+                        </div>
+
+
                     </div>
+
                 </div>
             </div>
         </AppContainer>
@@ -32,6 +43,35 @@
 </template>
 
 <script setup>
+
+
+const banners = [
+    {
+        title: "১০০০০+ শিক্ষার্থী",
+        subtitle: "আমাদের সাথে যুক্ত রয়েছে",
+    },
+    {
+        title: "২০০+ চান্স পেয়েছে",
+        subtitle: "বিভিন্ন পাবলিক বিশ্ববিদ্যালয়ে",
+    },
+    {
+        title: "১০+ কোর্স রয়েছে",
+        subtitle: "ভর্তি প্রস্তুতির জন্য",
+    },
+
+]
+
+const currentBanner = ref(0);
+
+const nextBanner = () => {
+    currentBanner.value = (currentBanner.value + 1) % banners.length;
+}
+
+onMounted(() => {
+    setInterval(nextBanner, 3000);
+})
+
+
 </script>
 
 <style lang="scss" scoped>

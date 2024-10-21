@@ -6,25 +6,12 @@ const dashboardSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["admin","contributor"]);
-  const { startDate, endDate } = dashboardSchema.parse(getQuery(event));
-
-  const dateFilter =
-    startDate && endDate
-      ? {
-          createdAt: {
-            gte: new Date(startDate),
-            lte: new Date(endDate),
-          },
-        }
-      : {};
+  // await validateRequest(event, ["admin"]);
 
   const [
     totalUsers,
     totalCourses,
     totalEnrollments,
-    totalAssignments,
-    totalAssignmentSubmissions,
     totalExams,
     totalExamSubmissions,
     recentEnrollments,
@@ -32,19 +19,17 @@ export default defineEventHandler(async (event) => {
   ] = await Promise.all([
     db.user.count(),
     db.course.count(),
-    db.enrollment.count(),
-    db.assignment.count(),
-    db.assignmentSubmission.count(),
+    db.courseEnrollment.count(),
     db.exam.count(),
     db.submission.count(),
-    db.enrollment.findMany({
+    db.courseEnrollment.findMany({
       take: 5,
-      orderBy: { enrolledAt: "desc" },
+      orderBy: { created_at: "desc" },
       include: { user: true, course: true },
     }),
     db.submission.findMany({
       take: 5,
-      orderBy: { submittedAt: "desc" },
+      orderBy: { submitted_at: "desc" },
       include: { user: true, exam: true },
     }),
   ]);
@@ -53,8 +38,6 @@ export default defineEventHandler(async (event) => {
     totalUsers,
     totalCourses,
     totalEnrollments,
-    totalAssignments,
-    totalAssignmentSubmissions,
     totalExams,
     totalExamSubmissions,
     recentEnrollments: recentEnrollments.map((e) => ({

@@ -17,13 +17,11 @@ export const lucia = new Lucia(adapter, {
   getUserAttributes: (attributes) => {
     return {
       // attributes has the type of DatabaseUserAttributes
-      googleId: attributes.google_id,
+      google_id: attributes.google_id,
       name: attributes.name,
       image: attributes.image,
       phone: attributes.phone,
       email: attributes.email,
-      district: attributes.district,
-      thana: attributes.thana,
       institute: attributes.institute,
       hsc_batch: attributes.hsc_batch,
       role: attributes.role,
@@ -44,8 +42,6 @@ interface DatabaseUserAttributes {
   image: string;
   phone: string;
   email: string;
-  district: string;
-  thana: string;
   institute: string;
   hsc_batch: string;
   role: string;

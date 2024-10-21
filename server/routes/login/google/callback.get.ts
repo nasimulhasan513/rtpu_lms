@@ -39,6 +39,8 @@ export default defineEventHandler(async (event) => {
       },
     });
 
+    console.log(existingUser);
+
     if (existingUser) {
       const session = await lucia.createSession(existingUser.id, {});
 
