@@ -1,83 +1,118 @@
 <template>
-    <div class="fixed z-10 w-full" :class="{
-        'bg-white': !isHomePage
-    }">
-        <div class="py-3 ">
-            <AppContainer>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center justify-between flex-1 space-x-4">
-                        <NavbarLogo />
-                       
-                        <nav class="hidden px-4 space-x-4 md:flex">
-                            <NuxtLink v-for="item in mainMenu" :key="item.path" :to="item.path"
-                                class="flex items-center px-4 py-2 text-white transition-colors duration-300 rounded-md cursor-pointer outline outline-transparent hover:outline-primary hover:text-white"
-                                :class="{
-                                    'text-slate-600 hover:text-slate-900 hover:outline-transparent': !isHomePage
-                                }">
-                                <Icon :name="item.icon" class="w-5 h-5 mr-2" />
-                                {{ item.name }}
-                            </NuxtLink>
-                        </nav>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <NavbarUserMenu />
-                        <Button variant="ghost" size="icon" class="md:hidden" @click="toggleMobileMenu">
-                            <Icon name="lucide:menu" class="w-6 h-6" />
-                        </Button>
-                    </div>
-                </div>
-            </AppContainer>
-        </div>
+  <div
+    class="fixed z-10 w-full"
+    :class="{
+      'bg-white': !isHomePage,
+    }"
+  >
+    <div class="py-3">
+      <AppContainer>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between flex-1 space-x-4">
+            <NavbarLogo />
 
-        <!-- Mobile menu -->
-        <Transition name="slide-fade">
-            <div v-if="isMobileMenuOpen" class="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden">
-                <div class="fixed inset-y-0 right-0 z-50 w-full max-w-sm border-l shadow-lg bg-background">
-                    <div class="flex flex-col h-full">
-                        <div class="flex items-center justify-between p-4 border-b">
-                            <h2 class="text-lg font-semibold">Menu</h2>
-                            <Button variant="ghost" size="icon" @click="toggleMobileMenu">
-                                <Icon name="lucide:x" class="w-6 h-6" />
-                            </Button>
-                        </div>
-                        <nav class="flex flex-col p-4 space-y-4">
-                            <Button v-for="item in mainMenu" :key="item.path" variant="ghost" :to="item.path"
-                                @click="toggleMobileMenu">
-                                <Icon :name="item.icon" class="w-4 h-4 mr-2" />
-                                {{ item.name }}
-                            </Button>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </Transition>
+            <nav class="hidden px-4 space-x-4 md:flex">
+              <NuxtLink
+                v-for="item in mainMenu"
+                :key="item.path"
+                :to="item.path"
+                class="flex items-center px-4 py-2 transition-colors duration-300 rounded-md cursor-pointer outline outline-transparent"
+                :class="{
+                  'text-white hover:outline-primary hover:text-white':
+                    isHomePage,
+                  'text-slate-600 hover:text-slate-900 hover:bg-slate-100':
+                    !isHomePage,
+                  'bg-primary text-white': $route.path === item.path,
+                }"
+              >
+                <Icon :name="item.icon" class="w-5 h-5 mr-2" />
+                {{ item.name }}
+              </NuxtLink>
+            </nav>
+          </div>
+          <div class="flex items-center space-x-4">
+            <NavbarUserMenu />
+            <Button
+              variant="ghost"
+              size="icon"
+              class="md:hidden"
+              :class="{
+                'text-white hover:outline-primary hover:text-white': isHomePage,
+                'text-slate-600 hover:text-slate-900 hover:bg-slate-100':
+                  !isHomePage,
+              }"
+              @click="toggleMobileMenu"
+            >
+              <Icon name="lucide:menu" class="w-6 h-6" />
+            </Button>
+          </div>
+        </div>
+      </AppContainer>
     </div>
+
+    <!-- Mobile menu -->
+    <Transition name="slide-fade">
+      <div
+        v-if="isMobileMenuOpen"
+        class="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden"
+      >
+        <div
+          class="fixed inset-y-0 right-0 z-50 w-full max-w-sm border-l shadow-lg bg-background"
+        >
+          <div class="flex flex-col h-full">
+            <div class="flex items-center justify-between p-4 border-b">
+              <h2 class="text-lg font-semibold">Menu</h2>
+              <Button variant="ghost" size="icon" @click="toggleMobileMenu">
+                <Icon name="lucide:x" class="w-6 h-6" />
+              </Button>
+            </div>
+            <nav class="flex flex-col p-4 space-y-4">
+              <NuxtLink
+                v-for="item in mainMenu"
+                :key="item.path"
+                :to="item.path"
+                @click="toggleMobileMenu"
+                class="flex items-center px-4 py-2 rounded-md transition-colors duration-200 hover:bg-primary hover:text-white"
+                :class="{
+                  'bg-primary text-white': $route.path === item.path,
+                  'text-foreground hover:text-primary':
+                    $route.path !== item.path,
+                }"
+              >
+                <Icon :name="item.icon" class="w-5 h-5 mr-3" />
+                <span class="font-medium">{{ item.name }}</span>
+              </NuxtLink>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { mainMenu } from '@/constants/menus'
+import { ref } from "vue";
+import { mainMenu } from "@/constants/menus";
 
-const isMobileMenuOpen = ref(false)
+const isMobileMenuOpen = ref(false);
 
 function toggleMobileMenu() {
-    isMobileMenuOpen.value = !isMobileMenuOpen.value
+  isMobileMenuOpen.value = !isMobileMenuOpen.value;
 }
 
-
-const route = useRoute()
-const isHomePage = computed(() => route.path === '/')
+const route = useRoute();
+const isHomePage = computed(() => route.path === "/");
 </script>
 
 <style scoped>
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-    transition: all 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-    transform: translateX(100%);
-    opacity: 0;
+  transform: translateX(100%);
+  opacity: 0;
 }
 </style>
