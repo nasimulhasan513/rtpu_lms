@@ -1,16 +1,13 @@
 import { z } from "zod";
 
 export const CourseSchema = z.object({
-  slug: z
-    .string()
-    .min(1, "Slug is required"),
+  slug: z.string().min(1, "Slug is required"),
   name: z.string().min(1, "Course name is required"),
   short_description: z.string().min(1, "Short description is required"),
   description: z.string().min(1, "Description is required"),
   category_id: z
     .string()
-    .min(1, "Category  is required")
-    .regex(/^[a-f\d]{24}$/i, "Invalid category ID"),
+    .min(1, "Category  is required"),
   image: z.string().url("Image must be a valid URL"),
   promo_video: z
     .string()
@@ -40,10 +37,9 @@ export const CourseSchema = z.object({
       z
         .string()
         .min(1, "Teacher ID is required")
-        .regex(/^[a-f\d]{24}$/i, "Invalid teacher ID")
     )
     .nonempty("At least one teacher is required"),
- 
+
   sale_price: z.number().min(0, "Sale price must be a non-negative number"),
   regular_price: z
     .number()

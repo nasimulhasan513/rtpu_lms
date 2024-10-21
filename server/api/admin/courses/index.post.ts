@@ -3,9 +3,7 @@ import { zh } from "h3-zod";
 import { CourseSchema } from "~/schema/course.schema";
 
 export default defineEventHandler(async (event) => {
-
   await validateRequest(event, ["ADMIN", "MODERATOR"]);
-
 
   const { data, error } = await zh.useSafeValidatedBody(event, CourseSchema);
 
@@ -15,7 +13,7 @@ export default defineEventHandler(async (event) => {
       statusMessage: error,
     };
   }
- 
+
   await db.course.create({
     data: {
       slug: data.slug,
@@ -26,7 +24,7 @@ export default defineEventHandler(async (event) => {
       promo_video: data.promo_video,
       sale_price: data.sale_price,
       regular_price: data.regular_price,
-      status: data.status as CourseStatus,
+      status: "PUBLISHED" as CourseStatus,
       duration: data.duration,
       enrolled: data.enrolled,
       fb_group: data.fb_group,
@@ -35,7 +33,6 @@ export default defineEventHandler(async (event) => {
       order: data.order,
       category_id: data.category_id,
       teachers: { create: data.teachers.map((id) => ({ teacher_id: id })) },
-    
     },
   });
 

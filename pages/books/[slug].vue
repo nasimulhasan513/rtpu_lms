@@ -1,161 +1,78 @@
 <template>
   <AppContainer>
-    <div class="container mx-auto py-8 px-4">
-      <!-- Course Header -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <div class="md:col-span-2">
-          <h1 class="text-3xl font-bold mb-4">
-            {{ courseDetails.courseName }}
-          </h1>
-          <p class="text-lg mb-4">{{ courseDetails.forWhom }}</p>
-          <div class="flex items-center mb-4">
-            <span class="text-2xl font-semibold text-primary mr-4">
-              ৳{{ courseDetails.pricing.discountedPrice }}
-            </span>
-            <span class="text-lg text-muted-foreground line-through">
-              ৳{{ courseDetails.pricing.originalPrice }}
-            </span>
-          </div>
-          <div class="flex items-center gap-4 mb-4">
-            <Button @click="addToCart">Enroll Now</Button>
-            <Button variant="outline">Add to Wishlist</Button>
-          </div>
-        </div>
+    <div class="container px-4 py-8 mx-auto">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <!-- Book Cover -->
         <div class="md:col-span-1">
-          <img
-            :src="courseDetails.thumbnail"
-            :alt="courseDetails.courseName"
-            class="w-full rounded-lg shadow-lg"
-          />
+          <img :src="book.cover" :alt="book.name" class="w-full rounded-lg shadow-lg" />
         </div>
-      </div>
 
-      <!-- Course Details -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Left Column -->
+        <!-- Book Details -->
         <div class="md:col-span-2">
-          <!-- Promo Video -->
-          <div class="mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Course Preview</h2>
-            <video
-              :src="courseDetails.promoVideo"
-              controls
-              class="w-full rounded-lg"
-            ></video>
+          <h1 class="mb-4 text-3xl font-bold">{{ book.name }}</h1>
+
+          <div class="flex items-center mb-4">
+            <span class="mr-4 text-2xl font-semibold text-primary">৳{{ book.sale_price }}</span>
+            <span v-if="book.regular_price > book.sale_price" class="text-lg line-through text-muted-foreground">৳{{
+              book.regular_price }}</span>
           </div>
 
-          <!-- Description -->
-          <div class="mb-8">
-            <h2 class="text-2xl font-semibold mb-4">About This Course</h2>
-            <div v-html="courseDetails.description" class="prose"></div>
+          <p class="mb-4 text-lg">{{ book.short_description }}</p>
+
+          <div class="mb-4">
+            <h2 class="mb-2 text-xl font-semibold">Authors:</h2>
+            <div class="flex flex-wrap gap-4">
+              <div v-for="author in book.authors" :key="author.id" class="flex items-center">
+                <img :src="author.image" :alt="author.name" class="w-10 h-10 mr-2 rounded-full" />
+                <div>
+                  <p class="font-medium">{{ author.name }}</p>
+                  <p class="text-sm text-muted-foreground">
+                    {{ author.shortDesignation }}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Syllabus -->
-          <div class="mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Course Syllabus</h2>
+          <div class="mb-4">
+            <h2 class="mb-2 text-xl font-semibold">Description:</h2>
             <ul class="list-disc list-inside">
-              <li
-                v-for="(module, index) in courseDetails.syllabus"
-                :key="index"
-                class="mb-2"
-              >
-                {{ module }}
+              <li v-for="(desc, index) in book.description" :key="index" class="mb-2">
+                {{ desc }}
               </li>
             </ul>
           </div>
 
-          <!-- FAQ -->
-          <div class="mb-8">
-            <h2 class="text-2xl font-semibold mb-4">
-              Frequently Asked Questions
-            </h2>
-            <Accordion type="single" collapsible class="w-full">
-              <AccordionItem
-                v-for="(faq, index) in courseDetails.faq"
-                :key="index"
-                :value="`item-${index}`"
-              >
-                <AccordionTrigger>{{ faq.question }}</AccordionTrigger>
-                <AccordionContent>
-                  {{ faq.answer }}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+          <div class="flex items-center gap-4 mb-4">
+            <Button @click="addToCart">Add to Cart</Button>
+            <Button variant="outline">Add to Wishlist</Button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="font-semibold">Category:</span> {{ book.category }}
+            </div>
+            <div>
+              <span class="font-semibold">Pages:</span> {{ book.pages }}
+            </div>
+            <div>
+              <span class="font-semibold">Weight:</span> {{ book.weight }}g
+            </div>
+            <div>
+              <span class="font-semibold">Stock:</span>
+              {{ book.remaining_stock }}
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Right Column -->
-        <div class="md:col-span-1">
-          <!-- Instructor Info -->
-          <Card class="mb-8">
-            <CardHeader>
-              <CardTitle>Instructor</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div class="flex it items-center">
-                <div class="w-20 h-20 mr-4 overflow-hidden rounded-full">
-                  <img
-                    :src="courseDetails.instructor.image"
-                    :alt="courseDetails.instructor.name"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <h3 class="font-semibold">
-                    {{ courseDetails.instructor.name }}
-                  </h3>
-                  <p class="text-sm text-muted-foreground">
-                    {{ courseDetails.instructor.designation }}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <!-- Course Info -->
-          <Card class="mb-8">
-            <CardHeader>
-              <CardTitle>Course Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div class="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span class="font-semibold">Duration:</span>
-                  {{ courseDetails.duration }}
-                </div>
-                <div>
-                  <span class="font-semibold">Lessons:</span>
-                  {{ courseDetails.lessons.length }}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <!-- Course Content -->
-          <Card>
-            <CardHeader>
-              <CardTitle>Course Content</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul class="space-y-2">
-                <li
-                  v-for="(lesson, index) in courseDetails.lessons"
-                  :key="index"
-                  class="flex items-center"
-                >
-                  <Icon
-                    :name="lesson.isUnlocked ? 'lucide:unlock' : 'lucide:lock'"
-                    class="mr-2"
-                  />
-                  <span
-                    :class="{ 'text-muted-foreground': !lesson.isUnlocked }"
-                  >
-                    {{ lesson.title }}
-                  </span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+      <!-- Preview Images -->
+      <div class="mt-12">
+        <h2 class="mb-4 text-2xl font-semibold">Preview Pages</h2>
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <img v-for="(preview, index) in book.preview" :key="index" :src="preview" :alt="`Preview page ${index + 1}`"
+            class="w-full transition-opacity rounded-lg shadow cursor-pointer hover:opacity-80"
+            @click="openPreview(index)" />
         </div>
       </div>
     </div>
@@ -163,83 +80,90 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useToast } from "@/components/ui/toast";
 
 const route = useRoute();
 const { toast } = useToast();
 
-// Course details (replace this with actual data fetching logic)
-const courseDetails = {
-  thumbnail:
-    "https://shahriarsirrtpu.s3.ap-southeast-2.amazonaws.com/images/BrSZxWGdBy1715777003.jpg",
-  promoVideo: "https://example.com/promo-video.mp4",
-  instructor: {
-    name: "John Doe",
-    designation: "Senior Data Scientist",
-    image:
-      "https://shahriarsirrtpu.s3.ap-southeast-2.amazonaws.com/images/qoEva51XWu1708938568.png",
-  },
-  courseName: "Mastering Data Science with Python",
-  duration: "12 Weeks",
-  forWhom: "Beginners to Intermediate Learners interested in Data Science",
-  pricing: {
-    originalPrice: 299.99,
-    discountedPrice: 199.99,
-  },
-  lessons: [
-    { title: "Introduction to Data Science", isUnlocked: true },
-    { title: "Python Basics", isUnlocked: true },
-    { title: "Data Manipulation with Pandas", isUnlocked: false },
-    { title: "Data Visualization with Matplotlib", isUnlocked: false },
-    { title: "Machine Learning Overview", isUnlocked: false },
+// Fetch book data based on the slug
+const book = {
+  id: "66c8c22f9b291f39575bba01",
+  name: "রসায়ন ১ম পত্র",
+  cover:
+    "https://storage.rhombuspublications.com/cover/WhatsApp Image 2024-09-20 at 11_560_1726810986493",
+  preview: [
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_399_1726846944401",
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_384_1726846946755",
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_713_1726846948183",
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_215_1726846949412",
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_821_1726846951371",
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_95_1726846952588",
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_316_1726846955146",
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_176_1726846956139",
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_826_1726846957883",
+    "https://storage.rhombuspublications.com/pages/enc1/Engg_348_1726846959366",
   ],
-  syllabus: [
-    "Module 1: Introduction to Data Science",
-    "Module 2: Python Programming Fundamentals",
-    "Module 3: Data Manipulation and Cleaning",
-    "Module 4: Data Visualization Techniques",
-    "Module 5: Introduction to Machine Learning",
-  ],
-  description: `
-    <p>In this comprehensive course, you'll gain the essential skills needed to excel in data science.</p>
-    <ul>
-      <li>Learn Python from scratch</li>
-      <li>Work with real-world datasets</li>
-      <li>Build machine learning models</li>
-      <li>Create insightful visualizations</li>
-    </ul>
-  `,
-  faq: [
+  category: "engineering",
+  authors: [
     {
-      question: "What prerequisites do I need?",
-      answer: "Basic knowledge of programming is helpful, but not mandatory.",
+      id: "66c8bc8e9b291f39575bb9fc",
+      name: "মোঃ নাজমুস সাকিব",
+      image:
+        "https://storage.rhombuspublications.com/authors/fbb3xtocc6gosgesmf9m.png",
+      shortDesignation: "Chemistry Department, DU'17",
     },
     {
-      question: "How is this course delivered?",
-      answer:
-        "The course is a mix of video lectures, quizzes, and hands-on projects.",
+      id: "66c8bcb29c9584fdaceb7634",
+      name: "সঞ্জয় চক্রবর্তী",
+      image:
+        "https://storage.rhombuspublications.com/authors/lqmbxt0rvvnezuxyitqc.png",
+      shortDesignation: "ME, BUET'10",
     },
     {
-      question: "Will I receive a certificate?",
-      answer: "Yes, you'll get a certificate upon completing all the lessons.",
+      id: "66c8bcc59c9584fdaceb7635",
+      name: "হিমেল বড়ুয়া",
+      image:
+        "https://storage.rhombuspublications.com/authors/bnwskpon3qhjtkopfluo.png",
+      shortDesignation: "EEE, BUET'17",
     },
   ],
+  short_description: "ইঞ্জিনিয়ারিং প্রস্তুতির সেরা রসায়ন বই",
+  description: [
+    "BUET, CKRUET, IUT, MIST, BUTex এর ভর্তি পরীক্ষায় আসা বিগত বছরের MCQ ও Written প্রশ্নের টপিকভিত্তিক Analysis.",
+    "টপিকভিত্তিক Practice Problem গুলো এমনভাবে বাছাই করা হয়েছে যেন তোমার ইঞ্জিনিয়ারিং ভর্তি প্রস্তুতি একদম পূর্ণাঙ্গ হয়।",
+    "সকল MCQ এবং Written প্রশ্নের সহজ ব্যাখ্যাসহ সমাধান যেন শিক্ষার্থীরা সহজে আয়ত্ত করতে পারে।",
+    "MCQ সমাধানের জন্য প্রয়োজনীয় সকল Shortcut Technique বইটিতে পর্যাপ্ত উদাহরণসহ দেওয়া আছে যেন স্বল্পতম সময়ে MCQ সমাধান করা যায়।",
+  ],
+  keywords: ["rhombus"],
+  sale_price: 400,
+  regular_price: 450,
+  stock: 1265,
+  sold: 1220,
+  pages: 192,
+  weight: 250,
+  slug: "enc1",
+  order: 3,
+  charge: 11,
+  status: "upcoming",
+  reviewed: "no",
+  avgRating: "4.3",
+  totalReview: 3,
+  remaining_stock: 45,
 };
 
 const addToCart = () => {
+  // Implement add to cart logic here
   toast({
-    title: "Enrolled Successfully",
-    description: `You have been enrolled in ${courseDetails.courseName}.`,
+    title: "Added to Cart",
+    description: `${book.value.name} has been added to your cart.`,
   });
+};
+
+const openPreview = (index) => {
+  // Implement preview modal logic here
+  console.log(`Opening preview for image ${index + 1}`);
 };
 </script>
 
-<style lang="scss" scoped>
-.prose {
-  @apply text-sm leading-relaxed;
-
-  ul {
-    @apply list-disc list-inside;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

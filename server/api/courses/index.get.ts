@@ -5,11 +5,23 @@ export default defineEventHandler(async (event) => {
 
   try {
     const courses = await db.course.findMany({
-      where: featured ? { status: "published" } : {},
+      where: featured ? { status: "PUBLISHED" } : {},
       take: limit,
       orderBy: { order: "asc" },
-      include: {
-        category: true,
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        image: true,
+        sale_price: true,
+        regular_price: true,
+        duration: true,
+        enrolled: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
