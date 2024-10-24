@@ -2,27 +2,14 @@
   <AppContainer>
     <div class="container px-4 py-8 mx-auto">
       <!-- Course Header -->
-      <div class="grid grid-cols-1 gap-8 mb-12 md:grid-cols-3">
-        <div class="md:col-span-2 overflow-y-auto max-h-screen">
+      <div class="grid min-h-screen grid-cols-1 gap-8 mb-12 md:grid-cols-3">
+        <div class="overflow-y-auto md:col-span-2">
           <h1 class="mb-4 text-3xl font-bold">
             {{ course.name }}
           </h1>
-          <div class="flex items-center mb-4">
-            <div class="flex items-center mr-4">
-              <Icon name="lucide:star" class="w-5 h-5 text-yellow-400" />
-              <span class="ml-1 font-semibold">{{ course.rating }}</span>
-            </div>
-            <span class="text-sm text-muted-foreground"
-              >({{ course.ratingCount }} ratings)</span
-            >
-          </div>
-          <p class="mb-4 text-sm text-muted-foreground">
-            {{ course.studentCount }} students
-          </p>
-          <p class="mb-4">
-            Created by
-            <span class="font-semibold">{{ course.instructor }}</span>
-          </p>
+
+
+
           <p class="mb-6 text-lg">{{ course.description }}</p>
           <!-- Instructor Info -->
           <Card class="mb-8">
@@ -32,10 +19,7 @@
             <CardContent>
               <div class="flex items-center mb-4">
                 <Avatar class="w-16 h-16 mr-4">
-                  <AvatarImage
-                    :src="course.instructorImage"
-                    :alt="course.instructor"
-                  />
+                  <AvatarImage :src="course.instructorImage" :alt="course.instructor" />
                   <AvatarFallback>{{
                     course.instructor.charAt(0)
                   }}</AvatarFallback>
@@ -49,164 +33,128 @@
               </div>
             </CardContent>
           </Card>
-        </div>
-        <div class="md:col-span-1 relative sticky top-0">
-          <div class="md:col-span-1 border p-5 border-red-700">
-            <img
-              :src="course.image"
-              :alt="course.name"
-              class="w-full rounded-lg shadow-lg"
-            />
+          <!-- Course Details -->
 
-            <div class="flex items-center gap-4 justify-end pt-4">
-              <div class="flex items-center mb-4">
-                <span class="mr-4 text-3xl font-semibold text-primary">
-                  ${{ course.salePrice }}
-                </span>
-                <span class="text-lg line-through text-muted-foreground">
-                  ${{ course.regularPrice }}
-                </span>
-                <span class="ml-2 text-sm font-semibold text-green-600">
-                  ({{ course.discount }}% off)
-                </span>
-              </div>
-              <Button
-                @click="addToCart"
-                class="px-8 py-6 text-lg text-white font-semibold bg-purple-600 hover:bg-purple-700"
-              >
-                Buy Now
-              </Button>
-            </div>
-            <div class="md:col-span-1 pt-6">
-              <Card class="mb-8">
-                <CardHeader>
-                  <CardTitle>Course Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div class="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span class="font-semibold">Duration:</span>
-                      {{ course.duration }}
-                    </div>
-                    <div>
-                      <span class="font-semibold">Lessons:</span>
-                      {{ course.totalLessons }}
-                    </div>
-                    <div>
-                      <span class="font-semibold">Level:</span>
-                      {{ course.level }}
-                    </div>
-                    <div>
-                      <span class="font-semibold">Language:</span>
-                      {{ course.language }}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </div>
+          <!-- Left Column -->
+          <div class="md:col-span-2">
+            <!-- Course Content -->
+            <Card class="mb-8">
+              <CardHeader>
+                <CardTitle>Course Content</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible class="w-full">
+                  <AccordionItem v-for="(week, index) in course.weeks" :key="index" :value="`week-${index + 1}`">
+                    <AccordionTrigger>{{ week.title }}</AccordionTrigger>
+                    <AccordionContent>
+                      <ul class="space-y-2">
+                        <li v-for="(lesson, lessonIndex) in week.lessons" :key="lessonIndex" class="flex items-center">
+                          <Icon :name="lesson.icon" class="w-5 h-5 mr-2 text-muted-foreground" />
+                          <span>{{ lesson.title }}</span>
+                          <span class="ml-auto text-sm text-muted-foreground">{{
+                            lesson.duration
+                          }}</span>
+                        </li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
 
-      <!-- Course Details -->
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-        <!-- Left Column -->
-        <div class="md:col-span-2">
-          <!-- Course Content -->
-          <Card class="mb-8">
-            <CardHeader>
-              <CardTitle>Course Content</CardTitle>
-            </CardHeader>
-            <CardContent>
+            <!-- Course Includes -->
+            <Card class="mb-8">
+              <CardHeader>
+                <CardTitle>This course includes:</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul class="grid grid-cols-2 gap-4">
+                  <li v-for="(item, index) in course.includes" :key="index" class="flex items-center">
+                    <Icon :name="item.icon" class="w-5 h-5 mr-2 text-primary" />
+                    <span>{{ item.text }}</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <!-- Description -->
+            <div class="mb-8">
+              <h2 class="mb-4 text-2xl font-semibold">About This Course</h2>
+              <div v-html="course.description" class="prose"></div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="mb-8">
+              <h2 class="mb-4 text-2xl font-semibold">
+                Frequently Asked Questions
+              </h2>
               <Accordion type="single" collapsible class="w-full">
-                <AccordionItem
-                  v-for="(week, index) in course.weeks"
-                  :key="index"
-                  :value="`week-${index + 1}`"
-                >
-                  <AccordionTrigger>{{ week.title }}</AccordionTrigger>
+                <AccordionItem v-for="(faq, index) in course.faq" :key="index" :value="`item-${index}`">
+                  <AccordionTrigger>{{ faq.question }}</AccordionTrigger>
                   <AccordionContent>
-                    <ul class="space-y-2">
-                      <li
-                        v-for="(lesson, lessonIndex) in week.lessons"
-                        :key="lessonIndex"
-                        class="flex items-center"
-                      >
-                        <Icon
-                          :name="lesson.icon"
-                          class="w-5 h-5 mr-2 text-muted-foreground"
-                        />
-                        <span>{{ lesson.title }}</span>
-                        <span class="ml-auto text-sm text-muted-foreground">{{
-                          lesson.duration
-                        }}</span>
-                      </li>
-                    </ul>
+                    {{ faq.answer }}
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-            </CardContent>
-          </Card>
-
-          <!-- Course Includes -->
-          <Card class="mb-8">
-            <CardHeader>
-              <CardTitle>This course includes:</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul class="grid grid-cols-2 gap-4">
-                <li
-                  v-for="(item, index) in course.includes"
-                  :key="index"
-                  class="flex items-center"
-                >
-                  <Icon :name="item.icon" class="w-5 h-5 mr-2 text-primary" />
-                  <span>{{ item.text }}</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <!-- Description -->
-          <div class="mb-8">
-            <h2 class="mb-4 text-2xl font-semibold">About This Course</h2>
-            <div v-html="course.description" class="prose"></div>
+            </div>
           </div>
 
-          <!-- FAQ -->
-          <div class="mb-8">
-            <h2 class="mb-4 text-2xl font-semibold">
-              Frequently Asked Questions
-            </h2>
-            <Accordion type="single" collapsible class="w-full">
-              <AccordionItem
-                v-for="(faq, index) in course.faq"
-                :key="index"
-                :value="`item-${index}`"
-              >
-                <AccordionTrigger>{{ faq.question }}</AccordionTrigger>
-                <AccordionContent>
-                  {{ faq.answer }}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+
         </div>
-
-        <!-- Right Column -->
         <div class="md:col-span-1">
-          <!-- Course Info -->
+          <div class="sticky p-4 border rounded-md top-24">
+            <div>
+              <img :src="course.image" :alt="course.name" class="w-full mb-4 rounded-lg" />
+
+              <div class="flex items-center mb-4">
+                <Icon name="lucide:users" class="w-5 h-5 mr-2 text-muted-foreground" />
+                <span class="text-sm text-muted-foreground">{{ course.studentCount }} students enrolled</span>
+              </div>
+
+              <div class="flex items-center mb-4">
+                <Icon name="lucide:clock" class="w-5 h-5 mr-2 text-muted-foreground" />
+                <span class="text-sm text-muted-foreground">{{ course.duration }}</span>
+              </div>
+
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl font-semibold text-primary">
+                  Tk. {{ course.salePrice }}
+                </span>
+                <span class="text-lg line-through text-muted-foreground">
+                  Tk. {{ course.regularPrice }}
+                </span>
+              </div>
+
+
+
+              <div class="flex items-center mb-4">
+                <Input v-model="promoCode" placeholder="Enter promo code" class="mr-2" />
+                <Button variant="outline" @click="applyPromoCode">
+                  Apply
+                </Button>
+              </div>
+
+              <Button class="w-full" size="lg" variant="secondary" @click="enroll">
+                Enroll Now
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
+
+
     </div>
   </AppContainer>
 </template>
 
 <script setup>
 import { useToast } from "@/components/ui/toast";
+import { ref } from 'vue';
 
 const route = useRoute();
 const { toast } = useToast();
+
+const promoCode = ref('');
 
 // Simulated course data (replace with actual API call)
 const course = ref({
@@ -287,10 +235,27 @@ const course = ref({
   ],
 });
 
-const addToCart = () => {
+const purchase = () => {
+  // Implement purchase logic
   toast({
-    title: "Added to Cart",
-    description: `${course.value.name} has been added to your cart.`,
+    title: "Purchase initiated",
+    description: "Redirecting to payment gateway...",
+  });
+};
+
+const applyPromoCode = () => {
+  // Implement promo code logic
+  toast({
+    title: "Promo code applied",
+    description: `Promo code "${promoCode.value}" has been applied.`,
+  });
+};
+
+const enroll = () => {
+  // Implement enrollment logic
+  toast({
+    title: "Enrollment successful",
+    description: "You have been enrolled in the course.",
   });
 };
 </script>
