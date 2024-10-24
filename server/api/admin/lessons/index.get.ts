@@ -4,17 +4,17 @@ const querySchema = z.object({
   page: z.string().default("1"),
   limit: z.string().default("10"),
   search: z.string().optional(),
-  subjectId: z.string().optional(),
-  chapterId: z.string().optional(),
-  courseId: z.string().optional(),
+  subject_id: z.string().optional(),
+  chapter_id: z.string().optional(),
+  course_id: z.string().optional(),
 });
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["ADMIN", "contributor"]);
+  await validateRequest(event, ["ADMIN"]);
 
   try {
     const query = getQuery(event);
-    const { page, limit, search, subjectId, chapterId, courseId } =
+    const { page, limit, search, subject_id, chapter_id, course_id } =
       querySchema.parse(query);
 
     const pageNumber = parseInt(page);
@@ -31,9 +31,9 @@ export default defineEventHandler(async (event) => {
               ],
             }
           : {},
-        subjectId ? { subjectId } : {},
-        chapterId ? { chapterId } : {},
-        courseId ? { courses: { some: { courseId } } } : {},
+        subject_id ? { subject_id } : {},
+        chapter_id ? { chapter_id } : {},
+        course_id ? { courses: { some: { course_id } } } : {},
       ],
     };
 
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
         },
         skip,
         take: limitNumber,
-        orderBy: { createdAt: "desc" },
+        orderBy: { created_at: "desc" },
       }),
       db.lesson.count({ where }),
     ]);

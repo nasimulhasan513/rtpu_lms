@@ -22,11 +22,7 @@
           </div>
         </div>
         <div class="md:col-span-1">
-          <img
-            :src="course.image"
-            :alt="course.name"
-            class="w-full rounded-lg shadow-lg"
-          />
+          <img :src="course.image" :alt="course.name" class="w-full rounded-lg shadow-lg" />
         </div>
       </div>
 
@@ -37,11 +33,7 @@
           <!-- Promo Video -->
           <div class="mb-8">
             <h2 class="mb-4 text-2xl font-semibold">Course Preview</h2>
-            <video
-              :src="courseDetails.promoVideo"
-              controls
-              class="w-full rounded-lg"
-            ></video>
+            <video :src="courseDetails.promoVideo" controls class="w-full rounded-lg"></video>
           </div>
 
           <!-- Description -->
@@ -54,11 +46,7 @@
           <div class="mb-8">
             <h2 class="mb-4 text-2xl font-semibold">Course Syllabus</h2>
             <ul class="list-disc list-inside">
-              <li
-                v-for="(module, index) in courseDetails.syllabus"
-                :key="index"
-                class="mb-2"
-              >
+              <li v-for="(module, index) in courseDetails.syllabus" :key="index" class="mb-2">
                 {{ module }}
               </li>
             </ul>
@@ -70,11 +58,7 @@
               Frequently Asked Questions
             </h2>
             <Accordion type="single" collapsible class="w-full">
-              <AccordionItem
-                v-for="(faq, index) in courseDetails.faq"
-                :key="index"
-                :value="`item-${index}`"
-              >
+              <AccordionItem v-for="(faq, index) in courseDetails.faq" :key="index" :value="`item-${index}`">
                 <AccordionTrigger>{{ faq.question }}</AccordionTrigger>
                 <AccordionContent>
                   {{ faq.answer }}
@@ -92,28 +76,7 @@
               <CardTitle>Instructors</CardTitle>
             </CardHeader>
             <CardContent>
-              <div
-                v-for="(teacher, index) in course.teachers"
-                :key="index"
-                class="flex items-center mb-4"
-              >
-                <div class="w-20 h-20 mr-4 overflow-hidden rounded-full">
-                  <Avatar>
-                    <AvatarImage :src="teacher.image" :alt="teacher.name" />
-                    <AvatarFallback>{{
-                      teacher.image.charAt(0)
-                    }}</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div>
-                  <h3 class="font-semibold">
-                    {{ teacher.name }}
-                  </h3>
-                  <p class="text-sm text-muted-foreground">
-                    {{ teacher.designation }}
-                  </p>
-                </div>
-              </div>
+
             </CardContent>
           </Card>
 
@@ -143,18 +106,9 @@
             </CardHeader>
             <CardContent>
               <ul class="space-y-2">
-                <li
-                  v-for="(lesson, index) in courseDetails.lessons"
-                  :key="index"
-                  class="flex items-center"
-                >
-                  <Icon
-                    :name="lesson.isUnlocked ? 'lucide:unlock' : 'lucide:lock'"
-                    class="mr-2"
-                  />
-                  <span
-                    :class="{ 'text-muted-foreground': !lesson.isUnlocked }"
-                  >
+                <li v-for="(lesson, index) in courseDetails.lessons" :key="index" class="flex items-center">
+                  <Icon :name="lesson.isUnlocked ? 'lucide:unlock' : 'lucide:lock'" class="mr-2" />
+                  <span :class="{ 'text-muted-foreground': !lesson.isUnlocked }">
                     {{ lesson.title }}
                   </span>
                 </li>
