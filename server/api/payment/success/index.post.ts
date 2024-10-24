@@ -1,4 +1,3 @@
-
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
@@ -13,34 +12,35 @@ export default defineEventHandler(async (event) => {
       return sendRedirect(event, `/payment/failed`);
     }
 
-  
-
-
-
-   
-
-    const user = await db.user.findFirst({
+    const enrollment = await db.courseEnrollment.findFirst({
       where: {
-        id: order.userId,
-      },
-      select: {
-        name: true,
+        id: parseInt(value_a),
       },
     });
 
-    if (!user) {
-      return createError({
-        statusCode: 400,
-        statusMessage: "User not found",
-      });
+    if (!enrollment) {
+      return sendRedirect(event, `/payment/failed`);
     }
 
+    await db.courseEnrollment.update({
+      where: {
+        id: parseInt(value_a),
+      },
+      data: {
+        gateway_response: {
+          val_id,
+          card_type,
+          bank_tran_id,
+        },
+        paid_amount: parseFloat(store_amount),
+        enrolled_at: new Date(),
+        status: "success",
+      },
+    });
 
-    if (order.phone) {
-      const sms = `Dear ${order.name},\nYour order has been placed successfully. Your Order No is ${tran_id}.\nThank you. \n- Rhombus Publications`;
-      await sendSMS(order.phone, sms);
-    }
-    return sendRedirect(event, `/payment/${tran_id}/success`);
+    // send sms
+
+    return sendRedirect(event, `/payment/${enrollment.id}/success`);
   } catch (error) {
     console.error(error);
     return createError({

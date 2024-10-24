@@ -62,13 +62,14 @@ const buttonLabel = computed(() => (props.loading ? props.loadingText : props.la
 
 <template>
     <button :class="buttonClasses" :disabled="loading">
-        <span v-if="icon" class="mr-2">
-            <i :class="icon"></i>
-        </span>
+
         {{ buttonLabel }}
         <span v-if="loading" class="ml-2">
             <!-- You can replace this with a proper loading spinner component -->
             <span class="animate-spin">&#9696;</span>
+        </span>
+        <span v-if="icon" class="mr-2">
+            <Icon :name="icon" />
         </span>
     </button>
 </template>

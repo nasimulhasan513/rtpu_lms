@@ -3,22 +3,17 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const user = useUser();
     const { onOpen } = useLogin();
     if (!user.value) {
-      if (to.name === "shop-slug") {
+      if (to.name === "courses-slug") {
         return onOpen();
       } else {
-        return navigateTo(`/${to.params.shop}`);
+        return navigateTo(`/courses/${to.params.slug}`);
       }
     }
     const enrollment = await isEnrolled(to.params.slug as string);
-    if (enrollment && to.name == "shop-slug") {
-      const response = await $fetch(`/api/category/${to.params.shop}`);
-      if (response?.is_class) {
-        return navigateTo(`/${to.params.shop}/${to.params.slug}/lessons`);
-      } else {
-        return navigateTo(`/${to.params.shop}/${to.params.slug}/mcq`);
-      }
-    } else if (!enrollment && to.name !== "shop-slug") {
-      return navigateTo(`/${to.params.shop}/${to.params.slug}`);
+    if (enrollment && to.name == "courses-slug") {
+      return navigateTo(`/courses/${to.params.slug}/dashboard`);
+    } else if (!enrollment && to.name !== "courses-slug") {
+      return navigateTo(`/courses/${to.params.slug}`);
     }
   } catch (error) {
     console.error("Error checking enrollment:", error);

@@ -1,29 +1,23 @@
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
-  const featured = query.featured === "true";
-  const limit = parseInt(query.limit as string) || 20;
-
   try {
-    const courses = await db.course.findMany({
-      where: featured ? { status: "PUBLISHED" } : {},
-      take: limit,
-      orderBy: { order: "asc" },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        image: true,
-        sale_price: true,
-        regular_price: true,
-        duration: true,
-        enrolled: true,
-        category: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
+    const courses = await query(
+      `SELECT 
+        c.id,
+        c.name,
+        c.slug,
+        c.image,
+        c.sale_price,
+        c.regular_price,
+        c.duration,
+        c.enrolled,
+        cat.name AS category_name,
+        CASE WHEN ce.id IS NOT NULL THEN true ELSE false END AS is_enrolled
+      FROM courses c
+      LEFT JOIN categories cat ON c.category_id = cat.id
+      LEFT JOIN course_enrollments ce ON c.id = ce.course_id
+      WHERE c.status = 'PUBLISHED'
+    `
+    );
 
     return courses;
   } catch (error) {

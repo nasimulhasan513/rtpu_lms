@@ -1,16 +1,12 @@
 <template>
   <AppContainer>
-    <div class="container px-4 py-8 mx-auto">
+    <div class="container px-4 py-8 mx-auto" v-if="status === 'success'">
       <!-- Course Header -->
       <div class="grid min-h-screen grid-cols-1 gap-8 mb-12 md:grid-cols-3">
         <div class="overflow-y-auto md:col-span-2">
           <h1 class="mb-4 text-3xl font-bold">
             {{ courseData.name }}
           </h1>
-
-
-
-
           <!-- Instructor Info -->
           <Card class="mb-8">
             <CardHeader>
@@ -22,7 +18,7 @@
                   <AvatarImage :src="instructor.image" :alt="instructor.name" />
                   <AvatarFallback>{{
                     instructor.name.charAt(0)
-                  }}</AvatarFallback>
+                    }}</AvatarFallback>
                 </Avatar>
                 <div>
                   <h3 class="font-semibold">{{ instructor.name }}</h3>
@@ -67,7 +63,7 @@
                           <span>{{ lesson.title }}</span>
                           <span class="ml-auto text-sm text-muted-foreground">{{
                             lesson.duration
-                          }}</span>
+                            }}</span>
                         </li>
                       </ul>
                     </AccordionContent>
@@ -135,7 +131,7 @@
                 </Button>
               </div>
 
-              <AppButton :label="`এখনই কিনুন`" class="w-full" />
+              <AppButton :label="`এখনই কিনুন`" class="w-full" @click="purchase" :loading="loading" />
             </div>
           </div>
         </div>
@@ -147,6 +143,13 @@
 </template>
 
 <script setup>
+
+
+definePageMeta({
+  middleware: "enrolled",
+})
+
+
 import { useToast } from "@/components/ui/toast";
 import { ref } from 'vue';
 
@@ -156,7 +159,7 @@ const { toast } = useToast();
 const promoCode = ref('');
 
 
-const { data: courseData } = useFetch(`/api/courses/${route.params.slug}`);
+const { data: courseData, status } = useFetch(`/api/courses/${route.params.slug}`);
 
 
 // Simulated course data (replace with actual API call)
@@ -238,12 +241,24 @@ const course = ref({
   ],
 });
 
-const purchase = () => {
-  // Implement purchase logic
-  toast({
-    title: "Purchase initiated",
-    description: "Redirecting to payment gateway...",
-  });
+
+const loading = ref(false);
+
+const purchase = async () => {
+
+  try {
+    loading.value = true;
+    await $fetch(`/api/payment/${route.params.slug}`, {
+      method: "PUT",
+    });
+    return navigateTo(`/courses/${route.params.slug}/checkout`);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+
+
 };
 
 const applyPromoCode = () => {

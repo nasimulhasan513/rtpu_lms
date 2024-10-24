@@ -179,6 +179,7 @@ model CourseEnrollment {
   price            Int
   discount         Int
   payable_amount   Int
+  paid_amount      Int
   gateway_response Json?
   status           String    @default("pending")
   enrolled_at      DateTime  @default(now())
