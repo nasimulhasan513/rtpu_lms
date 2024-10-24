@@ -2,7 +2,7 @@ import { zh } from "h3-zod";
 import { LessonSchema } from "~/schema/lesson.schema";
 
 export default defineEventHandler(async (event) => {
-  await validateRequest(event, ["ADMIN", "contributor"]);
+  await validateRequest(event, ["ADMIN", "MODERATOR"]);
 
   const { data, error } = await zh.useSafeValidatedBody(event, LessonSchema);
 
@@ -16,13 +16,12 @@ export default defineEventHandler(async (event) => {
   const lesson = await db.lesson.create({
     data: {
       title: data.title,
-      subjectId: data.subjectId,
-      chapterId: data.chapterId,
-      teacherId: data.teacherId,
+    subject_id: data.subjectId,
+      chapter_id: data.chapterId,
+      teacher_id: data.teacherId,
       source: data.source,
       content: data.content,
       pdf: data.pdf,
-      order: data.order,
       is_archive: data.is_archive,
       is_downloadable: data.is_downloadable,
     },
@@ -31,8 +30,8 @@ export default defineEventHandler(async (event) => {
   if (data.courseIds && data.courseIds.length > 0) {
     await db.courseLesson.createMany({
       data: data.courseIds.map((courseId) => ({
-        courseId,
-        lessonId: lesson.id,
+        course_id: courseId,
+        lesson_id: lesson.id,
       })),
     });
   }

@@ -1,27 +1,50 @@
 <template>
   <div>
     <AppContainer v-if="!redirectLoading" class="py-12">
-      <h1 class="mb-8 text-4xl font-bold text-center">All Courses</h1>
-
-      <pre>
-        {{ courses }}
-      </pre>
-
-
       <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <Card v-for="course in courses" :key="course.id"
-          class="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <NuxtImg :src="course.image" :alt="course.name" class="object-contain w-full h-48" />
-          <CardContent class="p-4">
-            <h3 class="mb-2 text-xl font-semibold text-gray-900">
+        <Card
+          v-for="course in courses"
+          :key="course.id"
+          class="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 bg-white rounded-lg"
+        >
+          <div class="relative">
+            <NuxtImg
+              :src="course.image"
+              :alt="course.name"
+              class="object-cover w-full h-56"
+            />
+          </div>
+          <CardContent class="p-6">
+            <h3 class="mb-2 text-xl font-semibold text-gray-900 line-clamp-2">
               {{ course.name }}
             </h3>
-            <p class="mb-4 text-sm text-gray-600">
+            <div class="flex items-center mt-4 text-sm text-gray-500">
+              <Icon name="heroicons:clock" class="w-4 h-4 mr-1" />
+              <span>{{ formatNumber(course.duration) }} মাস</span>
+              <Icon name="heroicons:user-group" class="w-4 h-4 ml-4 mr-1" />
+              <span>{{ formatNumber(course.enrolled) }} জন ভর্তি হয়েছেন</span>
+            </div>
+            <p class="mb-4 text-sm text-gray-600 line-clamp-3">
               {{ course.short_description }}
             </p>
-            <div class="flex items-center justify-between">
-              <span class="text-lg font-bold text-primary">৳{{ course.sale_price }}</span>
-              <Button @click="navigateTo(`/courses/${course.slug}`)">View Course</Button>
+            <div class="flex items-center justify-between mt-4">
+              <div>
+                <span class="text-2xl font-bold text-primary"
+                  >Tk.{{ course.sale_price }}</span
+                >
+                <span
+                  v-if="course.regular_price > course.sale_price"
+                  class="ml-2 text-sm text-gray-500 line-through"
+                >
+                  Tk. {{ course.regular_price }}
+                </span>
+              </div>
+              <Button
+                @click="navigateTo(`/courses/${course.slug}`)"
+                variant="outline"
+              >
+                বিস্তারিত
+              </Button>
             </div>
           </CardContent>
         </Card>

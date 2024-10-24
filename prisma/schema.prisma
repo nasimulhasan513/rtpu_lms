@@ -240,7 +240,6 @@ model Lesson {
   pdf             String?
   is_archive      Boolean   @default(false)
   is_downloadable Boolean   @default(false)
-  order           Int       @default(0)
   schedule        DateTime?
   video_duration  Int?
   created_at      DateTime  @default(now())
