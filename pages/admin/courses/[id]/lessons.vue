@@ -77,7 +77,7 @@
                                 {{ lesson.is_downloadable ? 'Yes' : 'No' }}
                             </Badge>
                         </TableCell>
-                        <TableCell>{{ new Date(lesson.createdAt).toLocaleDateString() }}</TableCell>
+                        <TableCell>{{ new Date(lesson.created_at).toLocaleDateString() }}</TableCell>
                         <TableCell>
                             <div class="flex gap-2">
                                 <Button @click="editLesson(lesson)" variant="outline">
@@ -99,7 +99,7 @@
                 <div class="flex items-center">
                     <span class="text-sm text-gray-700">
                         Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage,
-                totalCount) }} of {{ totalCount }} results
+                            totalCount) }} of {{ totalCount }} results
                     </span>
                 </div>
                 <div class="flex justify-between mt-4 sm:mt-0">
@@ -141,9 +141,9 @@ const { data, status, error, refresh } = await useFetch('/api/admin/lessons', {
         page: currentPage.value,
         limit: itemsPerPage.value,
         search: search.value,
-        courseId: route.params.id,
-        subjectId: selectedSubject.value,
-        chapterId: selectedChapter.value,
+        course_id: route.params.id,
+        subject_id: selectedSubject.value,
+        chapter_id: selectedChapter.value,
     })),
     transform: (response) => {
         totalCount.value = response.body.totalCount

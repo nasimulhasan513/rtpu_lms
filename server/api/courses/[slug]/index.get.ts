@@ -1,3 +1,5 @@
+import { query } from "~/server/utils/db";
+
 export default defineEventHandler(async (event) => {
   const slug = event.context.params?.slug;
 
@@ -9,54 +11,42 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    const courseQuery = `
+      SELECT 
+             c.name,
+             c.slug,
+             c.short_description,
+             c.description,
+             c.image,
+             c.sale_price,
+             c.regular_price,
+             c.promo_video,
+             c.duration,
+             c.enrolled,
+             c.keywords,
+             json_agg(json_build_object(
+               'id', t.id,
+               'name', t.name,
+               'image', t.image,
+               'designation', t.designation
+             )) AS teachers
+      FROM courses c
+      LEFT JOIN course_teachers ct ON c.id = ct.course_id
+      LEFT JOIN teachers t ON ct.teacher_id = t.id
+      WHERE c.slug = $1 AND t.deleted_at IS NULL
+      GROUP BY c.id
+    `;
 
-    const cacheKey = `course-${slug}`;
-    const cachedData = await getCache(cacheKey);
+    const result = await query(courseQuery, [slug]);
 
-    if (cachedData) {
-      return cachedData;
-    }
-
-    const course = await db.course.findUnique({
-      where: { slug },
-      include: {
-        category: true,
-        teachers: {
-          include: {
-            teacher: true,
-          },
-        },
-        lessons: {
-          include: {
-            lesson: true,
-          },
-        },
-      },
-    });
-
-    if (!course) {
+    if (result.length === 0) {
       return {
         status: 404,
         body: { message: "Course not found" },
       };
     }
 
-    // Transform the course data to include teacher information directly
-    const transformedCourse = {
-      ...course,
-      teachers: course.teachers.map((t) => t.teacher),
-      // You may want to organize lessons into sections here
-      content: [
-        {
-          title: "Course Content",
-          lessons: course.lessons.map((l) => l.lesson),
-        },
-      ],
-    };
-
-    await setCache(cacheKey, transformedCourse);
-
-    return transformedCourse;
+    return result;
   } catch (error) {
     console.error("Error fetching course:", error);
     return {

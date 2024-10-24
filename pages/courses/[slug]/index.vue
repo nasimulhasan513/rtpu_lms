@@ -22,7 +22,7 @@
                   <AvatarImage :src="course.instructorImage" :alt="course.instructor" />
                   <AvatarFallback>{{
                     course.instructor.charAt(0)
-                  }}</AvatarFallback>
+                    }}</AvatarFallback>
                 </Avatar>
                 <div>
                   <h3 class="font-semibold">{{ course.instructor }}</h3>
@@ -53,7 +53,7 @@
                           <span>{{ lesson.title }}</span>
                           <span class="ml-auto text-sm text-muted-foreground">{{
                             lesson.duration
-                          }}</span>
+                            }}</span>
                         </li>
                       </ul>
                     </AccordionContent>
