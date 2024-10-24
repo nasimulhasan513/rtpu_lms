@@ -3,30 +3,108 @@
     <div class="container px-4 py-8 mx-auto">
       <!-- Course Header -->
       <div class="grid grid-cols-1 gap-8 mb-12 md:grid-cols-3">
-        <div class="md:col-span-2">
+        <div class="md:col-span-2 overflow-y-auto max-h-screen">
           <h1 class="mb-4 text-3xl font-bold">
             {{ course.name }}
           </h1>
-          <p class="mb-4 text-lg">{{ courseDetails.forWhom }}</p>
           <div class="flex items-center mb-4">
-            <span class="mr-4 text-2xl font-semibold text-primary">
-              Tk.{{ course.sale_price }}
-            </span>
-            <span class="text-lg line-through text-muted-foreground">
-              Tk.{{ course.regular_price }}
-            </span>
+            <div class="flex items-center mr-4">
+              <Icon name="lucide:star" class="w-5 h-5 text-yellow-400" />
+              <span class="ml-1 font-semibold">{{ course.rating }}</span>
+            </div>
+            <span class="text-sm text-muted-foreground"
+              >({{ course.ratingCount }} ratings)</span
+            >
           </div>
-          <div class="flex items-center gap-4 mb-4">
-            <Button @click="addToCart">Enroll Now</Button>
-            <Button variant="outline">Add to Wishlist</Button>
-          </div>
+          <p class="mb-4 text-sm text-muted-foreground">
+            {{ course.studentCount }} students
+          </p>
+          <p class="mb-4">
+            Created by
+            <span class="font-semibold">{{ course.instructor }}</span>
+          </p>
+          <p class="mb-6 text-lg">{{ course.description }}</p>
+          <!-- Instructor Info -->
+          <Card class="mb-8">
+            <CardHeader>
+              <CardTitle>Instructor</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div class="flex items-center mb-4">
+                <Avatar class="w-16 h-16 mr-4">
+                  <AvatarImage
+                    :src="course.instructorImage"
+                    :alt="course.instructor"
+                  />
+                  <AvatarFallback>{{
+                    course.instructor.charAt(0)
+                  }}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 class="font-semibold">{{ course.instructor }}</h3>
+                  <p class="text-sm text-muted-foreground">
+                    {{ course.instructorTitle }}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-        <div class="md:col-span-1">
-          <img
-            :src="course.image"
-            :alt="course.name"
-            class="w-full rounded-lg shadow-lg"
-          />
+        <div class="md:col-span-1 relative sticky top-0">
+          <div class="md:col-span-1 border p-5 border-red-700">
+            <img
+              :src="course.image"
+              :alt="course.name"
+              class="w-full rounded-lg shadow-lg"
+            />
+
+            <div class="flex items-center gap-4 justify-end pt-4">
+              <div class="flex items-center mb-4">
+                <span class="mr-4 text-3xl font-semibold text-primary">
+                  ${{ course.salePrice }}
+                </span>
+                <span class="text-lg line-through text-muted-foreground">
+                  ${{ course.regularPrice }}
+                </span>
+                <span class="ml-2 text-sm font-semibold text-green-600">
+                  ({{ course.discount }}% off)
+                </span>
+              </div>
+              <Button
+                @click="addToCart"
+                class="px-8 py-6 text-lg text-white font-semibold bg-purple-600 hover:bg-purple-700"
+              >
+                Buy Now
+              </Button>
+            </div>
+            <div class="md:col-span-1 pt-6">
+              <Card class="mb-8">
+                <CardHeader>
+                  <CardTitle>Course Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span class="font-semibold">Duration:</span>
+                      {{ course.duration }}
+                    </div>
+                    <div>
+                      <span class="font-semibold">Lessons:</span>
+                      {{ course.totalLessons }}
+                    </div>
+                    <div>
+                      <span class="font-semibold">Level:</span>
+                      {{ course.level }}
+                    </div>
+                    <div>
+                      <span class="font-semibold">Language:</span>
+                      {{ course.language }}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -34,34 +112,65 @@
       <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
         <!-- Left Column -->
         <div class="md:col-span-2">
-          <!-- Promo Video -->
-          <div class="mb-8">
-            <h2 class="mb-4 text-2xl font-semibold">Course Preview</h2>
-            <video
-              :src="courseDetails.promoVideo"
-              controls
-              class="w-full rounded-lg"
-            ></video>
-          </div>
+          <!-- Course Content -->
+          <Card class="mb-8">
+            <CardHeader>
+              <CardTitle>Course Content</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible class="w-full">
+                <AccordionItem
+                  v-for="(week, index) in course.weeks"
+                  :key="index"
+                  :value="`week-${index + 1}`"
+                >
+                  <AccordionTrigger>{{ week.title }}</AccordionTrigger>
+                  <AccordionContent>
+                    <ul class="space-y-2">
+                      <li
+                        v-for="(lesson, lessonIndex) in week.lessons"
+                        :key="lessonIndex"
+                        class="flex items-center"
+                      >
+                        <Icon
+                          :name="lesson.icon"
+                          class="w-5 h-5 mr-2 text-muted-foreground"
+                        />
+                        <span>{{ lesson.title }}</span>
+                        <span class="ml-auto text-sm text-muted-foreground">{{
+                          lesson.duration
+                        }}</span>
+                      </li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
+
+          <!-- Course Includes -->
+          <Card class="mb-8">
+            <CardHeader>
+              <CardTitle>This course includes:</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul class="grid grid-cols-2 gap-4">
+                <li
+                  v-for="(item, index) in course.includes"
+                  :key="index"
+                  class="flex items-center"
+                >
+                  <Icon :name="item.icon" class="w-5 h-5 mr-2 text-primary" />
+                  <span>{{ item.text }}</span>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
 
           <!-- Description -->
           <div class="mb-8">
             <h2 class="mb-4 text-2xl font-semibold">About This Course</h2>
             <div v-html="course.description" class="prose"></div>
-          </div>
-
-          <!-- Syllabus -->
-          <div class="mb-8">
-            <h2 class="mb-4 text-2xl font-semibold">Course Syllabus</h2>
-            <ul class="list-disc list-inside">
-              <li
-                v-for="(module, index) in courseDetails.syllabus"
-                :key="index"
-                class="mb-2"
-              >
-                {{ module }}
-              </li>
-            </ul>
           </div>
 
           <!-- FAQ -->
@@ -71,7 +180,7 @@
             </h2>
             <Accordion type="single" collapsible class="w-full">
               <AccordionItem
-                v-for="(faq, index) in courseDetails.faq"
+                v-for="(faq, index) in course.faq"
                 :key="index"
                 :value="`item-${index}`"
               >
@@ -86,87 +195,10 @@
 
         <!-- Right Column -->
         <div class="md:col-span-1">
-          <!-- Instructor Info -->
-          <Card class="mb-8">
-            <CardHeader>
-              <CardTitle>Instructors</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div
-                v-for="(teacher, index) in course.teachers"
-                :key="index"
-                class="flex items-center mb-4"
-              >
-                <div class="w-20 h-20 mr-4 overflow-hidden rounded-full">
-                  <Avatar>
-                    <AvatarImage :src="teacher.image" :alt="teacher.name" />
-                    <AvatarFallback>{{
-                      teacher.image.charAt(0)
-                    }}</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div>
-                  <h3 class="font-semibold">
-                    {{ teacher.name }}
-                  </h3>
-                  <p class="text-sm text-muted-foreground">
-                    {{ teacher.designation }}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           <!-- Course Info -->
-          <Card class="mb-8">
-            <CardHeader>
-              <CardTitle>Course Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div class="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span class="font-semibold">Duration:</span>
-                  {{ courseDetails.duration }}
-                </div>
-                <div>
-                  <span class="font-semibold">Lessons:</span>
-                  {{ courseDetails.lessons.length }}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <!-- Course Content -->
-          <Card>
-            <CardHeader>
-              <CardTitle>Course Content</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul class="space-y-2">
-                <li
-                  v-for="(lesson, index) in courseDetails.lessons"
-                  :key="index"
-                  class="flex items-center"
-                >
-                  <Icon
-                    :name="lesson.isUnlocked ? 'lucide:unlock' : 'lucide:lock'"
-                    class="mr-2"
-                  />
-                  <span
-                    :class="{ 'text-muted-foreground': !lesson.isUnlocked }"
-                  >
-                    {{ lesson.title }}
-                  </span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
-    <pre>
-      {{ course }}
-    </pre>
   </AppContainer>
 </template>
 
@@ -175,72 +207,90 @@ import { useToast } from "@/components/ui/toast";
 
 const route = useRoute();
 const { toast } = useToast();
-const { data: course } = await useFetch(
-  `/api/courses/${route.params.slug}/course`
-);
 
-// Course details (replace this with actual data fetching logic)
-const courseDetails = {
-  thumbnail:
-    "https://shahriarsirrtpu.s3.ap-southeast-2.amazonaws.com/images/BrSZxWGdBy1715777003.jpg",
-  promoVideo: "https://example.com/promo-video.mp4",
-  instructor: {
-    name: "John Doe",
-    designation: "Senior Data Scientist",
-    image:
-      "https://shahriarsirrtpu.s3.ap-southeast-2.amazonaws.com/images/qoEva51XWu1708938568.png",
-  },
-  courseName: "Mastering Data Science with Python",
-  duration: "12 Weeks",
-  forWhom: "Beginners to Intermediate Learners interested in Data Science",
-  pricing: {
-    originalPrice: 299.99,
-    discountedPrice: 199.99,
-  },
-  lessons: [
-    { title: "Introduction to Data Science", isUnlocked: true },
-    { title: "Python Basics", isUnlocked: true },
-    { title: "Data Manipulation with Pandas", isUnlocked: false },
-    { title: "Data Visualization with Matplotlib", isUnlocked: false },
-    { title: "Machine Learning Overview", isUnlocked: false },
+// Simulated course data (replace with actual API call)
+const course = ref({
+  name: "The Complete Advanced 6-Week UI/UX Design Bootcamp",
+  rating: 4.9,
+  ratingCount: 264250,
+  studentCount: "1,936,922",
+  instructor: "Dr. Marley Bator",
+  instructorTitle: "Senior UX Designer & Educator",
+  instructorImage: "https://example.com/instructor-image.jpg",
+  instructorBio:
+    "Dr. Marley Bator is a renowned UX designer with over 15 years of experience in the field...",
+  description:
+    "Our 6-week UI/UX bootcamp equips students with the essential skills to become successful designers. The course provides hands-on learning opportunities to design and prototype digital products, conduct user research, and create user flows and wireframes.",
+  regularPrice: 3499,
+  salePrice: 549,
+  discount: 85,
+  image:
+    "https://www.gkftii.com/blog/img/multimedia-courses-scope-and-career.webp",
+  duration: "6 weeks",
+  totalLessons: 42,
+  level: "Advanced",
+  language: "English",
+  weeks: [
+    {
+      title: "Week 1: Beginner - Introduction to UX Designing",
+      lessons: [
+        {
+          title: "Introduction to Figma Essentials",
+          duration: "02:45",
+          icon: "lucide:play",
+        },
+        {
+          title: "What is the difference between UI & UX in Figma",
+          duration: "05:22",
+          icon: "lucide:play",
+        },
+        {
+          title: "Project: 'Create Your Own Brief'",
+          duration: "",
+          icon: "lucide:file-text",
+        },
+      ],
+    },
+    { title: "Week 2: Beginner - Welcome to Course 1", lessons: [] },
+    {
+      title: "Week 3: Beginner - The basics of user experience design",
+      lessons: [],
+    },
+    { title: "Week 4: Beginner - Getting started in UX design", lessons: [] },
+    { title: "Week 5: Jobs in the field of user experience", lessons: [] },
+    { title: "Week 6: Getting ahead as a junior designer", lessons: [] },
   ],
-  syllabus: [
-    "Module 1: Introduction to Data Science",
-    "Module 2: Python Programming Fundamentals",
-    "Module 3: Data Manipulation and Cleaning",
-    "Module 4: Data Visualization Techniques",
-    "Module 5: Introduction to Machine Learning",
+  includes: [
+    { text: "65 hours of on-demand video", icon: "lucide:video" },
+    { text: "49 downloadable resources", icon: "lucide:download" },
+    { text: "Mobile and TV access", icon: "lucide:smartphone" },
+    { text: "86 articles", icon: "lucide:file-text" },
+    { text: "8 coding exercises", icon: "lucide:code" },
+    { text: "Certificate of completion", icon: "lucide:award" },
   ],
-  description: `
-    <p>In this comprehensive course, you'll gain the essential skills needed to excel in data science.</p>
-    <ul>
-      <li>Learn Python from scratch</li>
-      <li>Work with real-world datasets</li>
-      <li>Build machine learning models</li>
-      <li>Create insightful visualizations</li>
-    </ul>
-  `,
   faq: [
     {
       question: "What prerequisites do I need?",
-      answer: "Basic knowledge of programming is helpful, but not mandatory.",
+      answer:
+        "Basic knowledge of design principles is helpful, but not mandatory. This course is designed for both beginners and those with some experience in UI/UX design.",
     },
     {
       question: "How is this course delivered?",
       answer:
-        "The course is a mix of video lectures, quizzes, and hands-on projects.",
+        "The course is delivered through a combination of video lectures, hands-on projects, quizzes, and peer reviews. You'll have access to a dedicated online learning platform where you can interact with instructors and fellow students.",
     },
     {
       question: "Will I receive a certificate?",
-      answer: "Yes, you'll get a certificate upon completing all the lessons.",
+      answer:
+        "Yes, upon successful completion of the course and all required projects, you'll receive a certificate of completion that you can share on your portfolio or LinkedIn profile.",
     },
   ],
-};
+});
 
 const addToCart = () => {
   toast({
-    title: "Enrolled Successfully",
-    description: `You have been enrolled in ${courseDetails.courseName}.`,
+    title: "Added to Cart",
+    description: `${course.value.name} has been added to your cart.`,
   });
 };
 </script>
