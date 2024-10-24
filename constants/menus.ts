@@ -1,32 +1,29 @@
 import type { NavMenuItems } from "~/types/nav";
 
-
 export const mainMenu = [
   { name: "হোম", path: "/", icon: "lucide:home" },
   { name: "কোর্স সমূহ", path: "/courses", icon: "lucide:graduation-cap" },
-  { name: "বই সমূহ", path: "/books", icon: "lucide:book" },
+  // { name: "বই সমূহ", path: "/books", icon: "lucide:book" },
   { name: "আমাদের সম্পর্কে", path: "/about", icon: "lucide:info" },
 ];
-
-
 
 export const navMenu: NavMenuItems = [
   {
     title: "Dashboard",
     icon: "i-lucide-layout-dashboard",
     link: "/admin",
-    role: "contributor",
+    role: "MODERATOR",
   },
   {
     title: "Courses",
     icon: "lucide:graduation-cap",
-    role: "contributor",
+    role: "MODERATOR",
     children: [
       {
         title: "All Courses",
         link: "/admin/courses",
         icon: "lucide:list-video",
-        role: "contributor",
+        role: "MODERATOR",
       },
       {
         title: "Add Course",
@@ -53,34 +50,60 @@ export const navMenu: NavMenuItems = [
   //   title: "Notifications",
   //   icon: "lucide:bell",
   //   link: "/admin/notifications",
-  //   role: "contributor",
+  //   role: "MODERATOR",
   // },
   {
     title: "Exams",
     icon: "i-lucide-clipboard-list",
-    role: "contributor",
+    role: "MODERATOR",
     children: [
       {
         title: "All Exams",
         link: "/admin/exams",
         icon: "i-lucide-clipboard-list",
-        role: "contributor",
+        role: "MODERATOR",
       },
       {
         title: "Add Exam",
         link: "/admin/exams/create",
         icon: "lucide:plus-circle",
-        role: "contributor",
+        role: "MODERATOR",
       },
     ],
   },
 
- 
   {
     title: "Subjects",
     icon: "i-lucide-book-open",
     link: "/admin/subjects",
     role: "ADMIN",
+  },
+
+  {
+    title: "Sales",
+    icon: "lucide:chart-spline",
+
+    role: "ADMIN",
+    children: [
+      {
+        title: "All Sales",
+        link: "/admin/sales",
+        icon: "i-lucide-clipboard-list",
+        role: "MODERATOR",
+      },
+      {
+        title: "Coupons",
+        link: "/admin/sales/coupons",
+        icon: "i-lucide-tag",
+        role: "MODERATOR",
+      },
+      {
+        title: "Search Transaction",
+        link: "/admin/sales/search",
+        icon: "lucide:search",
+        role: "MODERATOR",
+      },
+    ],
   },
 
   {
@@ -159,7 +182,6 @@ export const navMenuBottom: NavMenuItems = [
     link: "/admin/account",
   },
 ];
-
 
 export const courseMenu = [
   {

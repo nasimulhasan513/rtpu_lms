@@ -6,9 +6,6 @@ const pool = new pg.Pool({
 
 export const query = async (text: string, params?: any[]) => {
   try {
-    console.log("====================================");
-    console.log(text, params);
-    console.log("====================================");
     const result = await pool.query(text, params);
     if (result && result.rows) {
       return result.rows;

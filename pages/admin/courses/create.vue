@@ -5,12 +5,7 @@
         <div class="space-y-6">
             <form @submit="onSubmit">
                 <div class="space-y-6">
-                    <pre>
-            {{ form.errors }}
-          </pre>
-                    <pre>
-            {{ form.values }}
-          </pre>
+
                     <div class="grid grid-cols-5 gap-6">
                         <div class="col-span-3 space-y-6">
                             <FormField v-slot="{ componentField }" name="name">

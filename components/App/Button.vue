@@ -29,7 +29,7 @@ const props = defineProps({
 });
 
 const buttonVariants = cva(
-    'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background',
+    'inline-flex items-center text-white justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background',
     {
         variants: {
             variant: {
@@ -82,7 +82,7 @@ button {
     letter-spacing: 1.5px;
     font-size: 15px;
     transition: all 0.3s ease;
-    box-shadow: rgb(202, 147, 155) 0px 10px 0px 0px;
+    box-shadow: rgb(201, 46, 70) 0px 10px 0px 0px;
 }
 
 button:hover {

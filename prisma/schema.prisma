@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(cuid())
+  id         String    @id @default(uuid())
   name       String?
   phone      String?
   email      String?
@@ -23,7 +23,6 @@ model User {
 
   enrollments            CourseEnrollment[]
   submissions            Submission[]
-  notifications          Notification[]
   notification_receivers NotificationReceiver[]
   lesson_progresses      LessonProgress[]
   questions              Question[]
@@ -46,11 +45,11 @@ model Session {
   userId    String
   expiresAt DateTime
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model ResetToken {
-  id         String   @id @default(uuid()) @db.Uuid
+  id         String   @id @default(uuid())
   otp        String
   expires_at DateTime
   email      String?
@@ -61,7 +60,7 @@ model ResetToken {
 }
 
 model Teacher {
-  id          String    @id @default(uuid()) @db.Uuid
+  id          Int       @id @default(autoincrement())
   name        String
   image       String
   designation String
@@ -74,7 +73,7 @@ model Teacher {
 }
 
 model Category {
-  id         String    @id @default(uuid()) @db.Uuid
+  id         Int       @id @default(autoincrement())
   name       String
   slug       String    @unique
   image      String?
@@ -87,12 +86,12 @@ model Category {
 }
 
 model Course {
-  id                String       @id @default(uuid()) @db.Uuid
+  id                Int          @id @default(autoincrement())
   slug              String       @unique
   name              String
   short_description String
   description       String
-  category_id       String       @db.Uuid
+  category_id       Int
   image             String
   promo_video       String?
   sale_price        Int
@@ -130,9 +129,9 @@ enum CourseStatus {
 }
 
 model CourseTeacher {
-  course_id  String @db.Uuid
-  teacher_id String @db.Uuid
-  order      Int    @default(0)
+  course_id  Int
+  teacher_id Int
+  order      Int @default(0)
 
   course  Course  @relation(fields: [course_id], references: [id])
   teacher Teacher @relation(fields: [teacher_id], references: [id])
@@ -144,7 +143,7 @@ model CourseTeacher {
 }
 
 model Coupon {
-  id              String    @id @default(uuid()) @db.Uuid
+  id              Int       @id @default(autoincrement())
   code            String    @unique
   discount        Float
   max_usage_limit Int       @default(1)
@@ -162,8 +161,8 @@ model Coupon {
 }
 
 model CouponCourse {
-  coupon_id String @db.Uuid
-  course_id String @db.Uuid
+  coupon_id Int
+  course_id Int
 
   coupon Coupon @relation(fields: [coupon_id], references: [id])
   course Course @relation(fields: [course_id], references: [id])
@@ -173,17 +172,18 @@ model CouponCourse {
 }
 
 model CourseEnrollment {
-  id               String    @id @default(uuid()) @db.Uuid
+  id               Int       @id @default(autoincrement())
   user_id          String
-  course_id        String    @db.Uuid
+  course_id        Int
   transaction_id   String    @unique
   price            Int
   discount         Int
+  payable_amount   Int
   gateway_response Json?
   status           String    @default("pending")
   enrolled_at      DateTime  @default(now())
-  coupon_id        String?   @db.Uuid
-  category_id      String?   @db.Uuid
+  coupon_id        Int?
+  category_id      Int?
   enrolled_by      String?
   created_at       DateTime  @default(now())
   updated_at       DateTime  @updatedAt
@@ -202,7 +202,7 @@ model CourseEnrollment {
 }
 
 model Subject {
-  id         String    @id @default(uuid()) @db.Uuid
+  id         Int       @id @default(autoincrement())
   name       String
   order      Int       @default(0)
   deleted_at DateTime?
@@ -216,9 +216,9 @@ model Subject {
 }
 
 model Chapter {
-  id         String    @id @default(uuid()) @db.Uuid
+  id         Int       @id @default(autoincrement())
   name       String
-  subject_id String    @db.Uuid
+  subject_id Int
   deleted_at DateTime?
 
   subject  Subject    @relation(fields: [subject_id], references: [id])
@@ -230,11 +230,11 @@ model Chapter {
 }
 
 model Lesson {
-  id              String    @id @default(uuid()) @db.Uuid
+  id              Int       @id @default(autoincrement())
   title           String
-  subject_id      String    @db.Uuid
-  chapter_id      String    @db.Uuid
-  teacher_id      String    @db.Uuid
+  subject_id      Int
+  chapter_id      Int
+  teacher_id      Int
   source          String
   content         String?
   pdf             String?
@@ -242,6 +242,7 @@ model Lesson {
   is_downloadable Boolean   @default(false)
   schedule        DateTime?
   video_duration  Int?
+  order           Int?
   created_at      DateTime  @default(now())
   updated_at      DateTime  @updatedAt
   deleted_at      DateTime?
@@ -257,12 +258,13 @@ model Lesson {
   @@index([teacher_id])
   @@index([is_archive])
   @@index([schedule])
+  @@map("lessons")
 }
 
 model LessonProgress {
-  id           String    @id @default(uuid()) @db.Uuid
+  id           Int       @id @default(autoincrement())
   user_id      String
-  lesson_id    String    @db.Uuid
+  lesson_id    Int
   completed    Boolean   @default(false)
   bookmark     Boolean   @default(false)
   note         String?
@@ -280,9 +282,9 @@ model LessonProgress {
 }
 
 model CourseLesson {
-  id        String @id @default(uuid()) @db.Uuid
-  course_id String @db.Uuid
-  lesson_id String @db.Uuid
+  id        String @id @default(uuid())
+  course_id Int
+  lesson_id Int
   order     Int    @default(0)
 
   course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
@@ -295,10 +297,10 @@ model CourseLesson {
 }
 
 model Option {
-  id          String  @id @default(uuid()) @db.Uuid
+  id          String  @id @default(uuid())
   option_text String
   correct     Boolean
-  question_id String  @db.Uuid
+  question_id Int
 
   question Question @relation(fields: [question_id], references: [id])
 
@@ -307,12 +309,12 @@ model Option {
 }
 
 model Question {
-  id         String             @id @default(uuid()) @db.Uuid
+  id         Int                @id @default(autoincrement())
   question   String
   difficulty QuestionDifficulty @default(MEDIUM)
-  subject_id String             @db.Uuid
-  chapter_id String?            @db.Uuid
-  exam_id    String?            @db.Uuid
+  subject_id Int
+  chapter_id Int?
+  exam_id    Int?
   explain    String?
   serial     Int?
   creator_id String?
@@ -341,7 +343,7 @@ enum QuestionDifficulty {
 }
 
 model Exam {
-  id                  String    @id @default(uuid()) @db.Uuid
+  id                  Int       @id @default(autoincrement())
   title               String
   description         String?
   start_time          DateTime
@@ -356,7 +358,7 @@ model Exam {
   created_at          DateTime  @default(now())
   updated_at          DateTime  @updatedAt
   deleted_at          DateTime?
-  subject_id          String?   @db.Uuid
+  subject_id          Int?
 
   submissions  Submission[]
   questions    Question[]
@@ -370,9 +372,8 @@ model Exam {
 }
 
 model CourseExam {
-  id        String @id @default(uuid()) @db.Uuid
-  course_id String @db.Uuid
-  exam_id   String @db.Uuid
+  course_id Int
+  exam_id   Int
 
   course Course @relation(fields: [course_id], references: [id])
   exam   Exam   @relation(fields: [exam_id], references: [id])
@@ -382,9 +383,9 @@ model CourseExam {
 }
 
 model Submission {
-  id           String           @id @default(uuid())
+  id           Int              @id @default(autoincrement())
   user_id      String
-  exam_id      String           @db.Uuid
+  exam_id      Int
   answers      Json?
   attempt      Int              @default(1)
   marks        Float            @default(0)
@@ -414,17 +415,14 @@ enum SubmissionStatus {
 }
 
 model Notification {
-  id         String   @id @default(uuid())
-  user_id    String
+  id         Int      @id @default(autoincrement())
   type       String
   message    String
   link       String?
   created_at DateTime @default(now())
 
-  user                 User                   @relation(fields: [user_id], references: [id])
   notificationreceiver NotificationReceiver[]
 
-  @@index([user_id])
   @@index([type])
   @@map("notifications")
 }
@@ -432,7 +430,7 @@ model Notification {
 model NotificationReceiver {
   id              String   @id @default(uuid())
   user_id         String
-  notification_id String
+  notification_id Int
   is_read         Boolean  @default(false)
   created_at      DateTime @default(now())
 

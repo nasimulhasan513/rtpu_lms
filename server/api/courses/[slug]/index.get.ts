@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    return result;
+    return result[0];
   } catch (error) {
     console.error("Error fetching course:", error);
     return {

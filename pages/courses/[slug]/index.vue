@@ -5,36 +5,50 @@
       <div class="grid min-h-screen grid-cols-1 gap-8 mb-12 md:grid-cols-3">
         <div class="overflow-y-auto md:col-span-2">
           <h1 class="mb-4 text-3xl font-bold">
-            {{ course.name }}
+            {{ courseData.name }}
           </h1>
 
 
 
-          <p class="mb-6 text-lg">{{ course.description }}</p>
+
           <!-- Instructor Info -->
           <Card class="mb-8">
             <CardHeader>
-              <CardTitle>Instructor</CardTitle>
+              <CardTitle>শিক্ষকবৃন্দ</CardTitle>
             </CardHeader>
             <CardContent>
-              <div class="flex items-center mb-4">
+              <div class="flex items-center mb-4" v-for="instructor in courseData.teachers" :key="instructor.id">
                 <Avatar class="w-16 h-16 mr-4">
-                  <AvatarImage :src="course.instructorImage" :alt="course.instructor" />
+                  <AvatarImage :src="instructor.image" :alt="instructor.name" />
                   <AvatarFallback>{{
-                    course.instructor.charAt(0)
-                    }}</AvatarFallback>
+                    instructor.name.charAt(0)
+                  }}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 class="font-semibold">{{ course.instructor }}</h3>
+                  <h3 class="font-semibold">{{ instructor.name }}</h3>
                   <p class="text-sm text-muted-foreground">
-                    {{ course.instructorTitle }}
+                    {{ instructor.designation }}
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
+          <!-- Course Includes -->
+          <Card class="mb-8">
+            <CardHeader>
+              <CardTitle>This course includes:</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul class="grid grid-cols-2 gap-4">
+                <li v-for="(item, index) in course.includes" :key="index" class="flex items-center">
+                  <Icon :name="item.icon" class="w-5 h-5 mr-2 text-primary" />
+                  <span>{{ item.text }}</span>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
           <!-- Course Details -->
-
+          <div class="mb-6 prose" v-html="courseData.description"></div>
           <!-- Left Column -->
           <div class="md:col-span-2">
             <!-- Course Content -->
@@ -53,7 +67,7 @@
                           <span>{{ lesson.title }}</span>
                           <span class="ml-auto text-sm text-muted-foreground">{{
                             lesson.duration
-                            }}</span>
+                          }}</span>
                         </li>
                       </ul>
                     </AccordionContent>
@@ -62,20 +76,7 @@
               </CardContent>
             </Card>
 
-            <!-- Course Includes -->
-            <Card class="mb-8">
-              <CardHeader>
-                <CardTitle>This course includes:</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul class="grid grid-cols-2 gap-4">
-                  <li v-for="(item, index) in course.includes" :key="index" class="flex items-center">
-                    <Icon :name="item.icon" class="w-5 h-5 mr-2 text-primary" />
-                    <span>{{ item.text }}</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+
 
             <!-- Description -->
             <div class="mb-8">
@@ -104,24 +105,24 @@
         <div class="md:col-span-1">
           <div class="sticky p-4 border rounded-md top-24">
             <div>
-              <img :src="course.image" :alt="course.name" class="w-full mb-4 rounded-lg" />
+              <img :src="courseData.image" :alt="courseData.name" class="w-full mb-4 rounded-lg" />
 
               <div class="flex items-center mb-4">
                 <Icon name="lucide:users" class="w-5 h-5 mr-2 text-muted-foreground" />
-                <span class="text-sm text-muted-foreground">{{ course.studentCount }} students enrolled</span>
+                <span class="text-sm text-muted-foreground">{{ courseData.enrolled }} students enrolled</span>
               </div>
 
               <div class="flex items-center mb-4">
                 <Icon name="lucide:clock" class="w-5 h-5 mr-2 text-muted-foreground" />
-                <span class="text-sm text-muted-foreground">{{ course.duration }}</span>
+                <span class="text-sm text-muted-foreground">{{ courseData.duration }} Months</span>
               </div>
 
               <div class="flex items-center justify-between mb-4">
                 <span class="text-3xl font-semibold text-primary">
-                  Tk. {{ course.salePrice }}
+                  Tk. {{ courseData.sale_price }}
                 </span>
                 <span class="text-lg line-through text-muted-foreground">
-                  Tk. {{ course.regularPrice }}
+                  Tk. {{ courseData.regular_price }}
                 </span>
               </div>
 
@@ -134,9 +135,7 @@
                 </Button>
               </div>
 
-              <Button class="w-full" size="lg" variant="secondary" @click="enroll">
-                Enroll Now
-              </Button>
+              <AppButton :label="`এখনই কিনুন`" class="w-full" />
             </div>
           </div>
         </div>
@@ -155,6 +154,10 @@ const route = useRoute();
 const { toast } = useToast();
 
 const promoCode = ref('');
+
+
+const { data: courseData } = useFetch(`/api/courses/${route.params.slug}`);
+
 
 // Simulated course data (replace with actual API call)
 const course = ref({

@@ -6,7 +6,7 @@ export const CourseSchema = z.object({
   short_description: z.string().min(1, "Short description is required"),
   description: z.string().min(1, "Description is required"),
   category_id: z
-    .string()
+    .number()
     .min(1, "Category  is required"),
   image: z.string().url("Image must be a valid URL"),
   promo_video: z
@@ -35,7 +35,7 @@ export const CourseSchema = z.object({
   teachers: z
     .array(
       z
-        .string()
+        .number()
         .min(1, "Teacher ID is required")
     )
     .nonempty("At least one teacher is required"),
